@@ -1,0 +1,7 @@
+package functions;
+
+import GEPClassify.Function;
+
+public class SubtractFunction implements Function<A, E> {
+
+}

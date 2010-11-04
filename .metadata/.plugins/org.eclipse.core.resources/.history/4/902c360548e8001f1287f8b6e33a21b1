@@ -1,0 +1,18 @@
+package functions;
+
+import GEPClassify.Function;
+
+public class DivideFunction implements Function<Double, Double> {
+
+	public Double ApplyFunction(Double[] args) {
+		assert(args.length == 2);
+		assert(args[1] != 0);
+	}
+	public int getNumArgs() {
+		return 2;
+	}
+	public char getSymbol() {
+		return '/';
+	}
+
+}

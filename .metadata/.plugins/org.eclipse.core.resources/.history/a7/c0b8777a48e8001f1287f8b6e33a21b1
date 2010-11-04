@@ -1,0 +1,5 @@
+package GEPexceptions;
+
+public class IllegalActionException extends Exception {
+
+}

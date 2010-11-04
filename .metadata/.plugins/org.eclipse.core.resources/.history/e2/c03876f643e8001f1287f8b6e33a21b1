@@ -1,0 +1,11 @@
+package GEPClassify;
+
+public interface GEPConfig {
+	int getNumRuns();
+	int getMaxGenerations();
+	FunctionSet getFunctionSet();
+	ModificationSet getModifiers();
+	int getHeadLength();
+	int getNumNodes();
+	
+}

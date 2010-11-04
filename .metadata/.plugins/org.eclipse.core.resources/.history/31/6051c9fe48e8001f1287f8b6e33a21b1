@@ -1,0 +1,25 @@
+package functions;
+
+import GEPClassify.Function;
+import GEPexceptions.IllegalActionException;
+
+public class SqrtFunction implements Function<Double, Double> {
+
+	@Override
+	public Double ApplyFunction(Double[] args) throws IllegalActionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNumArgs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public char getSymbol() {
+		return 'Q';
+	}
+
+}

@@ -1,0 +1,15 @@
+package functions;
+
+import GEPClassify.Function;
+
+public class AddFunctions implements Function<Double, Double> {
+	public Double ApplyFunction(Double[] args) {
+		return (args[0] + args[1]);
+	}
+	public int getNumArgs() {
+		return 2;
+	}
+	public char getSymbol() {
+		return '+';
+	}
+}

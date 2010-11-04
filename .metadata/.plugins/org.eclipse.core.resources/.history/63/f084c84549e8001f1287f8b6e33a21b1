@@ -1,0 +1,19 @@
+package functions;
+
+import GEPClassify.Function;
+import GEPexceptions.IllegalActionException;
+
+public class SinFunction implements Function<Double, Double> {
+
+	public Double ApplyFunction(Double[] args) throws IllegalActionException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public int getNumArgs() {
+		return 1;
+	}
+	public char getSymbol() {
+		return 'S';
+	}
+
+}

@@ -1,0 +1,26 @@
+package functions;
+
+import GEPClassify.Function;
+
+public class SubtractFunction implements Function<Double, Double> {
+
+	@Override
+	public Double ApplyFunction(Double[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNumArgs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public char getSymbol() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	
+}

@@ -1,0 +1,5 @@
+package GEPexceptions;
+
+public class IllegalActionException extends Exception {
+	private static final long serialVersionUID = 969210821314296057L;
+}

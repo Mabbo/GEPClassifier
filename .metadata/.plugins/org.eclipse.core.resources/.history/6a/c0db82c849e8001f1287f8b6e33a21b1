@@ -1,0 +1,26 @@
+package functionsets;
+
+import java.util.HashMap;
+
+import GEPClassify.Function;
+import GEPClassify.FunctionSet;
+
+public class BasicMath implements FunctionSet {
+	private HashMap<String, Function> functions;
+	
+	public char[] GetSymbols() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public void LoadFunctions() {
+		// TODO Auto-generated method stub
+
+	}
+	public Function getFunction(char symbol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+}

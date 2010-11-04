@@ -1,0 +1,10 @@
+package GEPClassify;
+
+public interface GEPEvolver {
+
+	void setGEPConfig(GEPConfig conf);
+	void setTrainingSet(TrainingSet tset);
+	
+	
+	
+}

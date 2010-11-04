@@ -1,0 +1,19 @@
+package functions;
+
+import GEPClassify.Function;
+import GEPexceptions.IllegalActionException;
+
+public class SinFunction implements Function<Double, Double> {
+
+	public Double ApplyFunction(Double[] args) {
+		assert(args.length >= 1);
+		return Math.sin(args[0]);
+	}
+	public int getNumArgs() {
+		return 1;
+	}
+	public char getSymbol() {
+		return 'S';
+	}
+
+}

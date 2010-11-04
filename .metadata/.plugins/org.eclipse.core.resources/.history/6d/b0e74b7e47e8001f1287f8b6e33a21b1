@@ -1,0 +1,15 @@
+package functions;
+
+import GEPClassify.Function;
+
+public abstract class MathFunction implements Function<Double, Double> {
+	public Double ApplyFunction(Double[] args) {
+		assert(args.length == getNumArgs());
+		return applyFunction(args[0], args[1]);
+	}
+	protected abstract applyFunction(Double a, Double b);
+	
+	public int getNumArgs() {
+		return 2;
+	}
+}
