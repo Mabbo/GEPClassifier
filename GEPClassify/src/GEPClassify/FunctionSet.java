@@ -15,5 +15,6 @@ public interface FunctionSet {
 	void LoadFunctions();
 	String GetSymbols();
 	Function getFunction(String symbol);
+	int getMaxArgs();
 }
 

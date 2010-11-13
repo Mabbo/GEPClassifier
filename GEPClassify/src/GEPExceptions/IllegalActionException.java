@@ -1,4 +1,4 @@
-package GEPexceptions;
+package GEPExceptions;
 
 public class IllegalActionException extends Exception {
 	public IllegalActionException(String string) {

@@ -1,6 +1,6 @@
 package GEPClassify;
 
-import GEPexceptions.IllegalActionException;
+import GEPExceptions.IllegalActionException;
 
 /*
  * A function will encapsulate one function used in the GEP

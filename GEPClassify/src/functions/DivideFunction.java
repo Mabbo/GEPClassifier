@@ -1,7 +1,7 @@
 package functions;
 
 import GEPClassify.Function;
-import GEPexceptions.IllegalActionException;
+import GEPExceptions.IllegalActionException;
 
 public class DivideFunction implements Function {
 

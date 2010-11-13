@@ -8,6 +8,7 @@ import GEPClassify.FunctionSet;
 public abstract class BasicFunctionSet implements FunctionSet {
 	private HashMap<String, Function> functions;
 	private String symbolString = "";
+	private int maxArgs = 0;
 	
 	public String GetSymbols() {
 		return symbolString;
@@ -19,8 +20,12 @@ public abstract class BasicFunctionSet implements FunctionSet {
 	
 	protected void AddNewFunction(Function func){
 		assert (symbolString.indexOf(func.getSymbol()) < 0);
+		maxArgs = Math.max(maxArgs, func.getNumArgs());
 		symbolString += func.getSymbol();
 		functions.put(func.getSymbol(), func);
 	}
 	
+	public int getMaxArgs(){
+		return maxArgs;
+	}
 }

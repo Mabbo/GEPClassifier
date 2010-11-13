@@ -3,7 +3,7 @@ package GEPClassify;
 public class BasicGEPConfig implements GEPConfig {
 	protected int _headLength = 6;
 	protected int _maxGenerations = 1000;
-	protected int _numRuns = 3;
+	protected int _numRuns = 1;
 	protected int _populationSize = 50;
 	protected int _numNodes = 4;
 	protected int _numCells = 4;
@@ -39,7 +39,6 @@ public class BasicGEPConfig implements GEPConfig {
 		return _numRuns;
 	}
 
-	@Override
 	public int getPopulationSize() {
 		return _populationSize;
 	}
@@ -56,34 +55,33 @@ public class BasicGEPConfig implements GEPConfig {
 		_maxGenerations = maxgen;
 	}
 
-	@Override
 	public void setModificationSet(ModificationSet modset) {
-		// TODO Auto-generated method stub
-
+		_modifiers = modset;
 	}
 
-	@Override
 	public void setNumCells(int cells) {
-		// TODO Auto-generated method stub
-
+		_numCells = cells;
 	}
 
-	@Override
 	public void setNumNodes(int nodes) {
-		// TODO Auto-generated method stub
-
+		_numNodes = nodes;
 	}
 
-	@Override
 	public void setNumRuns(int numruns) {
-		// TODO Auto-generated method stub
-
+		_numRuns = numruns;
 	}
 
-	@Override
 	public void setPopulationSize(int popsize) {
-		// TODO Auto-generated method stub
+		_populationSize = popsize;
+	}
 
+	public int getTailLength() {
+		return (getHeadLength() * (_functions.getMaxArgs() - 1)) +1;
+	}
+
+	public int getTotalKarvaSize() {
+		return (getNumNodes() + getNumCells()) 
+			 * (getHeadLength() + getTailLength());
 	}
 
 }

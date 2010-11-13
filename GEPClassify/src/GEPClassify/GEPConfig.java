@@ -7,8 +7,10 @@ public interface GEPConfig {
 	FunctionSet getFunctionSet();
 	ModificationSet getModifiers();
 	int getHeadLength();
+	int getTailLength();
 	int getNumNodes();
 	int getNumCells();
+	int getTotalKarvaSize();
 	
 	void setPopulationSize(int popsize);
 	void setNumRuns(int numruns);

@@ -1,7 +1,7 @@
 package functions;
 
 import GEPClassify.Function;
-import GEPexceptions.IllegalActionException;
+import GEPExceptions.IllegalActionException;
 
 /**
  * Safe divide is used to help prevent divide by zero errors

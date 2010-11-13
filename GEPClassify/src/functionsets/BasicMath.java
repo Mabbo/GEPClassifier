@@ -9,6 +9,6 @@ public class BasicMath extends BasicFunctionSet {
 		AddNewFunction(new SubtractFunction());
 		AddNewFunction(new MultiplyFunction());
 		AddNewFunction(new DivideFunction());
-	}	
+	}
 
 }
