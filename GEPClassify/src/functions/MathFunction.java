@@ -2,7 +2,7 @@ package functions;
 
 import GEPClassify.Function;
 
-public abstract class MathFunction implements Function<Double, Double> {
+public abstract class MathFunction implements Function {
 	
 	protected abstract Double applyFunction(Double a, Double b);
 	

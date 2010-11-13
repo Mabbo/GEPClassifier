@@ -3,7 +3,7 @@ package functions;
 import GEPClassify.Function;
 import GEPexceptions.IllegalActionException;
 
-public class DivideFunction implements Function<Double, Double> {
+public class DivideFunction implements Function {
 
 	public Double ApplyFunction(Double[] args) throws IllegalActionException {
 		assert(args.length == 2);

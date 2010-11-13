@@ -8,8 +8,8 @@ import GEPexceptions.IllegalActionException;
  * arguments, and return a value 
  */
 
-public interface Function<A, E> {
-	E ApplyFunction(A[] args) throws IllegalActionException;
+public interface Function {
+	Double ApplyFunction(Double[] args) throws IllegalActionException;
 	String getSymbol();
 	int getNumArgs();
 }

@@ -2,7 +2,7 @@ package functions;
 
 import GEPClassify.Function;
 
-public class CosFunction implements Function<Double, Double> {
+public class CosFunction implements Function {
 	public Double ApplyFunction(Double[] args) {
 		assert(args.length >= 1);
 		return Math.cos(args[0]);

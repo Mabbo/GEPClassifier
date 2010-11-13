@@ -2,7 +2,7 @@ package functions;
 
 import GEPClassify.Function;
 
-public class SinFunction implements Function<Double, Double> {
+public class SinFunction implements Function {
 	public Double ApplyFunction(Double[] args) {
 		assert(args.length >= 1);
 		return Math.sin(args[0]);

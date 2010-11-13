@@ -14,7 +14,6 @@ package GEPClassify;
 public interface FunctionSet {
 	void LoadFunctions();
 	String GetSymbols();
-	@SuppressWarnings("unchecked")
 	Function getFunction(String symbol);
 }
 

@@ -3,7 +3,7 @@ package functions;
 import GEPClassify.Function;
 import GEPexceptions.IllegalActionException;
 
-public class SqrtFunction implements Function<Double, Double> {
+public class SqrtFunction implements Function {
 
 	public Double ApplyFunction(Double[] args) throws IllegalActionException {
 		assert(args.length >= 1);
