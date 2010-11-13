@@ -1,5 +1,0 @@
-package functionsets;
-
-public class ExtendedMath extends BasicMath {
-
-}

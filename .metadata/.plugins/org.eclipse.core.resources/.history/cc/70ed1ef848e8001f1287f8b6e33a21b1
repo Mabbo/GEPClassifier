@@ -1,7 +1,0 @@
-package functions;
-
-import GEPClassify.Function;
-
-public class SqrtFunction implements Function<A, E> {
-
-}
