@@ -70,6 +70,10 @@ public class KarvaString {
 		return _karva;
 	}
 	
+	public int getLength() {
+		return _karva.length();
+	}
+	
 	public String getNode(int nodeNum){
 		int start = nodeNum * getNodeLength();
 		return _karva.substring(start, start + getNodeLength());

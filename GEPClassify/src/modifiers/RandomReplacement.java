@@ -9,7 +9,7 @@ public class RandomReplacement implements MutationMechanism {
 
 	private static Random rand = new Random();
 	
-	public KarvaString Mutate(KarvaString karva) {
+	public void Mutate(KarvaString karva) {
 		//Take a randomly chosen piece of the karva, and 
 		//change it into a randomly chosen character 
 		//taken from valid values
@@ -55,7 +55,6 @@ public class RandomReplacement implements MutationMechanism {
 		*/
 		
 		karva.setKarva(kstring);
-		return karva;
 	}
 
 }

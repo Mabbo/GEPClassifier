@@ -15,7 +15,7 @@ public class KarvaUtilities {
 	}
 	
 	private static Random r = new Random();
-	static int getRand(int max){
+	public static int getRand(int max){
 		return r.nextInt(max);
 	}
 	public static String getRandChar(String choices) {

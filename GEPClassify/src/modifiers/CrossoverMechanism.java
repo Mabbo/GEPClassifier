@@ -11,5 +11,5 @@ import GEPClassify.KarvaString;
  */
 
 public interface CrossoverMechanism {
-	String MakeChild(KarvaString parentA, KarvaString parentB);
+	void Crossover(KarvaString parentA, KarvaString parentB);
 }

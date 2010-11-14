@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import modifiers.CrossoverMechanism;
 import modifiers.MutationMechanism;
 
 import dataset.ClassificationInstance;
@@ -27,16 +28,19 @@ public class BasicGEPEvolver implements GEPEvolver {
 		public boolean flagged_for_removal;
 		public PopulationMember(KarvaString karva){
 			this.karva = karva;
-			expression = new ExpressedKarva(this.karva);
 			score = 0;
 			flagged_for_removal = false;
+			Initialize();
+		}
+		public void Initialize() {
+			expression = new ExpressedKarva(this.karva);
 		}
 		public int compareTo(PopulationMember arg0) {
 			if (arg0.score < this.score) return -1;
 			else return 1;
 		}
 		public String toString() {
-			return "" + (flagged_for_removal? "X " : "  ") + karva.getTotalKarva() + ": " + score;
+			return "" + score + " : " + (flagged_for_removal? "X " : "  ") + karva.getTotalKarva();
 		}
 	}
 	
@@ -57,7 +61,8 @@ public class BasicGEPEvolver implements GEPEvolver {
 		do {
 			RankByFitness();
 			CullWeak();
-			RefillPopulation();
+			ApplySelection();
+			ApplyMutation();
 			current_gen_number++;
 		}
 		while( !CheckForFinished() );
@@ -108,7 +113,8 @@ public class BasicGEPEvolver implements GEPEvolver {
 		}
 		
 
-		for( int i = 0; i < population.size(); ++i) {
+		System.out.println("Generation: " + this.current_gen_number);
+		for( int i = 0; i < 5; ++i) {
 			System.out.println(population.get(i).toString());
 		}
 		System.out.println("");
@@ -162,7 +168,7 @@ public class BasicGEPEvolver implements GEPEvolver {
 		Collections.sort(population);
 	}
 
-	public void RefillPopulation() {
+	public void ApplySelection() {
 		int oldSize = population.size();
 		while( population.size() < _config.getPopulationSize()) {
 			
@@ -172,9 +178,6 @@ public class BasicGEPEvolver implements GEPEvolver {
 			
 			KarvaString k = new KarvaString(
 					population.get(pick).karva);
-			//Get mutation operators
-			MutationMechanism mm = _config.getModifiers().GetMutators()[0];
-			k = mm.Mutate(k);
 			PopulationMember newguy = new PopulationMember(k);
 			population.add(newguy);
 		}
@@ -184,4 +187,45 @@ public class BasicGEPEvolver implements GEPEvolver {
 		_testSet = testSet;
 	}
 
+	public void ApplyMutation() {
+		//For each mutation type,
+		for( int i = 0; i < _config.getModifiers().getMutatorCount(); ++i) {
+		//For each member of the population
+			MutationMechanism mm = _config.getModifiers().GetMutator(i);
+			Double mmprob = _config.getModifiers().GetMutatorProbability(i);
+			for( PopulationMember p : population ){
+				//given the mutations probability, apply it
+				if( rand.nextDouble() < mmprob ) {
+					mm.Mutate(p.karva);
+				}
+			}
+		}
+		//For each crossover type,
+		for( int i = 0; i < _config.getModifiers().getCrossoverCount(); ++i){
+		//For each member of the population
+			CrossoverMechanism cm = _config.getModifiers().GetCrossover(i);
+			Double cmprob = _config.getModifiers().GetCrossoverProbability(i);
+			for( PopulationMember p : population) {
+				// given the crossover probability,
+				if( rand.nextDouble() < cmprob) {
+				// select a randomly chosen mate, and apply
+					int mate = rand.nextInt(population.size()-1)+1;
+					PopulationMember q = population.get(mate);
+					
+					//System.out.println("A: " + p.karva.getTotalKarva() 
+					//+ "\nB: " + q.karva.getTotalKarva() + " = ");
+					
+					cm.Crossover(p.karva, q.karva);
+					
+					//System.out.println("A: " + p.karva.getTotalKarva() 
+					//			+ "\nB: " + q.karva.getTotalKarva());
+					
+				}
+			}
+		}
+		for( PopulationMember p : population ) {
+			p.Initialize();
+		}
+	}
+	
 }

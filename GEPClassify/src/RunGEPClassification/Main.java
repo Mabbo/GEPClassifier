@@ -1,6 +1,7 @@
 package RunGEPClassification;
 
 import modifiers.BasicModificationSet;
+import modifiers.ModificationSet;
 import GEPClassify.*;
 
 public class Main {
@@ -16,12 +17,14 @@ public class Main {
 		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
-		conf.setNumNodes(2);
+		conf.setNumNodes(8);
 		conf.setNumCells(3);
-		conf.setHeadLength(5);
-		conf.setMaxGenerations(10);
-		conf.setPopulationSize(50);
-		conf.setModificationSet( new BasicModificationSet() );
+		conf.setHeadLength(7);
+		conf.setMaxGenerations(10000);
+		conf.setPopulationSize(200);
+		ModificationSet modset = new IrisModificationSet();
+		modset.LoadModifiers();
+		conf.setModificationSet( modset );
 		System.out.println(conf);
 		
 		System.out.println("");

@@ -10,7 +10,18 @@ package modifiers;
  */
 
 public interface ModificationSet {
-	MutationMechanism[] GetMutators();
-	CrossoverMechanism[] GetCrossovers();
 	void LoadModifiers();
+	void AddMutator(MutationMechanism m, Double probability);
+	void AddCrossover(CrossoverMechanism m, Double probability);
+	
+	MutationMechanism GetMutator(int index);
+	Double GetMutatorProbability(int index);
+	int getMutatorCount();
+	CrossoverMechanism GetCrossover(int index);
+	Double GetCrossoverProbability(int index);
+	int getCrossoverCount();
+	
 }
+
+
+

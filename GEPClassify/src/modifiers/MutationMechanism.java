@@ -11,5 +11,5 @@ import GEPClassify.KarvaString;
  */
 
 public interface MutationMechanism {
-	KarvaString Mutate(KarvaString karva);
+	void Mutate(KarvaString karva);
 }

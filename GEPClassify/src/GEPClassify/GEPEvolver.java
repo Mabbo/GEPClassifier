@@ -12,7 +12,8 @@ public interface GEPEvolver {
 	void CreatePopulation();
 	void RankByFitness();
 	void CullWeak();
-	void RefillPopulation();
+	void ApplySelection();
+	void ApplyMutation();
 	boolean CheckForFinished();
 	
 	void RunGeneticAlgorithm();
