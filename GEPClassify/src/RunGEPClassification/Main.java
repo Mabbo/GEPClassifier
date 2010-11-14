@@ -1,6 +1,6 @@
 package RunGEPClassification;
 
-import dataset.DataSet;
+import modifiers.BasicModificationSet;
 import GEPClassify.*;
 
 public class Main {
@@ -14,23 +14,30 @@ public class Main {
 		ReadIrisDataSet rids = new ReadIrisDataSet();
 		rids.LoadDataSet();
 		
-		DataSet ds = rids.GetTrainingSet();
-		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
-		conf.setNumNodes(6);
+		conf.setNumNodes(2);
 		conf.setNumCells(3);
 		conf.setHeadLength(5);
-		conf.setMaxGenerations(1);
+		conf.setMaxGenerations(10);
+		conf.setPopulationSize(50);
+		conf.setModificationSet( new BasicModificationSet() );
 		System.out.println(conf);
 		
 		System.out.println("");
-		
-		/*KarvaString k = new KarvaString(conf, ds);
+		/*
+		KarvaString k = new KarvaString(conf, ds);
 		
 		k.Randomize();
 		//k.setKarva("+-+baccaa*acbbaD+abab**aaaaa");
 		System.out.println(k.getTotalKarva());
+		MutationMechanism m = new RandomReplacement();
+		
+		KarvaString mutated = m.Mutate(k);
+		mutated = m.Mutate(mutated);
+		mutated = m.Mutate(mutated);
+		mutated = m.Mutate(mutated);
+		System.out.println(mutated.getTotalKarva());
 		
 		ExpressedKarva ek = new ExpressedKarva(k);
 		
@@ -38,20 +45,21 @@ public class Main {
 
 		Double[] outputs = ek.getResults(values);
 		
+		
+		/*
 		for( int i = 0; i < outputs.length; ++i) {
 			System.out.print(outputs[i] + ", ");
 		}
 		System.out.println("");
 		*/
 		//Create Evolver
-		
+			
 		GEPEvolver evolver = new BasicGEPEvolver();
 		evolver.setGEPConfig(conf);
-		evolver.setTrainingSet(ds);
-		
+		evolver.setTrainingSet(rids.GetTrainingSet());
+		evolver.setTestSet(rids.GetTestingSet());
 		//Run Evolver
-		evolver.RunGeneticAlgorithm();
-		
+		evolver.RunGeneticAlgorithm();	
 		
 		//Try classifier out on test data
 		

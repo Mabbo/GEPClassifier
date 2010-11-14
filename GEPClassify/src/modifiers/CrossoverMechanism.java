@@ -1,4 +1,6 @@
-package GEPClassify;
+package modifiers;
+
+import GEPClassify.KarvaString;
 
 /**
  * Has one function, taking in two karva strings
@@ -9,5 +11,5 @@ package GEPClassify;
  */
 
 public interface CrossoverMechanism {
-	String MakeChild(String parentA, String parentB);
+	String MakeChild(KarvaString parentA, KarvaString parentB);
 }

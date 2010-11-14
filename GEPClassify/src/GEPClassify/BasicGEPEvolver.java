@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import modifiers.MutationMechanism;
+
 import dataset.ClassificationInstance;
 import dataset.DataSet;
 
@@ -11,10 +13,11 @@ public class BasicGEPEvolver implements GEPEvolver {
 
 	private GEPConfig _config;
 	private DataSet _trainSet;
+	private DataSet _testSet;
 	
 	private int current_gen_number = 0;
 	
-	private final double CULL_FACTOR = 0.3;
+	private final double CULL_FACTOR = 0.5;
 	private Random rand = new Random();
 	
 	public class PopulationMember implements Comparable<PopulationMember> {
@@ -32,6 +35,9 @@ public class BasicGEPEvolver implements GEPEvolver {
 			if (arg0.score < this.score) return -1;
 			else return 1;
 		}
+		public String toString() {
+			return "" + (flagged_for_removal? "X " : "  ") + karva.getTotalKarva() + ": " + score;
+		}
 	}
 	
 	private ArrayList<PopulationMember> population;
@@ -47,9 +53,8 @@ public class BasicGEPEvolver implements GEPEvolver {
 	public void RunGeneticAlgorithm() {
 		assert( _config != null );
 		assert( _trainSet != null );
-		
+		CreatePopulation();	
 		do {
-			CreatePopulation();
 			RankByFitness();
 			CullWeak();
 			RefillPopulation();
@@ -59,8 +64,19 @@ public class BasicGEPEvolver implements GEPEvolver {
 	}
 	
 	public boolean CheckForFinished() {
+		/*
+		 * Step 1: just check generation number
+		 * 
+		 * */
 		if( current_gen_number >= _config.getMaxGenerations() )
-			return true;		
+			return true;
+		
+		/*
+		 * Step 2: How are things on the test set?
+		 * 
+		 * */
+		
+		
 		return false;
 	}
 
@@ -83,25 +99,33 @@ public class BasicGEPEvolver implements GEPEvolver {
 		 * with probability i*factor/pop-size, remove that member
 		 * factor can be adjusted as needed
 		 */
-		for( int i = 0; i < _config.getPopulationSize(); ++i ) {
+		for( int i = 1; i < _config.getPopulationSize(); ++i ) {
 			double probability = (double)(i) * CULL_FACTOR 
 						      / (double)(_config.getPopulationSize());
-			
 			if( rand.nextDouble() < probability ){
 				population.get(i).flagged_for_removal = true;
 			}
 		}
-		for( int i = _config.getPopulationSize()-1; i >=0; ++i ){
+		
+
+		for( int i = 0; i < population.size(); ++i) {
+			System.out.println(population.get(i).toString());
+		}
+		System.out.println("");
+		
+		for( int i = _config.getPopulationSize()-1; i >=0; --i ){
 			if( population.get(i).flagged_for_removal){
 				population.remove(i);
 			}
 		}
+		
 	}
 
 	public void RankByFitness() {
 		//For each member of the population
 		for( int q = 0; q < _config.getPopulationSize(); ++q) {
 			PopulationMember p = population.get(q);
+			p.score = 0;
 			//For each item in the training set
 			for( int i = 0; i < _trainSet.size(); ++i) {
 			//Give the inputs, and see what output is given
@@ -139,9 +163,25 @@ public class BasicGEPEvolver implements GEPEvolver {
 	}
 
 	public void RefillPopulation() {
-		
-		
+		int oldSize = population.size();
+		while( population.size() < _config.getPopulationSize()) {
+			
+			//select individual proportionally to how good they are
+			int rpick = rand.nextInt( oldSize * oldSize );
+			int pick = oldSize - (int)Math.sqrt(rpick) - 1;
+			
+			KarvaString k = new KarvaString(
+					population.get(pick).karva);
+			//Get mutation operators
+			MutationMechanism mm = _config.getModifiers().GetMutators()[0];
+			k = mm.Mutate(k);
+			PopulationMember newguy = new PopulationMember(k);
+			population.add(newguy);
+		}
 	}
 	
+	public void setTestSet(DataSet testSet) {
+		_testSet = testSet;
+	}
 
 }

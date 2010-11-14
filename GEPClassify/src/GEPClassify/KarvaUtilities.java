@@ -18,7 +18,7 @@ public class KarvaUtilities {
 	static int getRand(int max){
 		return r.nextInt(max);
 	}
-	static String getRandChar(String choices) {
+	public static String getRandChar(String choices) {
 		return "" + choices.charAt(getRand(choices.length()));
 	}
 	

@@ -19,6 +19,12 @@ public class KarvaString {
 		_karva = k;
 	}
 	
+	public KarvaString(KarvaString other){
+		this._karva = new String(other._karva);
+		this._config = other._config;
+		this._dataset = other._dataset;
+	}
+	
 	public GEPConfig getConfig() {return _config;}
 	public DataSet getDataSet() {return _dataset;}
 	
@@ -110,5 +116,15 @@ public class KarvaString {
 		}
 	}
 	
+	public String getSymbols() {
+		return _config.getFunctionSet().GetSymbols();
+	}
+	public String getNodeTerminals() {
+		return KarvaUtilities.getTerminalSet(
+				_dataset.getNumParameters());
+	}
+	public String getCellTerminals() {
+		return KarvaUtilities.getTerminalSet(getNumNodes());
+	}
 	
 }

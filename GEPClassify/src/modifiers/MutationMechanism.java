@@ -1,4 +1,6 @@
-package GEPClassify;
+package modifiers;
+
+import GEPClassify.KarvaString;
 
 /**
  * Has one function, taking in one karva string
@@ -9,5 +11,5 @@ package GEPClassify;
  */
 
 public interface MutationMechanism {
-	String Mutate(String karva);
+	KarvaString Mutate(KarvaString karva);
 }

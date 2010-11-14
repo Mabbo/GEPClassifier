@@ -1,5 +1,7 @@
 package GEPClassify;
 
+import modifiers.ModificationSet;
+
 public interface GEPConfig {
 	int getPopulationSize();
 	int getNumRuns();

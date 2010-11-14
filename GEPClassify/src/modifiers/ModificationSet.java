@@ -1,4 +1,4 @@
-package GEPClassify;
+package modifiers;
 
 /**
  * Just as FunctionSet is a static set of functions,

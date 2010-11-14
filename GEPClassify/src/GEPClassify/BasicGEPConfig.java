@@ -1,5 +1,6 @@
 package GEPClassify;
 
+import modifiers.ModificationSet;
 import functionsets.SafeMath;
 
 public class BasicGEPConfig implements GEPConfig {

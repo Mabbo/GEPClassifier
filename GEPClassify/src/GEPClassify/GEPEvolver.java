@@ -5,7 +5,8 @@ import dataset.DataSet;
 public interface GEPEvolver {
 
 	void setGEPConfig(GEPConfig conf);
-	void setTrainingSet(DataSet tset);
+	void setTrainingSet(DataSet trainSet);
+	void setTestSet(DataSet testSet);
 	
 	//The actual genetic algorithm
 	void CreatePopulation();
