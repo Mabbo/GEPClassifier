@@ -53,4 +53,6 @@ public class DataSet {
 		return name_to_number.get(className);
 	}	
 	
+	public int size() {return instances.size();}
+	
 }

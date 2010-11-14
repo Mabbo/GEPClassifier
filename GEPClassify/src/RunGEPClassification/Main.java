@@ -20,13 +20,13 @@ public class Main {
 		GEPConfig conf = new BasicGEPConfig();
 		conf.setNumNodes(6);
 		conf.setNumCells(3);
-		conf.setHeadLength(25);
-		
+		conf.setHeadLength(5);
+		conf.setMaxGenerations(1);
 		System.out.println(conf);
 		
 		System.out.println("");
 		
-		KarvaString k = new KarvaString(conf, ds);
+		/*KarvaString k = new KarvaString(conf, ds);
 		
 		k.Randomize();
 		//k.setKarva("+-+baccaa*acbbaD+abab**aaaaa");
@@ -42,10 +42,16 @@ public class Main {
 			System.out.print(outputs[i] + ", ");
 		}
 		System.out.println("");
-		
+		*/
 		//Create Evolver
 		
+		GEPEvolver evolver = new BasicGEPEvolver();
+		evolver.setGEPConfig(conf);
+		evolver.setTrainingSet(ds);
+		
 		//Run Evolver
+		evolver.RunGeneticAlgorithm();
+		
 		
 		//Try classifier out on test data
 		
