@@ -10,6 +10,11 @@ public abstract class BasicFunctionSet implements FunctionSet {
 	private String symbolString = "";
 	private int maxArgs = 0;
 	
+	public BasicFunctionSet(){
+		functions = new HashMap<String, Function>();
+		LoadFunctions();		
+	}
+	
 	public String GetSymbols() {
 		return symbolString;
 	}

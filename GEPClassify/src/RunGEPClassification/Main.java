@@ -9,12 +9,25 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
+		
+		
+		
+		
 		//Create Training Set
-		ReadIrisDataSet rids = new ReadIrisDataSet();
-		rids.LoadDataSet();
+		//ReadIrisDataSet rids = new ReadIrisDataSet();
+		//rids.LoadDataSet();
 		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
+		conf.setNumNodes(2);
+		conf.setNumCells(2);
+		conf.setHeadLength(4);
+		
+		System.out.println(conf);
+		
+		KarvaString k = new KarvaString(conf);
+		
+		
 		
 		//Create Evolver
 		

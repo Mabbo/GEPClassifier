@@ -5,6 +5,7 @@ public interface GEPConfig {
 	int getNumRuns();
 	int getMaxGenerations();
 	FunctionSet getFunctionSet();
+	Function getFunction(String a);
 	ModificationSet getModifiers();
 	int getHeadLength();
 	int getTailLength();

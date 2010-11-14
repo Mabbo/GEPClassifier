@@ -1,5 +1,7 @@
 package GEPClassify;
 
+import functionsets.SafeMath;
+
 public class BasicGEPConfig implements GEPConfig {
 	protected int _headLength = 6;
 	protected int _maxGenerations = 1000;
@@ -10,6 +12,10 @@ public class BasicGEPConfig implements GEPConfig {
 	
 	protected FunctionSet _functions;
 	protected ModificationSet _modifiers;
+	
+	public BasicGEPConfig(){
+		_functions = new SafeMath();
+	}
 	
 	public FunctionSet getFunctionSet() {
 		return _functions;
@@ -84,4 +90,35 @@ public class BasicGEPConfig implements GEPConfig {
 			 * (getHeadLength() + getTailLength());
 	}
 
+	public Function getFunction(String symbol) {
+		return getFunctionSet().getFunction(symbol);
+	}
+
+	public String toString(){
+		/*
+	int getPopulationSize();
+	int getNumRuns();
+	int getMaxGenerations();
+	FunctionSet getFunctionSet();
+	Function getFunction(String a);
+	ModificationSet getModifiers();
+	int getHeadLength();
+	int getTailLength();
+	int getNumNodes();
+	int getNumCells();
+	int getTotalKarvaSize();
+		 */
+		return "PopulationSize: " + _populationSize +
+		", Generations: " + _maxGenerations +
+		", Runs: " + _numRuns +
+		", HeadLength: " + _headLength +
+		", TailLength: " + getTailLength() +
+		", Total Karva Length: " + getTotalKarvaSize() +
+		", Number of Nodes: " + getNumNodes() + 
+		", Number of Cells: " + getNumCells() + 
+		", Max Parameters: " + _functions.getMaxArgs();
+		
+	}
+	
+	
 }

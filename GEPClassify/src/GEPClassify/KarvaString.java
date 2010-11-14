@@ -5,6 +5,20 @@ public class KarvaString {
 	private GEPConfig _config;
 	private String _karva;
 	
+	
+	public KarvaString(GEPConfig conf){
+		_config = conf;
+	}
+	
+	public KarvaString(GEPConfig conf, String k){
+		_config = conf;
+		_karva = k;
+	}
+	
+	public void setKarva(String k){
+		_karva = k;
+	}
+	
 	private static int headLength = -1;
 	public int getHeadLength() {
 		if( headLength == -1)
