@@ -121,6 +121,25 @@ public class PhenoTree {
 		
 	}
 	
+	public void SetTerminalValues(Double[] values){
+		for( int i = 0; i < terminalNodes.size(); ++i ) {
+			//set each terminal node to it's appropriate value
+			TerminalNode term = terminalNodes.get(i);
+			int valueIndex = term.getTerminal().charAt(0) - 'a';
+			term.setValue(values[valueIndex]);
+		}
+	}
+	
+	public Double getValue() {
+		try {
+			return rootNode.getValue();
+		} catch (IllegalActionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0.0;
+		}
+	}
+	
 	
 }
 

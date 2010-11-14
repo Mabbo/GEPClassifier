@@ -1,19 +1,26 @@
 package GEPClassify;
 
+import dataset.DataSet;
+
 public class KarvaString {
 	
 	private GEPConfig _config;
+	private DataSet _dataset;
 	private String _karva;
 	
-	
-	public KarvaString(GEPConfig conf){
+	public KarvaString(GEPConfig conf, DataSet d){
 		_config = conf;
+		_dataset = d;
 	}
 	
-	public KarvaString(GEPConfig conf, String k){
+	public KarvaString(GEPConfig conf, DataSet d, String k){
 		_config = conf;
+		_dataset = d;
 		_karva = k;
 	}
+	
+	public GEPConfig getConfig() {return _config;}
+	public DataSet getDataSet() {return _dataset;}
 	
 	public void setKarva(String k){
 		_karva = k;
@@ -61,10 +68,47 @@ public class KarvaString {
 		int start = nodeNum * getNodeLength();
 		return _karva.substring(start, start + getNodeLength());
 	}
+	
 	public String getCell(int cellNum){
 		int start = getNodeLength() * getNumNodes()
 			      + getCellLength() * cellNum;
 		return _karva.substring(start, start + getCellLength());
 	}
+	
+	public void Randomize() {
+		_karva = "";
+		// create the node head-set, symbols + (terminals = inputs)
+		String nodeTerminalSet = KarvaUtilities.getTerminalSet(
+				   					_dataset.getNumParameters());
+		String nodeHeadSet = _config.getFunctionSet().GetSymbols() +
+							 nodeTerminalSet;
+		// for each node
+		for( int i = 0; i < getNumNodes(); ++i) {
+			// randomly fill the head
+			for( int h = 0; h < getHeadLength(); ++h ) {
+				_karva += KarvaUtilities.getRandChar(nodeHeadSet);
+			}
+			// randomly fill the tail with the terminal set
+			for( int t = 0; t < getTailLength(); ++t ) {
+				_karva += KarvaUtilities.getRandChar(nodeTerminalSet);
+			}
+		}
+		// create the cell head-set, symbols + (terminals = nodes)
+		String cellTerminalSet = KarvaUtilities.getTerminalSet(getNumNodes());
+		String cellHeadSet = _config.getFunctionSet().GetSymbols() +
+							 cellTerminalSet;
+		// for each cell
+		for( int i = 0; i < getNumCells(); ++i){
+			// randomly fill the head
+			for( int h = 0; h < getHeadLength(); ++h ) {
+				_karva += KarvaUtilities.getRandChar(cellHeadSet);
+			}
+			// randomly fill the tail with the terminal set
+			for( int t = 0; t < getTailLength(); ++t ) {
+				_karva += KarvaUtilities.getRandChar(cellTerminalSet);
+			}
+		}
+	}
+	
 	
 }

@@ -27,6 +27,7 @@ public class DataSet {
 	public ClassificationInstance getInstance(int i){
 		return instances.get(i);
 	}
+	public int getNumParameters() { return _numParameters; }
 	
 	public DataSet(int num_parameters, String[] classnames ) {
 		classNames = classnames;
@@ -50,6 +51,6 @@ public class DataSet {
 	
 	public int getClassNumber(String className){
 		return name_to_number.get(className);
-	}
+	}	
 	
 }

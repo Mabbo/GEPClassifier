@@ -16,7 +16,7 @@ public class ReadIrisDataSet implements DataSetLoader {
 	}
 
 	public DataSet GetTrainingSet() {
-		return testingSet;
+		return trainingSet;
 	}
 	
 	public void LoadDataSet() {

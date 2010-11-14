@@ -1,5 +1,6 @@
 package RunGEPClassification;
 
+import dataset.DataSet;
 import GEPClassify.*;
 
 public class Main {
@@ -8,26 +9,39 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		
-		
-		
 		
 		//Create Training Set
-		//ReadIrisDataSet rids = new ReadIrisDataSet();
-		//rids.LoadDataSet();
+		ReadIrisDataSet rids = new ReadIrisDataSet();
+		rids.LoadDataSet();
+		
+		DataSet ds = rids.GetTrainingSet();
 		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
-		conf.setNumNodes(2);
-		conf.setNumCells(2);
-		conf.setHeadLength(4);
+		conf.setNumNodes(6);
+		conf.setNumCells(3);
+		conf.setHeadLength(25);
 		
 		System.out.println(conf);
 		
-		KarvaString k = new KarvaString(conf);
+		System.out.println("");
 		
+		KarvaString k = new KarvaString(conf, ds);
 		
+		k.Randomize();
+		//k.setKarva("+-+baccaa*acbbaD+abab**aaaaa");
+		System.out.println(k.getTotalKarva());
+		
+		ExpressedKarva ek = new ExpressedKarva(k);
+		
+		Double[] values = {4.0, 3.0, 2.0, 1.0};
+
+		Double[] outputs = ek.getResults(values);
+		
+		for( int i = 0; i < outputs.length; ++i) {
+			System.out.print(outputs[i] + ", ");
+		}
+		System.out.println("");
 		
 		//Create Evolver
 		
