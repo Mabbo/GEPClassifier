@@ -2,11 +2,7 @@ package HandwritingGEPClassification;
 
 import functionsets.ExtendedSafeMath;
 import modifiers.ModificationSet;
-import GEPClassify.BasicGEPConfig;
-import GEPClassify.BasicGEPEvolver;
-import GEPClassify.GEPConfig;
-import GEPClassify.GEPEvolver;
-import IrisGEPClassification.IrisModificationSet;
+import GEPClassify.*;
 
 public class Main {
 
@@ -26,7 +22,7 @@ public class Main {
 		conf.setNumCells(26);
 		conf.setHeadLength(5);
 		conf.setMaxGenerations(1000000);
-		conf.setPopulationSize(200);
+		conf.setPopulationSize(300);
 		ModificationSet modset = new HandWritingModificationSet();
 		modset.LoadModifiers();
 		conf.setModificationSet( modset );
@@ -34,7 +30,6 @@ public class Main {
 		
 		System.out.println("");
 	
-
 		GEPEvolver evolver = new BasicGEPEvolver();
 		evolver.setGEPConfig(conf);
 		evolver.setTrainingSet(rhwds.GetTrainingSet());
@@ -53,9 +48,9 @@ public class Main {
 		//conf.setHeadLength(7);
 		//evolver.AddToInitialPopulation("g*jnlhfedljciaffkhDp-iingbgkjna++hkebblmajmcaomdP*DngfdpknmhnPfCf*mfojeijgefhSpfljnmjmodknmcgecjibbpjaalk+mdjnijogglblng-flpfoPlieknmoeoClbgcjjbmnkmaao+cfoejldjlbdlncmPjDfikdjnilmgkac-aCbibhnhdnoakDccigockgbjaobgalkn*podlgkki-*j+edblejacibjicklhlPifbdkgpfaeff*SCgkiponampkdmCpcdmdgofabChhf+hSnlchebodDjPeaagdfnabdllPf-P*hSdabnjhmpDdDoCnekphcgooppSomahnnmckcdpl+gip*e+pfnjociabvuuPChutaofpqknd+ymgmxssgcjcwvnkerb-rjugnsyundqsPcukiibuccrD-wiqixngdoxkqujDsbayedwrlcdcjdbmrbCglorsirnybc+fyCpvclxlomvrikxqfhynhcrktdurobPu+csboyxaycfhdgulnxtvcnnfxhhcfCSjldvwgjdsiioxPhefkuhrfthqybmnCfmellyxst+mudCgrrxduspxCmSvmjgdxarxnngnlCsyovqihqnbpwtcxkfahaaqmbrkonCltvCuwjqcopdve*Dw*tCfsbgbtqr*SytygDeorhdccsmscaCSjqdrlxefwxrPsynibyppuualngkcoDiinjdnrwveukjhPluinpoxak-koig-ftspnohuv");
 		
-		//evolver.AddToInitialPopulation("jfmiibjjfed-bep-jfankeog+o+jbhbgc-jCjpndbbollea+mgihnhcmljnaoednlianSkfkodaobcC-Scknehgn+kPhDdbjfibacojcnpcpchDCoPjlmhjcb+m*-mmooiil+DkghhgchllhnklhbamhfbnCgi-lgbdpo+gSpaajmhcciSnnjaapbijmDhPofiohib-kbbcflbljo-o-kodihiajicC*jjfclcepomgoeaipkkllk-ikknhmafkimDfacnblkPo+*kffmhpxvSkhkbqtxot-ivugojqate*+orryhaxjflbarngtpmnSjnagrmyiloabSq*yfatgrxqCfcvjdebbnx*PDnsxtoxD-gmtebivcnhyy-DvydvqmnSC+ptrndpxk-jxcorfuiiD+os*lrpqaalSxnmtmyctndc-rxxqrtphpSwjjugdaduexeeiqdperxvtiDgltjefhvfstCasepdpmpbusysgwitiPwxtwhpgxg-+o-iyuornwgfqj-xcwhtpbtgDiycgryfoskmrblhsopqfaaauuixum");
-		
-		evolver.RunGeneticAlgorithm();	
+		evolver.AddToInitialPopulation("jaDCdagbbjf-beASojkalpSgP+glebllk-jCj-dlhjoclpnCPoegclofDPgcpikdijlPlipmnljijcDDdjjkkjei+kPhagaclnhlC-fhochcbhDCoPjefgpfe+m*-Pmolpnj+DkghkdhidphgCSCccmeimnA-oplhfcph+gS+DpbjkhbiDlf*cfebpbmedADdhlicfhd*cmmdenfe-o-dolegnefmhDSfeeaicnp-SilfjejjeDf+hSoamookfCegCamflchk+aoAclhhegx-ehPomyomutpPnreoxoomeSjkebbganqrrv+*rsthnrSgClAgxfcrbaowjxsxjtfk-rC*+axtjbmn**oAnouvwgDmhpwjpnhxsh+mofhmvjcjwCh-vemplom**D+knambroD+oq*lrofbilgcD+ntolltd+SwAcefhhbpDadSavewnaSvC+gldioihvvPc+mdbouepb*ySpuqkngmi+s+waxlkpiAtfklsmrjq-+q-myxqckfCiCiiqfungabpo+blkkitioqwg+omtyubqoylwgdgwcf");
+		//evolver.AddToInitialPopulation("pn*+aeknfepnnee+nhcbbemojl-gmlnolndS+ammjimfhmfiDkbiknig+ae+gdlbnfnfl*kicacimf-P-gonceoigC-ofigknfndlPPlgbcoamkmfenidfmgji*Clijnoopgmm+m*oalhollf+hlppkgijnaPDShkffnkPhkhgadniehoel+hdpjaihlijSmggjojohdajbhlbddn+Dpdocanbebcfajeofhcdi+-oSmjgeilpP-chSamojil*cci-eaodclS*jSjojjbkgDDknDlnbrena*q--dybcntrDCwStrxvujD--eraifbquctpprlsxdlgiPDPtfwctifavks+jsnxqsPaChuwjcone--moypvfilvh*osSiiiftdifljrxclavxwykajrlhnhw+mc-wxfxnsrs*faqkcuxcuSiliPqpqgyr-gPDSnptcrgjcrSstusnddnPxqxtgiqxjq*hiddgahowqPbpeujsrjrqstClhkuogd-fvgvgkkjsfracCrllnedmjliPbcdsysnkCh+qcliffnlpSmdgumtpu");
+		evolver.RunGeneticAlgorithm();
 		
 		//Try classifier out on test data
 		

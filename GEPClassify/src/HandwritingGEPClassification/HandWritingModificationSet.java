@@ -6,7 +6,6 @@ import modifiers.MakeComplex;
 import modifiers.OnePointRecombination;
 import modifiers.RandomReplacement;
 import modifiers.SwapChromosomes;
-import IrisGEPClassification.IrisModificationSet;
 
 public class HandWritingModificationSet extends BasicModificationSet {
 	
@@ -19,9 +18,8 @@ public class HandWritingModificationSet extends BasicModificationSet {
 		AddMutator(new RandomReplacement(), 0.3);
 		AddMutator(new HeadInverter(), 0.1);
 		AddMutator(new MakeComplex(), 0.15);
-		AddCrossover(new OnePointRecombination(), 0.25);
+		AddCrossover(new OnePointRecombination(), 0.2);
 		AddCrossover(new SwapChromosomes(), 0.2);
-		
 	}
 	
 	

@@ -8,5 +8,6 @@ public class ExtendedSafeMath extends SafeMath {
 		AddNewFunction(new SafeSqrtFunction());
 		AddNewFunction(new CosFunction());
 		AddNewFunction(new SinFunction());
+		AddNewFunction(new AverageFunction());
 	}
 }
