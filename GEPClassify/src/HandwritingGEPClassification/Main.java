@@ -1,5 +1,6 @@
 package HandwritingGEPClassification;
 
+import functionsets.ExtendedSafeMath;
 import modifiers.ModificationSet;
 import GEPClassify.BasicGEPConfig;
 import GEPClassify.BasicGEPEvolver;
@@ -20,11 +21,12 @@ public class Main {
 		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
-		conf.setNumNodes(10);
+		conf.setFunctionSet(new ExtendedSafeMath());
+		conf.setNumNodes(15);
 		conf.setNumCells(26);
 		conf.setHeadLength(5);
 		conf.setMaxGenerations(1000);
-		conf.setPopulationSize(50);
+		conf.setPopulationSize(30);
 		ModificationSet modset = new IrisModificationSet();
 		modset.LoadModifiers();
 		conf.setModificationSet( modset );
