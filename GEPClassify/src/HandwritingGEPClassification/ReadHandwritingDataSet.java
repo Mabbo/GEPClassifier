@@ -39,11 +39,11 @@ public class ReadHandwritingDataSet implements DataSetLoader {
 				for( int i = 0; i < 16; ++i ) {
 					data[i] = Double.parseDouble(split[i+1]);
 				}
-				//if( count % 3 == 0)
+				if( count % 5 == 0)
 					trainingSet.AddInstance(data, split[0]);
-				//else
-			//		trainingSet.AddInstance(data, split[0]);
-			//	count += 1;
+				else
+					testingSet.AddInstance(data, split[0]);
+				count += 1;
 				tmp = br.readLine();
 			}
 			br.close();			

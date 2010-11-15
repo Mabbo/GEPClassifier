@@ -21,7 +21,7 @@ public class BasicModificationSet implements ModificationSet {
 		return _crossovers.get(index);
 	}
 	public Double GetCrossoverProbability(int index) {
-		return _mutatorProb.get(index);
+		return _crossoverProb.get(index);
 	}
 	public MutationMechanism GetMutator(int index) {
 		return _mutators.get(index);

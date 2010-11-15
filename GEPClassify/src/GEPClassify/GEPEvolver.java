@@ -17,5 +17,8 @@ public interface GEPEvolver {
 	boolean CheckForFinished();
 	
 	void RunGeneticAlgorithm();
+
+	//additional optional functionality
+	void AddToInitialPopulation(String kstring);
 	
 }

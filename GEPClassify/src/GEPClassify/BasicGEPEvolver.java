@@ -96,7 +96,8 @@ public class BasicGEPEvolver implements GEPEvolver {
 		/*
 		 * Create the initial random population
 		 */
-		population = new ArrayList<PopulationMember>();
+		if( population == null ) 
+			population = new ArrayList<PopulationMember>();
 		for( int i = 0; i < _config.getPopulationSize(); ++i){ 
 			KarvaString karva = new KarvaString(_config, _trainSet);
 			karva.Randomize();
@@ -234,6 +235,18 @@ public class BasicGEPEvolver implements GEPEvolver {
 		for( PopulationMember p : population ) {
 			p.Initialize();
 		}
+	}
+
+	
+	public void AddToInitialPopulation(String kstring) {
+		if( population == null ) 
+			population = new ArrayList<PopulationMember>();
+		KarvaString karva = new KarvaString(_config, _trainSet);
+		karva.Randomize();
+		if( kstring.length() == karva.getLength() )
+			karva.setKarva(kstring);
+		PopulationMember member = new PopulationMember(karva);
+		population.add(member);
 	}
 	
 }
