@@ -1,4 +1,4 @@
-package RunGEPClassification;
+package IrisGEPClassification;
 
 import modifiers.BasicModificationSet;
 import modifiers.OnePointRecombination;

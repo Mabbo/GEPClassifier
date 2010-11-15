@@ -60,6 +60,13 @@ public class BasicGEPEvolver implements GEPEvolver {
 		CreatePopulation();	
 		do {
 			RankByFitness();
+			
+			System.out.println("Generation: " + this.current_gen_number);
+			for( int i = 0; i < 5; ++i) {
+				System.out.println(population.get(i).toString());
+			}
+			System.out.println("");
+			
 			CullWeak();
 			ApplySelection();
 			ApplyMutation();
@@ -112,13 +119,6 @@ public class BasicGEPEvolver implements GEPEvolver {
 			}
 		}
 		
-
-		System.out.println("Generation: " + this.current_gen_number);
-		for( int i = 0; i < 5; ++i) {
-			System.out.println(population.get(i).toString());
-		}
-		System.out.println("");
-		
 		for( int i = _config.getPopulationSize()-1; i >=0; --i ){
 			if( population.get(i).flagged_for_removal){
 				population.remove(i);
@@ -155,13 +155,18 @@ public class BasicGEPEvolver implements GEPEvolver {
 					}
 				}
 				//if the correct class is highest, give +5
+				
+				int correctScore = this._trainSet.getNumClasses();
+				int incorrectScore = -1;
+				int veryIncorrectScore = -1 * _trainSet.getNumClasses()/2;
+				
 				if( correctClass == max)
-					p.score += 5;
+					p.score += correctScore;
 				else
-					p.score -= 1;
-				//if the correct class is the lowest, give -3
+					p.score += incorrectScore;
+				//if the correct class is the lowest, give a lot of bad points
 				if( correctClass == min)
-					p.score -= 3;
+					p.score += veryIncorrectScore;
 			}
 		}	
 		//Now sort by fitness
@@ -193,7 +198,8 @@ public class BasicGEPEvolver implements GEPEvolver {
 		//For each member of the population
 			MutationMechanism mm = _config.getModifiers().GetMutator(i);
 			Double mmprob = _config.getModifiers().GetMutatorProbability(i);
-			for( PopulationMember p : population ){
+			for( int a = 1; a < population.size(); ++a ) {
+				PopulationMember p = population.get(a);
 				//given the mutations probability, apply it
 				if( rand.nextDouble() < mmprob ) {
 					mm.Mutate(p.karva);
@@ -205,7 +211,9 @@ public class BasicGEPEvolver implements GEPEvolver {
 		//For each member of the population
 			CrossoverMechanism cm = _config.getModifiers().GetCrossover(i);
 			Double cmprob = _config.getModifiers().GetCrossoverProbability(i);
-			for( PopulationMember p : population) {
+			for( int a = 1; a < population.size(); ++a) {
+				PopulationMember p = population.get(a);
+			
 				// given the crossover probability,
 				if( rand.nextDouble() < cmprob) {
 				// select a randomly chosen mate, and apply
