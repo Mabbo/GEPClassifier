@@ -18,7 +18,7 @@ public class BasicGEPEvolver implements GEPEvolver {
 	
 	private int current_gen_number = 0;
 	
-	private final double CULL_FACTOR = 0.5;
+	private final double CULL_FACTOR = 0.9;
 	private Random rand = new Random();
 	
 	public class PopulationMember implements Comparable<PopulationMember> {
@@ -65,6 +65,10 @@ public class BasicGEPEvolver implements GEPEvolver {
 			for( int i = 0; i < 5; ++i) {
 				System.out.println(population.get(i).toString());
 			}
+			//System.out.println("...");
+			//System.out.println(population.get(population.size()/2).toString());
+			//System.out.println("...");
+			//System.out.println(population.get(population.size()-1).toString());
 			System.out.println("");
 			
 			CullWeak();
