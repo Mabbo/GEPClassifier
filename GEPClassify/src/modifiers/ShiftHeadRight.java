@@ -1,20 +1,11 @@
 package modifiers;
 
-import java.util.Random;
-
 import GEPClassify.KarvaString;
 import GEPClassify.KarvaUtilities;
 
-public class MakeComplex implements MutationMechanism {
+public class ShiftHeadRight implements MutationMechanism {
 
-	/*
-	 * Purpose: Make things more complex by replacing a terminal
-	 * in the head with a symbol instead
-	 * 
-	 * */
 
-	private static Random rand = new Random();
-	
 	public void Mutate(KarvaString karva) {
 		String kstring = karva.getTotalKarva();
 		//Find a node or cell
@@ -37,20 +28,11 @@ public class MakeComplex implements MutationMechanism {
 		
 		String head = kstring.substring(headStart, headEnd);
 		
-		int position = rand.nextInt(head.length());
-		String terminals = (isNode? karva.getNodeTerminals() : 
-									karva.getCellTerminals());
-		String symbols = karva.getSymbols();
-		//is this a terminal?
+		String newKarva = head.substring(head.length()-1) + head.substring(0,head.length()-1);
 		
-		if( terminals.indexOf(head.charAt(position) ) > -1 ) {
-			head = head.substring(0, position) +
-				   KarvaUtilities.getRandChar(symbols) +
-				   (position < head.length()? head.substring(position+1) : "");
-		}
-
-		kstring = kstring.substring(0, headStart) + head + kstring.substring(headEnd);
-		karva.setKarva(kstring);	
+		kstring = kstring.substring(0, headStart) + newKarva + kstring.substring(headEnd);
+		karva.setKarva(kstring);
 	}
+
 
 }

@@ -16,11 +16,11 @@ public class Main {
 		
 		//Create Config
 		GEPConfig conf = new BasicGEPConfig();
-		conf.setNumNodes(8);
+		conf.setNumNodes(5);
 		conf.setNumCells(3);
-		conf.setHeadLength(7);
-		conf.setMaxGenerations(100);
-		conf.setPopulationSize(500);
+		conf.setHeadLength(6);
+		conf.setMaxGenerations(500);
+		conf.setPopulationSize(100);
 		ModificationSet modset = new IrisModificationSet();
 		modset.LoadModifiers();
 		conf.setModificationSet( modset );

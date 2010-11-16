@@ -38,11 +38,11 @@ public class ReadIrisDataSet implements DataSetLoader {
 				for( int i = 0; i < 4; ++i ) {
 					data[i] = Double.parseDouble(split[i]);
 				}
-				if( count % 3 == 0)
-					testingSet.AddInstance(data, split[4]);
-				else
+//				if( count % 3 == 0)
+	//				testingSet.AddInstance(data, split[4]);
+	//			else
 					trainingSet.AddInstance(data, split[4]);
-				count += 1;
+		//		count += 1;
 				tmp = br.readLine();
 			}
 			br.close();			

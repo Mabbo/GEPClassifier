@@ -8,7 +8,7 @@ import GEPClassify.KarvaUtilities;
 public class RandomReplacement implements MutationMechanism {
 
 	private static Random rand = new Random();
-	private final int FACTOR = 10;
+	private final int FACTOR = 25;
 	
 	public void Mutate(KarvaString karva) {
 		//Take a randomly chosen piece of the karva, and 
