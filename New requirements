@@ -1,0 +1,110 @@
+GEP Classifier - V2
+
+Inputs: 
+	-Config file (xml)
+
+Output: 
+	-test set results
+	-Code file to make new classifier
+
+Config file contains:
+
+	-Data file type
+	-Data file name, data description file name
+
+	-Number of generations per run
+	-Number of runs
+	-Maximum time per run
+	-Population size
+
+	-Node description
+		-head length
+		-Function Set
+	-Number of nodes
+
+	-Cell description
+		-head length
+		-Function set
+	-[Number of cells is determined by number of classes]
+
+	-Crossovers
+	-Mutators
+
+
+Terminology:
+
+'Gene' is a string of characters representing a single node in the NN. It can be later expressed as a full expression tree 'Phene'
+
+'Genome', a set of all genes in the NN instance
+
+'Phene' is an object that, when initialized with a gene, produces an expression tree. This object can be given a set of inputs, and produces an output for them. 
+
+'Phenome' is the fully expressed Genome. Given a set of initial inputs, it will return the chosen classification of the instance. 
+
+'Karva' is a wrapper around the Genome and Phenome. It represents a member of the population. It has a genome, and can initialize a Phenome based on the genome, to be used for classification. Phenomes are initialized and expressed as soon as they are first needed, but are not rebuilt. 
+
+1) Read config file, create GEP population
+2) Run Genetic Algorithm to make best NN-GEP
+3) Take best found NN-GEP, create java code to make classifier
+
+
+Creating the GEP Setup:
+
+1: Create the DataSet Objects
+1.1: Create a DataSetLoader based on the <FileType>
+1.2: Create empty DataSets for Training and Testing
+1.3: Give the DSL the <TrainPercentage>, Training and Testing sets, and the filename
+     having it fill the two DataSets with the given percentage
+
+2: Create the population of Karvas
+2.1: [for each <PopulationSize>], Given the <NodeDescription>, and the <Layers>, 
+     create a Genome that will match.
+2.2: Create a Karva, given the Genome, and add the Karva to the population.
+
+Running the GA:
+
+While no ending conditions are true (generation < max, time < maxtime, no flags raised)
+  For each member of the population
+    For each instance of the training set (could later be a random subset, for speed)
+      Classify with Karva
+      If classification is correct, add points
+    -end for
+  -end for
+  Sort population by fitness
+
+  //Checking for overfitting
+  Take best found, test against TestSet
+  If TestSet score is better than 'test-best' Karva score (saved previously)
+    save best as the new test-best, along with score
+  If during the previous [x] improvements of best score during training, there has been
+  no improvement in the test score, raise flag that we have overfit, to stop the running
+  //End of overfitting check
+
+  Using <SelectionType>, select <PercentageKept> members, and add to new population
+  Refill remaining slots in population using <Crossover> methods
+    Select which crossover to use based on 'probability' attributes
+  Mutate a random selection of new members of population based on <MutationRate>
+    Select which mutator to use based on 'probability' attributes
+-end loop
+Return test-best Karva
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
