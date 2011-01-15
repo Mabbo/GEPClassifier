@@ -1,0 +1,45 @@
+package framework;
+
+/**
+ * GEPConfig
+ * 
+ * Responsibilities:
+ * Given the config xml file, loads the appropriate data values, 
+ * and gives access to their values for the rest of the process.
+ * 
+ * Must be able to load from an appropriate xml file, handle bad
+ * file problems, and provide access to all details.
+ * 
+ * @author mabbo
+ *
+ */
+
+
+
+public interface GEPConfig {
+	void LoadConfig(String filename);
+	boolean getIsConfigured();
+	
+	String getDataFileType();
+	String getDataFileName();
+	
+	int getGenerationsPerRun();
+	int getNumberOfRuns();
+	long getMaxTimePerRunMs();
+	int getPopulationSize();
+	
+	int getNumNodes();
+	int getNodeHeadLength();
+	int getNodeTailLength();
+	int getNodeLength();
+	FunctionSet getNodeFunctionSet();
+	
+	int getCellHeadLength();
+	int getCellTailLength();
+	int getCellLength();
+	FunctionSet getCellFunctionSet();
+	
+	
+	
+	
+}
