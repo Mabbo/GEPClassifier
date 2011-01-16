@@ -45,4 +45,6 @@ public interface GEPConfig {
 	
 	ModificationSet getModifiers();
 	
+	SelectionMethod getSelectionMethod();
+	double getKeepPercentage();
 }

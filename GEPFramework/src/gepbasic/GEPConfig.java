@@ -2,8 +2,6 @@ package gepbasic;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -12,6 +10,7 @@ import javax.xml.xpath.*;
 
 import framework.Function;
 import framework.ModificationSet;
+import framework.SelectionMethod;
 
 public class GEPConfig implements framework.GEPConfig {
 
@@ -77,6 +76,13 @@ public class GEPConfig implements framework.GEPConfig {
 	        System.out.println("Adding function: " + functionName );
 	        AddFunctionToSet(_cellfunctionset, functionNameStart + functionName);
 	    }
+		
+		String selectionname = getStringValue("//Selection/Method");
+		String selectionPackage = "selections.";
+		_selectionMethod = createSelectionMethod(selectionPackage + selectionname);
+
+		_keeppercentage = getDoubleValue("//Selection/PercentageKept");
+		
 		
 		
 	}
@@ -156,12 +162,13 @@ public class GEPConfig implements framework.GEPConfig {
 	private BasicFunctionSet _cellfunctionset = null;
 
 	private ModificationSet _modifiers = null;	
-		
+	private SelectionMethod _selectionMethod = null;
+	private double	_keeppercentage = 0.0;
+	
 	public BasicFunctionSet getCellFunctionSet() {
 		return _cellfunctionset;
 	}
-
-	 
+ 
 	public int getCellHeadLength() {
 		return _cellheadlength;
 	}
@@ -261,31 +268,46 @@ public class GEPConfig implements framework.GEPConfig {
 		return _trainpercentage;
 	}
 	
+	public SelectionMethod getSelectionMethod() {
+		return _selectionMethod;
+	}
+
+	public double getKeepPercentage() {
+		return _keeppercentage;
+	}
+	
 	public static int getTailLength(int headLength, int maxArgs){	
 		//t = h*(MaxArg-1)+1
 		return (headLength*(maxArgs-1)) + 1;
 	}
 	
 	private static void AddFunctionToSet(BasicFunctionSet fs, String functionName) {
-		Class c = null;
-		try {
-			c = Class.forName(functionName);
-		} catch (ClassNotFoundException e) {
-			System.err.println("Invalid Function name selected: '" + functionName + "'.");
-			return;
-		}
-		Constructor ct = c.getConstructors()[0];
-		Function f = null;
-		try {
-			f = (Function) ct.newInstance(new Object[]{});
-		} catch (Exception e) {
-			System.err.println("Could not instantiate Function of type '" + functionName + "'.");
-			return;
-		}
+		Function f = (Function) createObjectOfType(functionName);
 		fs.addFunction(f);
 	}
 	
+	private static Object createObjectOfType(String typename) {
+		Class c = null;
+		try {
+			c = Class.forName(typename);
+		} catch (ClassNotFoundException e) {
+			System.err.println("Invalid class name: '" + typename + "'.");
+			return null;
+		}
+		Constructor ct = c.getConstructors()[0];
+		Object obj = null;
+		try {
+			obj = ct.newInstance(new Object[]{});
+		} catch (Exception e) {
+			System.err.println("Could not instantiate instance of type '" + typename + "'.");
+			return null;
+		}	
+		return obj;
+	}
 	
-	
+	private SelectionMethod createSelectionMethod(String name){
+		SelectionMethod selmeth = (SelectionMethod) createObjectOfType(name);
+		return selmeth;		
+	}
 	
 }

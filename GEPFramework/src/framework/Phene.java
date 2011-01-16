@@ -16,6 +16,7 @@ import java.util.LinkedList;
  * Needs knowledge of the config to get correct functions
  * 
  */
+@SuppressWarnings("unused")
 public class Phene {
 	Phenome _phenome;
 	Gene _gene;
@@ -77,6 +78,7 @@ public class Phene {
 		}
 		
 	}
+
 	private class TerminalNode extends aNode{
 		private String _terminal;
 		public TerminalNode(String terminal){
@@ -88,7 +90,6 @@ public class Phene {
 		private double _value = NO_VALUE;
 		public void setValue(double value) { _value = value; }
 		public double getValue() { return _value;}
-		
 	}
 
 }
