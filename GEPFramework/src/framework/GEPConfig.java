@@ -14,21 +14,25 @@ package framework;
  *
  */
 
-
-
 public interface GEPConfig {
 	void LoadConfig(String filename);
 	boolean getIsConfigured();
 	
 	String getDataFileType();
 	String getDataFileName();
+	String getDataFileLocation();
+	int getNumberOfClasses();
+	String getTitle();
+	double getTrainingPercentage();
 	
 	int getGenerationsPerRun();
 	int getNumberOfRuns();
 	long getMaxTimePerRunMs();
 	int getPopulationSize();
+
+	int getNodeLayers();
+	int getNumNodes(int layerIndex);
 	
-	int getNumNodes();
 	int getNodeHeadLength();
 	int getNodeTailLength();
 	int getNodeLength();
@@ -39,7 +43,6 @@ public interface GEPConfig {
 	int getCellLength();
 	FunctionSet getCellFunctionSet();
 	
-	
-	
+	ModificationSet getModifiers();
 	
 }

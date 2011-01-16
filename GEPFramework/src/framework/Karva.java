@@ -10,11 +10,25 @@ package framework;
  *
  */
 public class Karva {
-	Genome genome;
-	Phenome phenome;
-	public Karva(GEPConfig conf) {
-		
+	private Genome _genome;
+	private Phenome _phenome;
+	private double _fitness;
+	public Karva(GEPConfig conf, Genome genome) {
+		_genome = genome;
+		_phenome = new Phenome(_genome);
 	}
 	
+	int Classify(Instance inst){
+		_phenome.Initialize();
+		double[] inputs = inst.getValues();
+		return _phenome.Classify(inputs);
+	}
+	
+	void setFitness(double value) {
+		_fitness = value;
+	}
+	double getFitness() {
+		return _fitness;
+	}
 
 }

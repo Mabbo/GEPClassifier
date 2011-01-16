@@ -8,7 +8,7 @@ package framework;
  */
 
 public interface Function {
-	Double ApplyAction(Double[] args);
+	Double ApplyFunction(Double[] args);
 	String getSymbol();
 	int getNumArgs();
 }

@@ -5,7 +5,6 @@ import modifiers.*;
 import GEPClassify.*;
 import HandwritingGEPClassification.*;
 import IrisGEPClassification.*;
-import functionsets.*;
 
 public class TestMain {
 

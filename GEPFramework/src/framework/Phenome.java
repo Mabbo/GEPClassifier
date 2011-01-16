@@ -7,14 +7,34 @@ package framework;
  * doubles, and return the index of the classification with the
  * highest score.  
  * 
+ * Responsibilities:
+ * -contain layers of nodes and an output layer of cells
+ * -provide those nodes with knowledge of what functions
+ *  and terminals they have available
+ * -provide classifictions based on initial input vectors
+ * 
  * @author mabbo
  *
  */
-public class Phenome {
+public class Phenome {	
+	boolean _initialized = false;
 	
 	public Phenome(Genome genome){
 		
 	}
+	
+	public void Initialize(){
+		if( _initialized ) return;
+		
+	}
+	
+	public int Classify(double[] inputs) {
+		
+
+		return -1;
+	}
+	
+	
 	
 	
 }
