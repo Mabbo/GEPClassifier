@@ -66,8 +66,28 @@ public class Genome {
 			_genes[_conf.getNodeLayers()][k] = new Gene(dna);
 		}
 	}
+
+	public void RecheckDNA() {
+		//After mutation, the saved 'full dna' variable must be reset
+		//to the new, mutated dna
+		String newDNA = "";
+		for( int i = 0; i < _conf.getNodeLayers(); ++i){
+			for( int j = 0; j < _genes[i].length; ++j) {
+				newDNA += _genes[i][j].getDNA();
+			}
+		}
+		for( int k = 0; k < _genes[_conf.getNodeLayers()].length; ++k){
+			newDNA += _genes[_conf.getNodeLayers()][k].getDNA();
+		}
+		_fulldna = newDNA;
+	}
+	
 	
 	public String toString() {
+		return _fulldna;
+	}
+	
+	public String getDNA(){
 		return _fulldna;
 	}
 	
@@ -92,6 +112,10 @@ public class Genome {
 	}
 	public int getNumberOfInputs() {
 		return _conf.getNumberOfInputs();
+	}
+	
+	public void setGene(int layer, int index, Gene g){
+		_genes[layer][index] = g;
 	}
 	
 }

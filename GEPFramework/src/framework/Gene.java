@@ -21,6 +21,9 @@ public class Gene {
 		return _dna.substring(index, index+1);
 	}
 	public String getDNA() {return _dna;}
+	public void setDNA(String dna){
+		_dna = dna;
+	}
 }
 
 

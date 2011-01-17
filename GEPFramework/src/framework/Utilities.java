@@ -41,4 +41,8 @@ public class Utilities {
 		return _random.nextDouble() * max;
 	}
 	
+	public static int getRandomInt(int max){
+		return _random.nextInt(max);
+	}
+	
 }

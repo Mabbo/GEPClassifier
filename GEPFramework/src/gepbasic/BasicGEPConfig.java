@@ -15,7 +15,7 @@ import framework.ModificationSet;
 import framework.SelectionMethod;
 import framework.Utilities;
 
-public class GEPConfig implements framework.GEPConfig {
+public class BasicGEPConfig implements framework.GEPConfig {
 
 	 
 	public void LoadConfig(String filename) {
