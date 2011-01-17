@@ -37,4 +37,8 @@ public class Utilities {
 		return headLength + getTailLength(headLength, maxArgs);
 	}
 	
+	public static double getRandomDouble(double max){
+		return _random.nextDouble() * max;
+	}
+	
 }

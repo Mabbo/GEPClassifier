@@ -12,7 +12,7 @@ package framework;
 public class Karva {
 	private Genome _genome;
 	private Phenome _phenome;
-	private double _fitness;
+	private int _fitness;
 	public Karva(GEPConfig conf, Genome genome) {
 		_genome = genome;
 		_phenome = new Phenome(_genome);
@@ -24,7 +24,7 @@ public class Karva {
 		return _phenome.Classify(inputs);
 	}
 	
-	void setFitness(double value) {
+	void setFitness(int value) {
 		_fitness = value;
 	}
 	double getFitness() {
