@@ -14,11 +14,15 @@ public class TestMain {
 	
 		System.out.println(conf.toString());
 		
-		Gene g = new Gene("D*+dcab");
-		Phene p = new Phene(g, null, conf.getNodeFunctionSet(), 4);
+		Genome g = new Genome(conf);
+		g.InitializeRandom();
+		Phenome p = new Phenome(g);
+		
+		p.Initialize();
 		
 		double[] inputs = {4.0, 3.0, 2.0, 1.0};
-		double val = p.getOutput(inputs);
+		int val = p.Classify(inputs);
+		//double val = p.getOutput(inputs);
 		System.out.println(val);
 		
 		System.out.println("Done");

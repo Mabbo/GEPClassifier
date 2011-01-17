@@ -65,7 +65,6 @@ public class Genome {
 			dnaitt += cellLength;
 			_genes[_conf.getNodeLayers()][k] = new Gene(dna);
 		}
-				
 	}
 	
 	public String toString() {
@@ -84,6 +83,15 @@ public class Genome {
 	}
 	public int getNumCells() {
 		return _conf.getNumberOfClasses();
+	}
+	public FunctionSet getNodeFunctionSet(){
+		return _conf.getNodeFunctionSet();
+	}
+	public FunctionSet getCellFunctionSet(){
+		return _conf.getCellFunctionSet();
+	}
+	public int getNumberOfInputs() {
+		return _conf.getNumberOfInputs();
 	}
 	
 }

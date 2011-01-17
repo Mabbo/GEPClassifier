@@ -83,7 +83,6 @@ public class Phene {
 		} while(!worklist.isEmpty());
 	}
 	
-	
 	private abstract class aNode{
 		public abstract double getValue();
 	}
