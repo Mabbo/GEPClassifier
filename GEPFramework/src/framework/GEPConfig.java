@@ -22,6 +22,7 @@ public interface GEPConfig {
 	String getDataFileName();
 	String getDataFileLocation();
 	int getNumberOfClasses();
+	int getNumberOfInputs();
 	String getTitle();
 	double getTrainingPercentage();
 	

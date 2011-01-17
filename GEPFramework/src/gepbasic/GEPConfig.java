@@ -2,6 +2,7 @@ package gepbasic;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.Random;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -9,8 +10,10 @@ import javax.xml.parsers.*;
 import javax.xml.xpath.*;
 
 import framework.Function;
+import framework.FunctionSet;
 import framework.ModificationSet;
 import framework.SelectionMethod;
+import framework.Utilities;
 
 public class GEPConfig implements framework.GEPConfig {
 
@@ -36,6 +39,7 @@ public class GEPConfig implements framework.GEPConfig {
 		_datafilename = getStringValue("//DataSet/FileName");
 		_trainpercentage = getDoubleValue("//DataSet/TrainPercentage");
 		_numclasses = getIntValue("//DataSet/Classes");
+		_numinputs = getIntValue("//DataSet/Inputs");
 		
 		_numruns = getIntValue("//Runs");
 		_numgenerations = getIntValue("//Generations");
@@ -46,13 +50,11 @@ public class GEPConfig implements framework.GEPConfig {
 		
 		//Load node functions
 		NodeList nodeFunctions = getNodes("//NodeDescription/FunctionSet/*");
-		System.out.println(nodeFunctions.getLength());
 		
 		String functionNameStart = "functions.";
 		_nodefunctionset = new BasicFunctionSet();
 		for (int i = 0; i < nodeFunctions.getLength(); ++i) {
 			String functionName = nodeFunctions.item(i).getNodeName();
-	        System.out.println("Adding function: " + functionName );
 	        AddFunctionToSet(_nodefunctionset, functionNameStart + functionName);
 	    }		
 		
@@ -60,20 +62,16 @@ public class GEPConfig implements framework.GEPConfig {
 		_numnodelayers = layers.getLength();
 		_nodesperlayer = new int[_numnodelayers];
 		for( int i = 0; i < _numnodelayers; ++i) {
-			String layerValue = layers.item(i).getNodeValue();
-			System.out.println(layerValue);
 			_nodesperlayer[i] = Integer.parseInt(layers.item(i).getNodeValue());
 		}
 		
 		_cellheadlength = getIntValue("//CellDescription/Head");
 		//Load node functions
 		NodeList cellFunctions = getNodes("//CellDescription/FunctionSet/*");
-		System.out.println(nodeFunctions.getLength());
 
 		_cellfunctionset = new BasicFunctionSet();
 		for (int i = 0; i < cellFunctions.getLength(); ++i) {
 			String functionName = nodeFunctions.item(i).getNodeName();
-	        System.out.println("Adding function: " + functionName );
 	        AddFunctionToSet(_cellfunctionset, functionNameStart + functionName);
 	    }
 		
@@ -142,6 +140,7 @@ public class GEPConfig implements framework.GEPConfig {
 	private String 	_datafilename = "";
 	private double 	_trainpercentage = 0.7;
 	private int    	_numclasses = 0;
+	private int		_numinputs = 0;
 	
 	private int 	_numruns = 0;
 	private int 	_numgenerations = 0;
@@ -151,7 +150,7 @@ public class GEPConfig implements framework.GEPConfig {
 	private int 	_nodeheadlength = 0;
 	private int		_nodetaillength = -1;
 	private int 	_nodelength = -1;
-	private BasicFunctionSet _nodefunctionset = null;
+	private FunctionSet _nodefunctionset = null;
 	
 	private int 	_numnodelayers = 0;
 	private int[]	_nodesperlayer = null;
@@ -159,13 +158,54 @@ public class GEPConfig implements framework.GEPConfig {
 	private int		_cellheadlength = 0;
 	private int 	_celllength = -1;
 	private int 	_celltaillength = -1;
-	private BasicFunctionSet _cellfunctionset = null;
+	private FunctionSet _cellfunctionset = null;
 
 	private ModificationSet _modifiers = null;	
 	private SelectionMethod _selectionMethod = null;
 	private double	_keeppercentage = 0.0;
 	
-	public BasicFunctionSet getCellFunctionSet() {
+	public String toString() {
+		String result = "";
+		result += "Configured: \t\t" + getIsConfigured() + "\n";
+		result += "Title: \t\t\t" + getTitle() + "\n";
+		result += "DataFile Type: \t\t" + getDataFileType() + "\n";
+		result += "DataFile Location: \t" + getDataFileLocation() + "\n";
+		result += "DataFile Name: \t\t" + getDataFileName() + "\n";
+		result += "Training Percentage: \t" + getTrainingPercentage() + "\n";
+		result += "Number of Classes: \t" + getNumberOfClasses() + "\n";
+		result += "Number of Inputs: \t" + getNumberOfInputs() + "\n";
+		result += "Number of Runs: \t" + getNumberOfRuns() + "\n";
+		result += "Number of Generations: \t" + getGenerationsPerRun() + "\n";
+		result += "Maximum Runtime: \t" + getMaxTimePerRunMs() + "\n";
+		result += "Population Size: \t" + getPopulationSize() + "\n";
+		result += "Node Head Length: \t" + getNodeHeadLength() + "\n";
+		result += "Node Tail Length: \t" + getNodeTailLength() + "\n";
+		result += "Node Length: \t\t" + getNodeLength() + "\n";
+		result += "Node Function Set: \t" + getNodeFunctionSet().toString() + "\n";
+		result += "Number of Node Layers: \t" + getNodeLayers() + "\n";
+		for( int i = 0; i < _nodesperlayer.length; ++i) {
+			result += "\tLayer " + i + ": " + getNumNodes(i) + "\n";
+		}
+		result += "Cell Head Length: \t" + getCellHeadLength() + "\n";
+		result += "Cell Tail Length: \t" + getCellTailLength() + "\n";
+		result += "Cell Length: \t\t" + getCellLength() + "\n";		
+		result += "Cell Function Set: \t" + getCellFunctionSet().toString() + "\n";
+
+		
+		//TODO Add toString for ModificationSet and Selection Method
+		 
+		
+		//private ModificationSet _modifiers = null;	
+		//private SelectionMethod _selectionMethod = null;
+		//private double	_keeppercentage = 0.0;
+		
+		
+		return result;
+	}
+	
+	
+	
+	public FunctionSet getCellFunctionSet() {
 		return _cellfunctionset;
 	}
  
@@ -182,12 +222,11 @@ public class GEPConfig implements framework.GEPConfig {
 
 	public int getCellTailLength() {
 		if( _celltaillength == -1 ) {
-			_celltaillength = getTailLength(_cellheadlength, 
+			_celltaillength = Utilities.getTailLength(_cellheadlength, 
 					_cellfunctionset.getMaxArgs());
 		}
 		return _celltaillength;
 	}
-
 	 
 	public String getDataFileLocation() {
 		return _datafilelocation;
@@ -213,7 +252,7 @@ public class GEPConfig implements framework.GEPConfig {
 		return _maxruntime;
 	}
 	 
-	public BasicFunctionSet getNodeFunctionSet() {
+	public FunctionSet getNodeFunctionSet() {
 		return _nodefunctionset;
 	}
 
@@ -234,7 +273,7 @@ public class GEPConfig implements framework.GEPConfig {
 
 	public int getNodeTailLength() {
 		if( _nodetaillength == -1) {
-			_nodetaillength = getTailLength(_nodeheadlength, 
+			_nodetaillength = Utilities.getTailLength(_nodeheadlength, 
 					_nodefunctionset.getMaxArgs());
 		}
 		return _nodetaillength;
@@ -259,6 +298,10 @@ public class GEPConfig implements framework.GEPConfig {
 	public int getNumberOfClasses() {
 		return _numclasses;
 	}
+	
+	public int getNumberOfInputs() {
+		return _numinputs;
+	}
 
 	public String getTitle() {
 		return _title;
@@ -276,16 +319,12 @@ public class GEPConfig implements framework.GEPConfig {
 		return _keeppercentage;
 	}
 	
-	public static int getTailLength(int headLength, int maxArgs){	
-		//t = h*(MaxArg-1)+1
-		return (headLength*(maxArgs-1)) + 1;
-	}
-	
-	private static void AddFunctionToSet(BasicFunctionSet fs, String functionName) {
+	private static void AddFunctionToSet(FunctionSet fs, String functionName) {
 		Function f = (Function) createObjectOfType(functionName);
 		fs.addFunction(f);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static Object createObjectOfType(String typename) {
 		Class c = null;
 		try {
@@ -309,5 +348,4 @@ public class GEPConfig implements framework.GEPConfig {
 		SelectionMethod selmeth = (SelectionMethod) createObjectOfType(name);
 		return selmeth;		
 	}
-	
 }

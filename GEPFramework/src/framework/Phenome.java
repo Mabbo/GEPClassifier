@@ -26,6 +26,8 @@ public class Phenome {
 	public void Initialize(){
 		if( _initialized ) return;
 		
+		
+		_initialized = true;
 	}
 	
 	public int Classify(double[] inputs) {
@@ -33,6 +35,8 @@ public class Phenome {
 
 		return -1;
 	}
+	
+	
 	
 	
 	

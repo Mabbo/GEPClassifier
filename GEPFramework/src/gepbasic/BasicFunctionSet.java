@@ -1,7 +1,10 @@
 package gepbasic;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import framework.Function;
 
@@ -45,4 +48,16 @@ public class BasicFunctionSet implements framework.FunctionSet {
 		return _allCharacters;
 	}
 
+	@SuppressWarnings("unchecked")
+	public String toString() {
+		String result = "";
+		Iterator itr = _functions.entrySet().iterator();
+	    while(itr.hasNext()) {
+	    	Map.Entry<String, Function> pairs = (Entry<String, Function>) itr.next();
+	    	result += pairs.getKey() + ": " + pairs.getValue().getClass().getSimpleName() + ", "; 
+	    }	  
+		return result;
+	}
+	
+	
 }

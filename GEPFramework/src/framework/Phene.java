@@ -16,47 +16,71 @@ import java.util.LinkedList;
  * Needs knowledge of the config to get correct functions
  * 
  */
-@SuppressWarnings("unused")
 public class Phene {
 	Phenome _phenome;
 	Gene _gene;
+	FunctionSet _functions;
+	int _terminals = -1;
+	String terminalValues = "";
 	aNode root = null;
+	ArrayList<TerminalNode> terminalNodes;
 	
-	public Phene(Gene gene, Phenome phenome){
+	public Phene(Gene gene, Phenome phenome, FunctionSet functions, int numTerminals){
 		_phenome = phenome;
 		_gene = gene;
+		_functions = functions;
+		_terminals = numTerminals;
+		terminalValues = Utilities.getTerminals(_terminals);
+		BuildTree();
 	}
 	
-	double getOutput(double[] inputs){
-		
-	
-		return 0.0;
+	public double getOutput(double[] inputs){
+		for( int i = 0; i < terminalNodes.size(); ++i) {
+			TerminalNode tn = terminalNodes.get(i);
+			int index = terminalValues.indexOf(tn.getTerminal());
+			tn.setValue(inputs[index]);
+		}
+		return root.getValue();
 	}
 	
 	private void BuildTree(){
 		LinkedList<FunctionNode> worklist = new LinkedList<FunctionNode>();
-		
 		int readItt = 0;
+		terminalNodes = new ArrayList<TerminalNode>();
 		
 		do {
 			//read the next character
 			String nextChar = _gene.getCharAt(readItt);
+			aNode node;
+			
 			//if the character is a terminal, make a terminal node
-			
-			
+			if( terminalValues.indexOf(nextChar) > -1) {
+				TerminalNode tn = new TerminalNode(nextChar);
+				node = tn;
+				terminalNodes.add(tn);
+			} else {
 			//if the character is a function, make a function node
 			// and add the new function node to the worklist
-			
+				Function f = _functions.getFunction(nextChar);
+				FunctionNode fn = new FunctionNode(f);
+				node = fn;
+				worklist.add(fn);
+			}
 			//if this root is null, set this to the root (first node made)
-			
+			if( root == null ) {
+				root = node;
+			} else{
 			//if this isn't the root node, get the first node from the worklist
 			//add this node as a child to the worklist function node. If that
 			//node has enough children now, remove it from the worklist.
-			
-			
+				FunctionNode parent = worklist.getFirst();
+				parent.children.add(node);
+				if( parent.children.size() >= parent.getNumChildren()){
+					worklist.pop();
+				}
+			}
+			readItt++;
 		} while(!worklist.isEmpty());
-		
-		
 	}
 	
 	
@@ -73,8 +97,11 @@ public class Phene {
 		}
 		
 		public double getValue() {
-			// TODO Auto-generated method stub
-			return 0;
+			Double[] inputs = new Double[function.getNumArgs()];
+			for( int i = 0; i < children.size(); ++i) {
+				inputs[i] = children.get(i).getValue();
+			}
+			return function.ApplyFunction(inputs);
 		}
 		
 	}
