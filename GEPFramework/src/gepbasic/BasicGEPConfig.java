@@ -94,8 +94,7 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	        double weight = Double.parseDouble(mutators.item(i).getAttributes()
 	        				.getNamedItem("weight").getNodeValue());
 	        AddMutatorToSet(_modifiers, mutatorname, weight);
-		}
-		
+		}		
 	}
 	
 	private DocumentBuilderFactory domFactory;
@@ -122,7 +121,6 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	    NodeList nodes = (NodeList) result;
 	    return nodes;
 	}
-
 	private String getStringValue(String expression) throws XPathExpressionException {
 		NodeList nodes = getNodes(expression + "/text()");
 	    for (int i = 0; i < nodes.getLength();) {
@@ -178,9 +176,6 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	private SelectionMethod _selectionMethod = null;
 	private double	_keeppercentage = 0.0;
 	
-	
-	
-	
 	public String toString() {
 		String result = "";
 		result += "Configured: \t\t" + getIsConfigured() + "\n";
@@ -218,8 +213,6 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		
 		return result;
 	}
-	
-	
 	
 	public FunctionSet getCellFunctionSet() {
 		return _cellfunctionset;

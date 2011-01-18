@@ -9,7 +9,7 @@ package framework;
  * @author mabbo
  *
  */
-public class Karva {
+public class Karva implements Comparable {
 	private Genome _genome;
 	private Phenome _phenome;
 	private GEPConfig _conf;
@@ -36,14 +36,17 @@ public class Karva {
 		_phenome = new Phenome(_genome);	
 	}
 	
-	int Classify(Instance inst){
+	public int Classify(Instance inst){
 		_phenome.Initialize();
 		double[] inputs = inst.getValues();
 		return _phenome.Classify(inputs);
 	}
 	
-	void setFitness(int value) {
+	public void setFitness(int value) {
 		_fitness = value;
+	}
+	public void addFitness(int value) {
+		_fitness+= value;
 	}
 	double getFitness() {
 		return _fitness;
@@ -55,5 +58,14 @@ public class Karva {
 	
 	public GEPConfig getConfig() {
 		return _conf;
+	}
+
+	public int compareTo(Object arg0) {		
+		Karva other = (Karva)arg0;
+		assert(other != null);
+		if( other.getFitness() < this.getFitness())
+			return 1;
+		else 
+			return -1;	
 	}
 }

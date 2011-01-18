@@ -1,15 +1,21 @@
 package gepbasic;
 
-import modifiers.RandomReplacement;
 import framework.*;
 
 public class TestMain {
 
 	public static void main(String[] args) {
 
-		BasicGEPConfig conf = new BasicGEPConfig();
+		GEPConfig conf = new BasicGEPConfig();
 		conf.LoadConfig("../gep_sample.config");
 	
+		Evolver evolver = new BasicEvolver();
+		Karva result = evolver.EvolveClassifier(conf);
+		
+		System.out.println(result.getDNA());
+		
+		
+		/*
 		System.out.println(conf.toString());
 		
 		Genome g = new Genome(conf);
@@ -27,6 +33,9 @@ public class TestMain {
 		//int val = p.Classify(inputs);
 		//double val = p.getOutput(inputs);
 		//System.out.println(val);
+		*/
+		
+		
 		
 		System.out.println("Done");
 	}
