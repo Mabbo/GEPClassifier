@@ -12,4 +12,6 @@ public interface Instance {
 	int size();
 	int getClassValue();
 	double[] getValues();
+	void setValues(double[] values);
+	void setClassValue(int classnum);
 }

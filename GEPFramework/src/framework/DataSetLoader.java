@@ -14,12 +14,7 @@ package framework;
  */
 public interface DataSetLoader {
 	//Load dataset with default ratios
-	void LoadData(DataSet trainingSet, DataSet testingSet,
-				  String filename);
-	//Load dataset with specified train/test ratios
-	void LoadData(DataSet trainingSet, int trainRatio, 
-				  DataSet testingSet,  int testingRatio,
-				  String filename);
+	void LoadData(String filename, DataSet trainingSet);
 }
 
 
