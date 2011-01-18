@@ -16,6 +16,13 @@ public class BasicModificationSet implements ModificationSet {
 	ArrayList<Double> _crossover_weights;
 	double _total_crossover_weight = 0;
 	
+	public BasicModificationSet() {
+		_mutators = new ArrayList<Mutator>();
+		_mutator_weights = new ArrayList<Double>();
+		_crossovers = new ArrayList<Crossover>();
+		_crossover_weights = new ArrayList<Double>();
+	}
+	
 	public void AddCrossover(Crossover crossover, double weight) {
 		_crossovers.add(crossover); 
 		_crossover_weights.add(weight);
@@ -65,5 +72,20 @@ public class BasicModificationSet implements ModificationSet {
 		}
 		return null;
 	}
-
+	
+	public String toString(){
+		String retVal = "";
+		retVal += "Mutators: ";
+		for( int i = 0; i < _mutators.size(); ++i){
+			retVal += _mutators.get(i).getClass().getSimpleName();
+			retVal += ": " + _mutator_weights.get(i) + ", ";
+		}
+		retVal += "\n\t\t\tCrossovers: ";
+		for( int i = 0; i < _crossovers.size(); ++i){
+			retVal += _crossovers.get(i).getClass().getSimpleName();
+			retVal += ": " + _crossover_weights.get(i) + ", ";
+		}
+		return retVal;
+	}
+	
 }

@@ -1,6 +1,5 @@
 package gepbasic;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;

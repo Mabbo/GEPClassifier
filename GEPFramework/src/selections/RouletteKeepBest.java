@@ -20,5 +20,8 @@ public class RouletteKeepBest implements SelectionMethod {
 			population.remove(pick);
 		}
 	}
+	public String toString(){
+		return "RouletteKeepBest";
+	}
 
 }

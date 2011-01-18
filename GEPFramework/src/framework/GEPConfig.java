@@ -45,6 +45,7 @@ public interface GEPConfig {
 	FunctionSet getCellFunctionSet();
 	
 	ModificationSet getModifiers();
+	double getMutationRate();
 	
 	SelectionMethod getSelectionMethod();
 	double getKeepPercentage();

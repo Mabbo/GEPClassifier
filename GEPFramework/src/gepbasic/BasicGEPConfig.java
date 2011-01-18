@@ -2,21 +2,15 @@ package gepbasic;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.Random;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.*;
 import javax.xml.xpath.*;
 
-import framework.Function;
-import framework.FunctionSet;
-import framework.ModificationSet;
-import framework.SelectionMethod;
-import framework.Utilities;
+import framework.*;
 
 public class BasicGEPConfig implements framework.GEPConfig {
-
 	 
 	public void LoadConfig(String filename) {
 		try{
@@ -24,7 +18,6 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		}catch(Exception ex){
 			System.err.println("Error loading config file: " + ex.getMessage());
 		}
-		
 	}
 
 	private void Config_Load(String filename) 
@@ -81,7 +74,27 @@ public class BasicGEPConfig implements framework.GEPConfig {
 
 		_keeppercentage = getDoubleValue("//Selection/PercentageKept");
 		
+		//Load the modifiers
+		_mutationrate = getDoubleValue("//MutationRate");
 		
+		_modifiers = new BasicModificationSet();
+		String modifierspackage = "modifiers."; 
+		NodeList crossovers = getNodes("//Crossovers/*");
+		NodeList mutators = getNodes("//Mutators/*");
+		for (int i = 0; i < crossovers.getLength(); ++i) {
+			Node node = crossovers.item(i);
+			String crossovername = modifierspackage + node.getNodeName();
+	        double weight = Double.parseDouble(crossovers.item(i).getAttributes()
+	        				.getNamedItem("weight").getNodeValue());
+	        AddCrossoverToSet(_modifiers, crossovername, weight);
+	    }
+		for( int i = 0; i < mutators.getLength(); ++i){
+			Node node = mutators.item(i);
+			String mutatorname = modifierspackage + node.getNodeName();
+	        double weight = Double.parseDouble(mutators.item(i).getAttributes()
+	        				.getNamedItem("weight").getNodeValue());
+	        AddMutatorToSet(_modifiers, mutatorname, weight);
+		}
 		
 	}
 	
@@ -160,9 +173,13 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	private int 	_celltaillength = -1;
 	private FunctionSet _cellfunctionset = null;
 
+	private double	_mutationrate = 0;
 	private ModificationSet _modifiers = null;	
 	private SelectionMethod _selectionMethod = null;
 	private double	_keeppercentage = 0.0;
+	
+	
+	
 	
 	public String toString() {
 		String result = "";
@@ -191,14 +208,13 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		result += "Cell Length: \t\t" + getCellLength() + "\n";		
 		result += "Cell Function Set: \t" + getCellFunctionSet().toString() + "\n";
 
+		result += "Modification Set: \t" + getModifiers().toString() + "\n";
+		result += "Mutation Rate: \t\t" + getMutationRate() + "\n";
 		
-		//TODO Add toString for ModificationSet and Selection Method
-		 
+		result += "Selection Method: \t" + getSelectionMethod().toString() + "\n";
 		
-		//private ModificationSet _modifiers = null;	
-		//private SelectionMethod _selectionMethod = null;
 		//private double	_keeppercentage = 0.0;
-		
+		result += "Keep Percentage: \t" + _keeppercentage + "\n";
 		
 		return result;
 	}
@@ -318,10 +334,23 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	public double getKeepPercentage() {
 		return _keeppercentage;
 	}
+
+	public double getMutationRate() {
+		return _mutationrate;
+	}
 	
 	private static void AddFunctionToSet(FunctionSet fs, String functionName) {
 		Function f = (Function) createObjectOfType(functionName);
 		fs.addFunction(f);
+	}
+	
+	private static void AddMutatorToSet(ModificationSet ms, String mutatorname, double weight){
+		Mutator m = (Mutator) createObjectOfType(mutatorname);
+		ms.AddMutator(m, weight);
+	}
+	private static void AddCrossoverToSet(ModificationSet ms, String crossover, double weight){
+		Crossover m = (Crossover) createObjectOfType(crossover);
+		ms.AddCrossover(m, weight);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -348,4 +377,5 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		SelectionMethod selmeth = (SelectionMethod) createObjectOfType(name);
 		return selmeth;		
 	}
+
 }

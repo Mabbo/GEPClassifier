@@ -5,9 +5,6 @@ import framework.*;
 
 public class TestMain {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		BasicGEPConfig conf = new BasicGEPConfig();
@@ -26,7 +23,7 @@ public class TestMain {
 		rr.Mutate(k);
 		System.out.println(k.getDNA());
 		
-		double[] inputs = {4.0, 3.0, 2.0, 1.0};
+		//double[] inputs = {4.0, 3.0, 2.0, 1.0};
 		//int val = p.Classify(inputs);
 		//double val = p.getOutput(inputs);
 		//System.out.println(val);
