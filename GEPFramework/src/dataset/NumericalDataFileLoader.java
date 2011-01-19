@@ -19,17 +19,17 @@ public class NumericalDataFileLoader implements DataSetLoader {
 		int numInputs = trainingSet.getNumberOfInputs();
 		
 		try {
-			FileReader fr = new FileReader("/home/mabbo/datasets/iris.data");
+			FileReader fr = new FileReader(filename);
 			BufferedReader br = new BufferedReader(fr);
 			String tmp;
 			tmp = br.readLine();
 			while( tmp != null && !tmp.isEmpty()) {
 				String[] split = tmp.split(",");
-				double[] data = new double[4];
+				double[] data = new double[numInputs];
 				for( int i = 0; i < numInputs; ++i ) {
-					data[i] = Double.parseDouble(split[i]);
+					data[i] = Double.parseDouble(split[i+1]);
 				}
-				int classNum = trainingSet.getClassNumber(split[numInputs]); 
+				int classNum = trainingSet.getClassNumber(split[0]); 
 				Instance inst = new BasicInstance();
 				inst.setValues(data);
 				inst.setClassValue(classNum);

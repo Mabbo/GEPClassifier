@@ -125,7 +125,7 @@ public class BasicEvolver implements Evolver {
 			}
 		}		
 		
-		return population.get(0);
+		return bestTested;
 	}
 
 	private int getScoreAgainstDataSet(Karva k, DataSet ds){
