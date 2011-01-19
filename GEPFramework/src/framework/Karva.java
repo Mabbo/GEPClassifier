@@ -21,8 +21,10 @@ public class Karva implements Comparable {
 	
 	//copy constructor
 	public Karva(Karva other) {
-		_genome = new Genome(_conf);
+		_genome = new Genome(other.getConfig());
+		_conf = other.getConfig();
 		_genome.Initialize(other._genome.getDNA());
+		_fitness = other.getFitness();
 	}
 	
 	public void setGenome(Genome g){
@@ -48,12 +50,16 @@ public class Karva implements Comparable {
 	public void addFitness(int value) {
 		_fitness+= value;
 	}
-	double getFitness() {
+	public int getFitness() {
 		return _fitness;
 	}
 
 	public String getDNA(){
 		return _genome.getDNA();
+	}
+	
+	public String toString(){
+		return "" + _fitness + ": " + _genome.getDNA();
 	}
 	
 	public GEPConfig getConfig() {
@@ -64,8 +70,8 @@ public class Karva implements Comparable {
 		Karva other = (Karva)arg0;
 		assert(other != null);
 		if( other.getFitness() < this.getFitness())
-			return 1;
+			return -1;
 		else 
-			return -1;	
+			return 1;	
 	}
 }

@@ -33,14 +33,18 @@ public class BasicDataSet implements DataSet {
 		return _instances.size();
 	}
 
+	
+	//Gives the other dataset splitPercentage % of its own instances, chosen randomly
 	public void RandomlySplitDataSet(double splitPercentage, DataSet targetDS) {
 		targetDS.Initialize(_numInputs);
 		
-		for( int i = _instances.size()-1; i >= 0; --i) {
-			if( Utilities.getRandomDouble(1.0) > splitPercentage) {
-				targetDS.AddInstance(_instances.get(i));
-				_instances.remove(i);
-			}
+		int initCount = _instances.size();
+		
+		while( targetDS.size() < initCount * (1.0-splitPercentage)){
+			int pick = Utilities.getRandomInt(_instances.size());
+			targetDS.AddInstance(_instances.get(pick));
+			_instances.remove(pick);	
+			
 		}
 	}
 

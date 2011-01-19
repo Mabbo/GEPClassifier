@@ -12,7 +12,7 @@ public class TestMain {
 		Evolver evolver = new BasicEvolver();
 		Karva result = evolver.EvolveClassifier(conf);
 		
-		System.out.println(result.getDNA());
+		System.out.println(result.toString());
 		
 		
 		/*

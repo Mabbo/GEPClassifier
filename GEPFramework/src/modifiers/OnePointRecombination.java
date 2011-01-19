@@ -13,13 +13,17 @@ public class OnePointRecombination implements Crossover {
 	public Karva Cross(Karva parentA, Karva parentB) {
 		int totalGeneLength = parentA.getDNA().length();
 		int swappoint = Utilities.getRandomInt(totalGeneLength);
-		String newDNA = parentA.getDNA().substring(0, swappoint)
-					  + parentA.getDNA().substring(swappoint);
+		//String newDNA = parentA.getDNA().substring(0, swappoint)
+		//			  + parentA.getDNA().substring(swappoint);
+		
+		String parentADNA = parentA.getDNA();
+		String parentBDNA = parentB.getDNA();
+		String newDNA = parentADNA.substring(0, swappoint)
+					  + parentBDNA.substring(swappoint);
 		
 		Genome genome = new Genome(parentA.getConfig());
 		genome.Initialize(newDNA);
 		Karva child = new Karva(parentA.getConfig(), genome);
-		
 		return child;
 	}
 
