@@ -14,9 +14,11 @@ import framework.*;
 
 public class NumericalDataFileLoader implements DataSetLoader {
 
-	public void LoadData(String filename, DataSet trainingSet) {
+	public void LoadData(String filename, DataSet trainingSet, GEPConfig conf) {
 	
 		int numInputs = trainingSet.getNumberOfInputs();
+		int[] ignoredColumns = conf.getIgnoreColumns();
+		int classIndex = conf.getClassIndex();
 		
 		try {
 			FileReader fr = new FileReader(filename);
@@ -26,15 +28,20 @@ public class NumericalDataFileLoader implements DataSetLoader {
 			while( tmp != null && !tmp.isEmpty()) {
 				String[] split = tmp.split(",");
 				double[] data = new double[numInputs];
+				int x = 0;
 				for( int i = 0; i < numInputs; ++i ) {
-					data[i] = Double.parseDouble(split[i+1]);
+					if( i == classIndex ) {
+					} else if (arrayContains(ignoredColumns, i)) {
+					} else {
+						data[x] = Double.parseDouble(split[i]);
+						x++;
+					}
 				}
-				int classNum = trainingSet.getClassNumber(split[0]); 
+				int classNum = trainingSet.getClassNumber(split[classIndex]); 
 				Instance inst = new BasicInstance();
 				inst.setValues(data);
 				inst.setClassValue(classNum);
 				trainingSet.AddInstance(inst);
-				
 				tmp = br.readLine();
 			}
 			br.close();			
@@ -42,4 +49,11 @@ public class NumericalDataFileLoader implements DataSetLoader {
 			System.err.println(ex.getLocalizedMessage());
 		}
 	}
+	private static boolean arrayContains(int[] array, int number) {
+		for( int i = 0; i < array.length; ++i){
+			if( array[i] == number) return true;
+		}
+		return false;
+	}
+	
 }

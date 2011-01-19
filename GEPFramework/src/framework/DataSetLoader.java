@@ -14,7 +14,7 @@ package framework;
  */
 public interface DataSetLoader {
 	//Load dataset with default ratios
-	void LoadData(String filename, DataSet trainingSet);
+	void LoadData(String filename, DataSet trainingSet, GEPConfig conf);
 }
 
 

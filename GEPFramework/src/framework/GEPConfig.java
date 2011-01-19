@@ -22,7 +22,10 @@ public interface GEPConfig {
 	String getDataFileName();
 	String getDataFileLocation();
 	int getNumberOfClasses();
+	int getClassIndex();
 	int getNumberOfInputs();
+	int getNumberOfUsedInputs();
+	int[] getIgnoreColumns();
 	String getTitle();
 	double getTrainingPercentage();
 	

@@ -31,8 +31,15 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		_datafilelocation = getStringValue("//DataSet/FileLocation");
 		_datafilename = getStringValue("//DataSet/FileName");
 		_trainpercentage = getDoubleValue("//DataSet/TrainPercentage");
-		_numclasses = getIntValue("//DataSet/Classes");
-		_numinputs = getIntValue("//DataSet/Inputs");
+		_numclasses = getIntValue("//DataSet/Description/NumberOfClasses");
+		_numinputs = getIntValue("//DataSet/Description/NumberOfInputs");
+		_classindex = getIntValue("//DataSet/Description/ClassIndex");
+		//get the ignored columns
+		NodeList ignoreInputs = getNodes("//DataSet/Description/Ignore/text()");
+		_ignorecolumns = new int[ignoreInputs.getLength()];
+		for( int i = 0; i < ignoreInputs.getLength(); ++i){
+			_ignorecolumns[i] = Integer.parseInt(ignoreInputs.item(i).getNodeValue());
+		}
 		
 		_numruns = getIntValue("//Runs");
 		_numgenerations = getIntValue("//Generations");
@@ -152,6 +159,8 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	private double 	_trainpercentage = 0.7;
 	private int    	_numclasses = 0;
 	private int		_numinputs = 0;
+	private int 	_classindex = 0;
+	private int[]	_ignorecolumns = null;
 	
 	private int 	_numruns = 0;
 	private int 	_numgenerations = 0;
@@ -186,6 +195,7 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		result += "Training Percentage: \t" + getTrainingPercentage() + "\n";
 		result += "Number of Classes: \t" + getNumberOfClasses() + "\n";
 		result += "Number of Inputs: \t" + getNumberOfInputs() + "\n";
+		result += "Number of Used Inputs: \t" + getNumberOfUsedInputs() + "\n";
 		result += "Number of Runs: \t" + getNumberOfRuns() + "\n";
 		result += "Number of Generations: \t" + getGenerationsPerRun() + "\n";
 		result += "Maximum Runtime: \t" + getMaxTimePerRunMs() + "\n";
@@ -308,10 +318,21 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		return _numclasses;
 	}
 	
+	public int getClassIndex() {
+		return _classindex;
+	}
+	
+	public int[] getIgnoreColumns() {
+		return _ignorecolumns;
+	}
+	
 	public int getNumberOfInputs() {
 		return _numinputs;
 	}
-
+	public int getNumberOfUsedInputs() {
+		return _numinputs - _ignorecolumns.length - 1;
+	}
+	
 	public String getTitle() {
 		return _title;
 	}

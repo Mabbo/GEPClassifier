@@ -30,7 +30,7 @@ public class RandomReplacement implements Mutator {
 			//We have a gene, a letter in it picked. Is it in the head or tail?
 			//How many possible terminals are there?
 			int numTerminals = -1;
-			if( layer == 0 ) { numTerminals = karva.getConfig().getNumberOfInputs(); }
+			if( layer == 0 ) { numTerminals = karva.getConfig().getNumberOfUsedInputs(); }
 			else {
 				numTerminals = karva.getConfig().getNumNodes(layer-1);
 			}

@@ -13,7 +13,7 @@ public class BasicEvolver implements Evolver {
 	@SuppressWarnings("unchecked")
 	public Karva EvolveClassifier(GEPConfig conf) {
 		
-		final int MAX_OVERFIT = 3;
+		final int MAX_OVERFIT = 10;
 		
 		//Create population of Karvas based on config specs
 		ArrayList<Karva> population = new ArrayList<Karva>();
@@ -36,10 +36,10 @@ public class BasicEvolver implements Evolver {
 		//Load Dataset, get training and test set
 		DataSet trainingSet = new BasicDataSet();
 		DataSet testingSet = new BasicDataSet();
-		trainingSet.Initialize(conf.getNumberOfInputs());
+		trainingSet.Initialize(conf.getNumberOfUsedInputs());
 		DataSetLoader dsl = new NumericalDataFileLoader();
 		String filename = conf.getDataFileLocation() + conf.getDataFileName();
-		dsl.LoadData(filename, trainingSet);
+		dsl.LoadData(filename, trainingSet, conf);
 		
 		double splitPercentage = conf.getTrainingPercentage();
 		trainingSet.RandomlySplitDataSet(splitPercentage, testingSet);

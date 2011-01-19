@@ -9,8 +9,14 @@ public class Utilities {
 		return allTerminals.substring(0, num);
 	}
 	
+	
+	
+	
 	//Given the head size, function set, number of terminals, creates a valid karva DNA
 	private static Random _random = new Random(System.currentTimeMillis());
+	
+	
+	
 	public static String CreateDNA(int headsize, int numterminals, FunctionSet functionset){
 		assert(numterminals < 26);
 		String possibleTerminals = getTerminals(numterminals);

@@ -22,7 +22,7 @@ public class Genome {
 		//create a full random dna string to initialize with
 		String genomedna = "";
 		for( int i = 0; i < _conf.getNodeLayers(); ++i){
-			int numTerminals = (i==0? _conf.getNumberOfInputs()
+			int numTerminals = (i==0? _conf.getNumberOfUsedInputs()
 					: _conf.getNumNodes(i-1));
 			for( int j = 0; j < _conf.getNumNodes(i); ++j){
 				genomedna += Utilities.CreateDNA(_conf.getNodeHeadLength(), 
@@ -111,7 +111,7 @@ public class Genome {
 		return _conf.getCellFunctionSet();
 	}
 	public int getNumberOfInputs() {
-		return _conf.getNumberOfInputs();
+		return _conf.getNumberOfUsedInputs();
 	}
 	
 	public void setGene(int layer, int index, Gene g){
