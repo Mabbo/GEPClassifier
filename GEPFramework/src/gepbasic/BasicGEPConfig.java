@@ -299,6 +299,8 @@ public class BasicGEPConfig implements framework.GEPConfig {
 	}
  
 	public int getNumNodes(int layerIndex) {
+		if( layerIndex == _nodesperlayer.length ) 
+			return getNumberOfClasses();
 		return _nodesperlayer[layerIndex];
 	}
 

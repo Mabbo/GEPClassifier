@@ -118,4 +118,12 @@ public class Genome {
 		_genes[layer][index] = g;
 	}
 	
+	public int getNodeHeadLength() {
+		return _conf.getNodeHeadLength();
+	}
+	public int getCellHeadLength() {
+		return _conf.getCellHeadLength();
+	}
+	
+	
 }

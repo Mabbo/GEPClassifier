@@ -30,7 +30,8 @@ public class ProportionalRoulette implements SelectionMethod {
 		}
 		Collections.sort(toRemove);
 		for( int i = toRemove.size()-1; i >= 0; --i) {
-			population.remove(toRemove.get(i));
+			int goingtoRemove = toRemove.get(i);
+			population.remove(goingtoRemove);
 		}
 	}
 }
