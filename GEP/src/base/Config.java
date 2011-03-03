@@ -53,6 +53,9 @@ private boolean configured = false;
 	private SelectionMethod selectionMethod = null;
 	private double	keeppercentage = 0.0;
 	
+	private byte 	numFunctions = 0;
+	private byte 	numTerminals = 0;
+	
 	private byte 	functionIndexEnd = 0;
 	private byte	terminalIndexEnd = 0;
 	private byte	rncIndexEnd = 0;
@@ -160,22 +163,11 @@ private boolean configured = false;
 	public EvolverStateProcess getFitnessTest() {
 		return fitnessTest;
 	}
-	
-//	public byte getFunctionIndexEnd() {
-//		return functionIndexEnd;
-//	}
-//	public byte getTerminalIndexEnd() {
-//		return terminalIndexEnd;
-//	}
-//	public byte getRNCIndexEnd() {
-//		return rncIndexEnd;
-//	}
-	
-	//--------------------------------------------//
-
 	public DataSetLoader getDataSetLoader()  {
 		return datasetloader;		
 	}
+	
+	//-----------------------------------------------------//
 	
 	private byte[] _funcValues = null;
 	public byte[] getFunctionValues() {
@@ -287,15 +279,56 @@ private boolean configured = false;
 		Node dslnode = getNodes("//DataSet/DataSetLoader").item(0);
 		
 		String dslClassName = dslnode.getAttributes()
-			.getNamedItem("classfile").getNodeValue();
-		String dslClassDir = dslnode.getAttributes()
-			.getNamedItem("location").getNodeValue();
+		.getNamedItem("classfile").getNodeValue();
+		
+		Node locationNode = dslnode.getAttributes()
+			.getNamedItem("location");
+		String dslClassDir = "bin/";
+		if( locationNode != null ) {
+			dslClassDir = locationNode.getNodeValue();
+		}
 		
 		Class<?> dslClass = getClassFromFile(dslClassDir, dslClassName); 
-		
 		datasetloader = (DataSetLoader)createObjectOfClass(dslClass);
-		System.out.println(datasetloader);
+
+		//--------------------//
+		
+		numruns = getIntValue("//Runs");
+		numgenerations = getIntValue("//Generations");
+		maxruntime = getIntValue("//MaxRunTime");
+		populationsize = getIntValue("//PopulationSize");
+		
+		headlength = getIntValue("//NodeDescription/Head");
+		
+		//-----Functions-----//
+		
+		functionset = new FunctionSet();
+		NodeList functionNodes = getNodes("//NodeDescription/FunctionSet/*");
+		for( int i = 0; i < functionNodes.getLength(); ++i){
+		//For each function node
+			Node funcNode = functionNodes.item(i);
+			//Read it's name, and location
+			String funcClassName = funcNode.getAttributes()
+			.getNamedItem("classfile").getNodeValue();
 			
+			Node funcLocationNode = funcNode.getAttributes()
+				.getNamedItem("location");
+			String funcClassDir = "bin/";
+			if( funcLocationNode != null ) {
+				funcClassDir = funcLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> funcClass = getClassFromFile(funcClassDir, funcClassName);
+			//Instantiate the function
+			Function function = (Function)createObjectOfClass(funcClass);
+			function.setSymbol((byte) i);
+			//Add to the functionset
+			functionset.addFunction(function);
+		
+		}
+		
+		
+		
 		
 	}
 	
@@ -347,7 +380,6 @@ private boolean configured = false;
 		try {
 		    URL url = file.toURI().toURL();
 		    URL[] urls = new URL[]{url};
-		    System.out.println(url.toExternalForm());
 		    ClassLoader cl = new URLClassLoader(urls);
 		    
 		    Class<?> cls = cl.loadClass(className);

@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DataSet {
 
@@ -33,5 +34,24 @@ public class DataSet {
 		classes.add(classname);
 		return classes.size()-1;
 	}
+
+	public int size() {
+		return instances.size();
+	}
+	
+	private static Random _rand = null;
+	public void SplitDataSet(DataSet destination, double fraction) {
+		//Takes a fraction of this dataset, and puts it into another
+		if( _rand == null ) _rand = new Random();
+		assert(fraction >= 0.0 && fraction <= 1.0);
+		int numToMove = (int) (instances.size() * fraction);
+		for( int i = 0; i < numToMove; ++i){
+			//pick random instance
+			int pick = _rand.nextInt(instances.size());
+			destination.addInstance(instances.get(pick));
+			instances.remove(pick);
+		}
+	}
+	
 	
 }

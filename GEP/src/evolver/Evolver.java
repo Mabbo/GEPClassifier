@@ -16,7 +16,7 @@ public class Evolver {
 				conf.LoadConfigurationFile(configFile);
 			}catch(Exception ex){
 				System.err.println("Error loading config file: ");
-				System.err.println(ex);
+				ex.printStackTrace();
 				return;
 			}
 			
@@ -24,19 +24,25 @@ public class Evolver {
 			DataSetLoader dsl = conf.getDataSetLoader();
 
 			//Get the DataSet
-			DataSet ds = new DataSet();
+			DataSet trainSet = new DataSet();
+			DataSet testSet = new DataSet();
 			String datafile = conf.getDatafilelocation() + "/" + conf.getDatafilename();
-			dsl.Load(datafile, ds, conf);
-
-			DataSet trainSet = null;
-			DataSet testSet = null;
+			dsl.Load(datafile, trainSet, conf);
 
 			//split into training set and testing set
+			trainSet.SplitDataSet(testSet, 1.0-conf.getTrainpercentage());
 
+			System.out.println("train: " + trainSet.size());
+			System.out.println("test:  " + testSet.size());
+			
+			
 			//Create Initial Population
 			ArrayList<Unit> population = new ArrayList<Unit>();
 			for( int i = 0; i < conf.getPopulationsize(); ++i){
-				//Create init population
+				Genome genome = new Genome(conf);
+				genome.InitializeRandom();
+				Unit unit = new Unit(conf, genome);
+				population.add(unit);
 			}
 
 			//Create EvolverState object 
@@ -46,7 +52,7 @@ public class Evolver {
 			for( int r = 0; r < conf.getNumruns(); ++r){
 				//For each generation
 				for( int g = 0; g < conf.getNumgenerations(); ++g ) {
-					//TODO :Fitness test for each population member
+					//Fitness test for each population member
 					conf.getFitnessTest().Process(es);
 
 					//Sort by fitness

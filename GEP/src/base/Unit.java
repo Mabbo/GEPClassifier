@@ -7,11 +7,11 @@ public class Unit implements Comparable<Unit>{
 	Config config;
 	int fitnessScore = 0;
 	
-	Unit(Config conf, Genome genome) {
+	public Unit(Config conf, Genome genome) {
 		config = conf; this.genome = genome;
 	}
 	
-	Unit(Unit other){
+	public Unit(Unit other){
 		config = other.getConfig(); 
 		genome = new Genome(other.genome);
 		fitnessScore = other.getFitnessScore();
