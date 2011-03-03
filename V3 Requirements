@@ -1,0 +1,167 @@
+V3
+
+
+Base Types:
+
+Config 
+[A configuration file/structure for this run of the algorithm]
+ +get and set for every parameter of the system
+
+Instance
+ +size : how many 
+ +getClassValue : returns class
+ +getValues : gets array of values
+
++DataSet
+[a container of instances]
+ +Size : returns number of instance
+ +GetInstance(int) : get a specific instance
+ +AddInstance(Instance)
+
+Gene
+[The dna of a single node of the ANN]
+ +getDNA : returns Karva string of DNA
+ +setDNA 
+ +getCharAt : returns character at a given point in DNA
+ +Gene(String) : initializes DNA
+
+Genome
+[contains all the genes of one ANN]
+ +Genome(Config)
+ -Gene[][] genes
+ +Initialize(String) : initialize to a string of dna, which splits into genes
+ +InitializeRandom : based on config, initializes to random genes
+ +RecheckDNA : after modification, reinitializes DNA to ensure integrity
+ +getDNA : returns string of all genes
+ +getConfig : returns config
+
+Phene
+[The expression of one gene, one node in the ANN]
+[Expresses as a function. Given a set of inputs, produces an output]
+ -Gene
+ -FunctionSet
+ -#Terminals 
+ -Root : root node of expression tree
+ -terminalNodes : list of pointers to terminal nodes in expression tree
+ +Phene(Gene, FunctionSet, #Terminals) : Constructor
+ +getOutput(double[]) : sets terminals to given inputs, finds output from root node
+ +BuildTree : Builds expression tree of nodes based on gene
+ -node classes
+
+Phenome
+[As gene is to Genome, Phene is to Phenome]
+[Wraps all phenes together as ANN]
+ -initialized : default false
+ -Genome 
+ -Phene[][] _nodes
+ +Phenome(Genome)
+ +Initialize : builds entire phenome network from genome
+ +Classify(double[]) : get output from given inputs using ANN
+
+Unit
+[Wraps a genome and phenome together for easy management]
+ -Genome
+ -Phenome
+ -Config
+ -FitnessScore : default 0
+ +Karva(Config, Genome) : constructor
+ +Karva(Karva other) : copy constructor
+ +setGenome(Genome)
+ +getGenome
+ +Initialize : builds phenome
+ +Classify(Instance) : For a given instance from a dataset, return classification #
+ +setFitness
+ +getFitness : used during genetic algorithm, fitness
+ +getConfig
+ +compareTo : used in comparable, sorting by fitness
+
+ModificationSet
+[Contains the mutators and crossovers, their weights, can get one randomly ]
+ +addMutator(mutator, weight)
+ +addCrossover(crossover, weight)
+ +getMutator(index)
+ +getCrossover(index)
+ +getRandomMutator()
+ +getRandomCrossover()
+
+
+Interfaces:
+
+Function
+ +ApplyFunction : Given set of arguments, returns double
+ +getNumArgs : returns constant number of arguments function takes
+ +getSymbol : returns Symbol function uses (has default)
+ +setSymbol : sets Symbol
+
++Mutator
+ +Mutate : Takes a Karva, modifies it somehow
+
++Crossover
+ +Cross : Takes Karva A and B and returns a child C based on A and B
+
++DataSetLoader
+ +Load(Filename, DataSet, Config) : given the filename, load the data, add to dataset
+
++SelectionMethod
+ +RemovePopulation(keepFraction, EvolverState)
+
+EvolverStateProcess
+[At the end of a generation or run, an EvolverStateProcess can be set to run]
+[This can do output, change of config variables, etc]
+ +Process(EvolverState)
+
+EvolverState
+[wraps the population, the config, the data set]
+[customizable, in case extra data wants to be carried around too]
+ +GetPopulation
+ +SetPopulation
+ +GetConfig
+ +SetConfig
+
+The Algorithm:
+
+-Load the configuation
+-Load/Create the DataSetLoad specified
+-Load the DataSet
+-Create the Initial population
+-For each run
+ -For each generation
+  -Fitness test for each population member
+	-done as an evolverStateProcess
+  -Sort by fitness
+  -Select using selection method
+  -Breed and Mutate
+  -For each Generational EvolverStateProcess e
+   -Run e
+ -For each Run EvolverStateProcess e
+  -Run e
+
+
+How to use:
+-Create function classes, mutators, esp's to be used, etc
+-Edit XML config file, or use configuration program 
+-Start evolver
+
+-At end, 
+
+-------------
+
+
+Major change: Rather than use strings, we will use bytes
+
+-The config file will state the number of functions, terminals, random constants
+-We can therefore say that integers 0->A means a function, A->B is a terminal, B->C is a RNC
+-This allows for a much larger size of terminals, everything
+
+-interpretation may be more difficult...
+
+
+
+
+
+
+
+
+
+
+

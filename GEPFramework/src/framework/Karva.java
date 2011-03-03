@@ -9,6 +9,7 @@ package framework;
  * @author mabbo
  *
  */
+@SuppressWarnings("unchecked")
 public class Karva implements Comparable {
 	private Genome _genome;
 	private Phenome _phenome;

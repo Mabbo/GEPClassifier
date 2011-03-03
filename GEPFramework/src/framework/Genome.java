@@ -37,6 +37,7 @@ public class Genome {
 		_fulldna = genomedna;
 		_initialize();
 	}
+	
 	public void Initialize(String dna){
 		_fulldna = dna;
 		_initialize();

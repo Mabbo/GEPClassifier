@@ -17,7 +17,6 @@ import java.util.LinkedList;
  * 
  */
 public class Phene {
-	Phenome _phenome;
 	Gene _gene;
 	FunctionSet _functions;
 	int _terminals = -1;
@@ -26,7 +25,6 @@ public class Phene {
 	ArrayList<TerminalNode> terminalNodes;
 	
 	public Phene(Gene gene, Phenome phenome, FunctionSet functions, int numTerminals){
-		_phenome = phenome;
 		_gene = gene;
 		_functions = functions;
 		_terminals = numTerminals;
