@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class DataSet {
 
 	private ArrayList<Instance> instances;
-
+	ArrayList<String> classes;
+	
 	public DataSet(){
 		instances = new ArrayList<Instance>();
 	}
@@ -20,6 +21,17 @@ public class DataSet {
 	
 	public Instance getInstance(int index){
 		return instances.get(index);
+	}
+	
+	public int getClassNumber(String classname) {
+		if(classes == null) classes = new ArrayList<String>();
+		//Do we already have an instance of this class?
+		//if not, add it, and return that index
+		for( int i = 0; i < classes.size(); ++i) {
+			if( classes.get(i).equals(classname)) return i;
+		}
+		classes.add(classname);
+		return classes.size()-1;
 	}
 	
 }

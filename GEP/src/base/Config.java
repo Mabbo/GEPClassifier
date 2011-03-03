@@ -1,6 +1,21 @@
 package base;
 import framework.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+
+import javax.xml.parsers.*;
+import javax.xml.xpath.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 public class Config {
@@ -12,9 +27,9 @@ private boolean configured = false;
 	ArrayList<Class<EvolverStateProcess> > evolverStateProcesses;
 	
 	private String 	title = "";
-	private String 	datafiletype = "";
 	private String 	datafilelocation = "";
 	private String 	datafilename = "";
+	private DataSetLoader datasetloader = null;
 	private double 	trainpercentage = 0.7;
 	private int    	numclasses = 0;
 	private int		numinputs = 0;
@@ -72,9 +87,6 @@ private boolean configured = false;
 	public String getTitle() {
 		return title;
 	}
-	public String getDatafiletype() {
-		return datafiletype;
-	}
 	public String getDatafilelocation() {
 		return datafilelocation;
 	}
@@ -90,10 +102,10 @@ private boolean configured = false;
 	public int getNuminputs() {
 		return numinputs;
 	}
-	public int getClassindex() {
+	public int getClassIndex() {
 		return classindex;
 	}
-	public int[] getIgnorecolumns() {
+	public int[] getIgnoreColumns() {
 		return ignorecolumns;
 	}
 	public int getNumruns() {
@@ -160,13 +172,9 @@ private boolean configured = false;
 //	}
 	
 	//--------------------------------------------//
-	
-	public void LoadConfigurationFile(String filename) {
-		
-	}
 
-	public DataSetLoader getDataSetLoaderInstance()  {
-		return null;		
+	public DataSetLoader getDataSetLoader()  {
+		return datasetloader;		
 	}
 	
 	private byte[] _funcValues = null;
@@ -245,8 +253,134 @@ private boolean configured = false;
 	public int getIndexForRNC(byte rnc){
 		return rnc - terminalIndexEnd;
 	}
+
+	
+	
+	//-----------XML PARSING--------------//
+	
+	private DocumentBuilderFactory domFactory;
+	private DocumentBuilder builder;
+	private Document doc;
+	private XPathFactory factory; 
+	private XPath xpath; 
+
+	public void LoadConfigurationFile(String filename) 
+		throws ParserConfigurationException, SAXException, 
+			   IOException, XPathExpressionException {
+		
+		InitXPath(filename);
+
+		title = getStringValue("//Title");
+		datafilelocation = getStringValue("//DataSet/FileLocation");
+		datafilename = getStringValue("//DataSet/FileName");
+		trainpercentage = getDoubleValue("//DataSet/TrainPercentage");
+		numclasses = getIntValue("//DataSet/Description/NumberOfClasses");
+		numinputs = getIntValue("//DataSet/Description/NumberOfInputs");
+		classindex = getIntValue("//DataSet/Description/ClassIndex");
+		//get the ignored columns
+		NodeList ignoreInputs = getNodes("//DataSet/Description/Ignore/text()");
+		ignorecolumns = new int[ignoreInputs.getLength()];
+		for( int i = 0; i < ignoreInputs.getLength(); ++i){
+			ignorecolumns[i] = Integer.parseInt(ignoreInputs.item(i).getNodeValue());
+		}
+		
+		Node dslnode = getNodes("//DataSet/DataSetLoader").item(0);
+		
+		String dslClassName = dslnode.getAttributes()
+			.getNamedItem("classfile").getNodeValue();
+		String dslClassDir = dslnode.getAttributes()
+			.getNamedItem("location").getNodeValue();
+		
+		Class<?> dslClass = getClassFromFile(dslClassDir, dslClassName); 
+		
+		datasetloader = (DataSetLoader)createObjectOfClass(dslClass);
+		System.out.println(datasetloader);
+			
+		
+	}
+	
+	private void InitXPath(String filename) throws ParserConfigurationException, SAXException, IOException {
+		domFactory = DocumentBuilderFactory.newInstance();
+	    domFactory.setNamespaceAware(true); // never forget this!
+	    builder = domFactory.newDocumentBuilder();
+	    doc = builder.parse(filename);
+
+	    factory = XPathFactory.newInstance();
+	    xpath = factory.newXPath();
+	}
+	
+	private NodeList getNodes(String expression) throws XPathExpressionException{
+		//For each part of the config, load it with an XPathExpression object
+	    XPathExpression expr = xpath.compile(expression);
+
+	    Object result = expr.evaluate(doc, XPathConstants.NODESET);
+	    NodeList nodes = (NodeList) result;
+	    return nodes;
+	}
+	private String getStringValue(String expression) throws XPathExpressionException {
+		NodeList nodes = getNodes(expression + "/text()");
+	    for (int i = 0; i < nodes.getLength();) {
+	        return nodes.item(i).getNodeValue(); 
+	    }	
+	    return "";
+	}
+	private double getDoubleValue(String expression) throws XPathExpressionException {
+		NodeList nodes = getNodes(expression + "/text()");
+	    for (int i = 0; i < nodes.getLength();) {
+	        return Double.parseDouble(nodes.item(i).getNodeValue()); 
+	    }	
+	    return 0.0;
+	}
+	private int getIntValue(String expression) throws XPathExpressionException {
+		NodeList nodes = getNodes(expression + "/text()");
+	    for (int i = 0; i < nodes.getLength();) {
+	        return Integer.parseInt(nodes.item(i).getNodeValue()); 
+	    }	
+	    return 0;
+	}
+	
+	
+	private static Class<?> getClassFromFile(String dir, String className){
+		// Create a File object on the root of the directory containing the class file
+		File file = new File(dir);
+
+		try {
+		    URL url = file.toURI().toURL();
+		    URL[] urls = new URL[]{url};
+		    System.out.println(url.toExternalForm());
+		    ClassLoader cl = new URLClassLoader(urls);
+		    
+		    Class<?> cls = cl.loadClass(className);
+		    		    
+		    return cls;
+		} catch (MalformedURLException e) {
+			System.err.println("1: Error loading class '" + className + "'.");
+			return null;
+		} catch (ClassNotFoundException e) {
+			System.err.println("2: Error loading class '" + className + "'.");
+			return null;
+		}
+	
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static Object createObjectOfClass(Class c) {
+		Constructor ct = c.getConstructors()[0];
+		Object obj = null;
+		try {
+			obj = ct.newInstance(new Object[]{});
+		} catch (Exception e) {
+			System.err.println("Could not instantiate instance of type '" + c.getCanonicalName() + "'.");
+			return null;
+		}	
+		return obj;
+	}
+	
+	
 	
 }
+
+
 
 
 
