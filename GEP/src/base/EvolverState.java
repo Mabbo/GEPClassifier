@@ -9,12 +9,16 @@ public class EvolverState {
 	private Config config;
 	private DataSet trainSet;
 	private DataSet testSet;
+	private int 	runNumber;
+	private int 	genNumber;
 	
 	public EvolverState(ArrayList<Unit> pop, DataSet train, DataSet test, Config conf) {
 		population = pop;
 		trainSet = train;
 		testSet = test;
 		config = conf;
+		runNumber = 0;
+		genNumber = 0;
 	}
 	
 	public ArrayList<Unit> getPopulation() {
@@ -33,6 +37,18 @@ public class EvolverState {
 		return testSet;
 	}
 	
-	
+	public void IncrementGeneration(){
+		genNumber++;
+	}
+	public void IncrementRun(){
+		runNumber++;
+	}
+
+	public int getGenerationNumber(){
+		return genNumber;
+	}
+	public int getRunNumber() {
+		return runNumber;
+	}
 	
 }

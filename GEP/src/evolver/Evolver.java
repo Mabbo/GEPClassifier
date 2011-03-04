@@ -32,10 +32,6 @@ public class Evolver {
 			//split into training set and testing set
 			trainSet.SplitDataSet(testSet, 1.0-conf.getTrainpercentage());
 
-			System.out.println("train: " + trainSet.size());
-			System.out.println("test:  " + testSet.size());
-			
-			
 			//Create Initial Population
 			ArrayList<Unit> population = new ArrayList<Unit>();
 			for( int i = 0; i < conf.getPopulationsize(); ++i){
@@ -80,11 +76,13 @@ public class Evolver {
 					for( EvolverStateProcess e : conf.getGenerationProcesses()){
 						e.Process(es);
 					}
+					es.IncrementGeneration();
 				}
 				//For each Run EvolverStateProcess e
 				for( EvolverStateProcess e : conf.getRunProcesses()){
 					e.Process(es);
 				}
+				es.IncrementRun();
 			}
 	}	
 }

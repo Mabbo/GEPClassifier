@@ -470,7 +470,35 @@ private boolean configured = false;
 			
 			//Add to the modification set
 			modifiers.addMutator(mutator, mutatorWeight);		
-		}		
+		}
+		
+		//-------Generation Processes-------//
+		
+		NodeList genProcNodes = getNodes("//GenerationProcesses/GenerationProcess");
+		for( int i = 0; i < genProcNodes.getLength(); ++i){
+			//For each crossover node
+			Node genProcNode = genProcNodes.item(i);
+			//Read it's name, and location
+			String genProcClassName = genProcNode.getAttributes()
+				.getNamedItem("classfile").getNodeValue();
+			
+			Node genProcLocationNode = genProcNode.getAttributes()
+				.getNamedItem("location");
+			String genProcClassDir = "bin/";
+			if( genProcLocationNode != null ) {
+				genProcClassDir = genProcLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> genProcClass = getClassFromFile(genProcClassDir, genProcClassName);
+			//Instantiate the function
+			EvolverStateProcess genProc = (EvolverStateProcess) createObjectOfClass(genProcClass);	
+			
+			//Add to the modification set
+			generationProcesses.add(genProc);
+		}
+		
+		
+		
 	}
 	
 	private void InitXPath(String filename) throws ParserConfigurationException, SAXException, IOException {
