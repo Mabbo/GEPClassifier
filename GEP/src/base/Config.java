@@ -53,9 +53,6 @@ private boolean configured = false;
 	private SelectionMethod selectionMethod = null;
 	private double	keeppercentage = 0.0;
 	
-	private byte 	numFunctions = 0;
-	private byte 	numTerminals = 0;
-	
 	private byte 	functionIndexEnd = 0;
 	private byte	terminalIndexEnd = 0;
 	private byte	rncIndexEnd = 0;
@@ -179,47 +176,75 @@ private boolean configured = false;
 		}
 		return _funcValues;		
 	}
-
-	private byte[] _terminalValues = null;
-	public byte[] getTerminalValues() {
-		if( _terminalValues == null) {
-			_terminalValues = new byte[terminalIndexEnd - functionIndexEnd];
-			for( byte i = functionIndexEnd; i < terminalIndexEnd; ++i){
-				_terminalValues[i] = i;
-			}
+	
+	public byte[] getTerminalValues(int layerNum) {	
+		int numTerminals = (layerNum == 0? numinputs : nodesperlayer[layerNum-1]);
+		byte[] terminalValues = new byte[numTerminals];
+		for( byte i = 0; i < numTerminals; ++i){
+			terminalValues[i] = (byte) (functionIndexEnd + i);
 		}
-		return _terminalValues;		
+		return terminalValues;		
 	}
 	
 	private byte[] _rncValues = null;
 	public byte[] getRNCValues() {
 		if( _rncValues == null) {
 			_rncValues = new byte[rncIndexEnd - terminalIndexEnd];
-			for( byte i = terminalIndexEnd; i < rncIndexEnd; ++i){
-				_rncValues[i] = i;
+			for( byte i = 0; i < rncIndexEnd-terminalIndexEnd; ++i){
+				_rncValues[i] = (byte) (terminalIndexEnd + i);
 			}
 		}
 		return _rncValues;
 	}
 	
-	private byte[] _headValues = null;
-	public byte[] getHeadValues() {	
-		if( _headValues == null ) {
-			_headValues = new byte[rncIndexEnd];
-			for( byte i = 0; i < rncIndexEnd; ++i) 
-				_headValues[i] = i;
+	private byte[][] layerHeadValues = null;
+	public byte[] getHeadValues(int layerNum) {
+		if( layerHeadValues == null ) layerHeadValues = new byte[numnodelayers][];
+		
+		if( layerHeadValues[layerNum] == null) {
+			byte[] functionValues = getFunctionValues();
+			byte[] terminalValues = getTerminalValues(layerNum);
+			byte[] rncValues = getRNCValues();
+			layerHeadValues[layerNum] = new byte[functionValues.length
+			                                   + terminalValues.length
+			                                   + rncValues.length];
+			int itt = 0;
+			for( byte b : functionValues ){
+				layerHeadValues[layerNum][itt] = b;
+				itt++;
+			}
+			for( byte b : terminalValues ){
+				layerHeadValues[layerNum][itt] = b;
+				itt++;
+			}
+			for( byte b : rncValues ){
+				layerHeadValues[layerNum][itt] = b;
+				itt++;
+			}
 		}
-		return _headValues;
+		return layerHeadValues[layerNum];
 	}
 	
-	private byte[] _tailValues = null;
-	public byte[] getTailValues() {
-		if( _tailValues == null) {
-			_tailValues = new byte[rncIndexEnd-functionIndexEnd];
-			for( byte i = functionIndexEnd; i < rncIndexEnd; ++i) 
-				_tailValues[i] = i;
+	private byte[][] layerTailValues = null;
+	public byte[] getTailValues(int layerNum) {
+		if( layerTailValues == null ) layerTailValues = new byte[numnodelayers][];
+		
+		if( layerTailValues[layerNum] == null) {
+			byte[] terminalValues = getTerminalValues(layerNum);
+			byte[] rncValues = getRNCValues();
+			layerTailValues[layerNum] = new byte[terminalValues.length
+			                                   + rncValues.length];
+			int itt = 0;
+			for( byte b : terminalValues ){
+				layerTailValues[layerNum][itt] = b;
+				itt++;
+			}
+			for( byte b : rncValues ){
+				layerTailValues[layerNum][itt] = b;
+				itt++;
+			}
 		}
-		return _tailValues;
+		return layerTailValues[layerNum];
 	}
 	
 	
@@ -299,7 +324,7 @@ private boolean configured = false;
 		populationsize = getIntValue("//PopulationSize");
 		
 		headlength = getIntValue("//NodeDescription/Head");
-		
+
 		//-----Functions-----//
 		
 		functionset = new FunctionSet();
@@ -323,13 +348,129 @@ private boolean configured = false;
 			Function function = (Function)createObjectOfClass(funcClass);
 			function.setSymbol((byte) i);
 			//Add to the functionset
-			functionset.addFunction(function);
-		
+			functionset.addFunction(function);		
 		}
 		
+		//Set tail length
+		//t = h*(MaxArg-1)+1
+		taillength = (getHeadlength() * (functionset.getMaxArgs()-1)) + 1;
+		
+		//get number of RNCs
+		
+		numRNC = getIntValue("//NodeDescription/RNC");		
+		
+		//------------Read Layer descriptions-------------//
+		
+		NodeList layerNodes = getNodes("//NodeLayers/Layer/Nodes/text()");
+		numnodelayers = layerNodes.getLength() + 1;
+		this.nodesperlayer = new int[numnodelayers];
+		int maxTerminals = numclasses;
+		for(int i = 0; i < layerNodes.getLength(); ++i){
+			nodesperlayer[i] = Integer.parseInt(layerNodes.item(i).getNodeValue());
+			if( nodesperlayer[i] > maxTerminals )
+				maxTerminals = nodesperlayer[i];
+		}
+		nodesperlayer[numnodelayers-1] = numclasses;
 		
 		
+		functionIndexEnd = (byte) functionset.size();
+		terminalIndexEnd = (byte) (functionIndexEnd + maxTerminals);
+		rncIndexEnd = (byte) (terminalIndexEnd + numRNC);
 		
+		//----------Fitness-----------//
+		
+		
+		Node fitnessNode = getNode("//Fitness");
+		
+		String fitnessClassName = fitnessNode.getAttributes()
+			.getNamedItem("classfile").getNodeValue();
+		
+		Node fitnessLocationNode = dslnode.getAttributes()
+			.getNamedItem("location");
+		
+		String fitnessClassDir = "bin/";
+		if( fitnessLocationNode != null ) {
+			fitnessClassDir = fitnessLocationNode.getNodeValue();
+		}
+		
+		Class<?> fitnessClass = getClassFromFile(fitnessClassDir, fitnessClassName); 
+		fitnessTest = (EvolverStateProcess) createObjectOfClass(fitnessClass);
+		
+		//----------Selection Method-----------//
+		
+		Node selectionNode = getNode("//Selection");
+		
+		String selectionClassName = selectionNode.getAttributes()
+			.getNamedItem("classfile").getNodeValue();
+		
+		Node selectionLocationNode = selectionNode.getAttributes()
+			.getNamedItem("location");
+		
+		String selectionClassDir = "bin/";
+		if( selectionLocationNode != null ) {
+			selectionClassDir = selectionLocationNode.getNodeValue();
+		}
+		
+		Class<?> selectionClass = getClassFromFile(selectionClassDir, selectionClassName); 
+		selectionMethod = (SelectionMethod) createObjectOfClass(selectionClass);
+		
+		keeppercentage = Double.parseDouble(selectionNode.getAttributes().getNamedItem("keep").getNodeValue());
+		
+		//-------------Crossovers---------------//
+		
+		modifiers = new ModificationSet();
+		
+		NodeList crossoversNodes = getNodes("//Crossovers/Crossover");
+		for( int i = 0; i < crossoversNodes.getLength(); ++i){
+			//For each crossover node
+			Node crossNode = crossoversNodes.item(i);
+			//Read it's name, and location
+			String crossClassName = crossNode.getAttributes()
+				.getNamedItem("classfile").getNodeValue();
+			
+			Node crossLocationNode = crossNode.getAttributes()
+				.getNamedItem("location");
+			String crossClassDir = "bin/";
+			if( crossLocationNode != null ) {
+				crossClassDir = crossLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> crossClass = getClassFromFile(crossClassDir, crossClassName);
+			//Instantiate the function
+			Crossover cross = (Crossover) createObjectOfClass(crossClass);
+			
+			int crossWeight = Integer.parseInt(crossNode.getAttributes().getNamedItem("weight").getNodeValue());
+			
+			//Add to the modification set
+			modifiers.addCrossover(cross, crossWeight);		
+		}
+	
+		mutationrate = getDoubleValue("//MutationRate");
+		
+		NodeList mutatorNodes = getNodes("//Mutators/Mutator");
+		for( int i = 0; i < mutatorNodes.getLength(); ++i){
+			//For each crossover node
+			Node mutatorNode = mutatorNodes.item(i);
+			//Read it's name, and location
+			String mutatorClassName = mutatorNode.getAttributes()
+				.getNamedItem("classfile").getNodeValue();
+			
+			Node mutatorLocationNode = mutatorNode.getAttributes()
+				.getNamedItem("location");
+			String mutatorClassDir = "bin/";
+			if( mutatorLocationNode != null ) {
+				mutatorClassDir = mutatorLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> mutatorClass = getClassFromFile(mutatorClassDir, mutatorClassName);
+			//Instantiate the function
+			Mutator mutator = (Mutator) createObjectOfClass(mutatorClass);
+			
+			int mutatorWeight = Integer.parseInt(mutatorNode.getAttributes().getNamedItem("weight").getNodeValue());
+			
+			//Add to the modification set
+			modifiers.addMutator(mutator, mutatorWeight);		
+		}		
 	}
 	
 	private void InitXPath(String filename) throws ParserConfigurationException, SAXException, IOException {
@@ -349,6 +490,9 @@ private boolean configured = false;
 	    Object result = expr.evaluate(doc, XPathConstants.NODESET);
 	    NodeList nodes = (NodeList) result;
 	    return nodes;
+	}
+	private Node getNode(String expression) throws XPathExpressionException{
+		return getNodes(expression).item(0);
 	}
 	private String getStringValue(String expression) throws XPathExpressionException {
 		NodeList nodes = getNodes(expression + "/text()");
@@ -395,9 +539,8 @@ private boolean configured = false;
 	
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static Object createObjectOfClass(Class c) {
-		Constructor ct = c.getConstructors()[0];
+	private static Object createObjectOfClass(Class<?> c) {
+		Constructor<?> ct = c.getConstructors()[0];
 		Object obj = null;
 		try {
 			obj = ct.newInstance(new Object[]{});

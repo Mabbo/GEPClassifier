@@ -8,6 +8,7 @@ public class Phenome {
 	
 	public Phenome(Genome genome, Config conf){
 		this.genome = genome;
+		this.conf = conf;
 	}
 	
 	public void Initialize(){
@@ -27,7 +28,7 @@ public class Phenome {
 	
 	
 	public int Classify(double[] inputVec) {
-		if(initialized) return -1;
+		if(!initialized) return -1;
 
 		double[] inputs = inputVec;
 		double[] outputs = null;

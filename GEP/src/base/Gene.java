@@ -46,16 +46,16 @@ public class Gene {
 	}
 	
 	private static Random _rand = new Random(); 
-	public static Gene makeRandomGene(Config conf){
+	public static Gene makeRandomGene(Config conf, int layer){
 		byte[] dna = new byte[conf.getNodelength()];
-		byte[] headValues = conf.getHeadValues();
-		byte[] tailValues = conf.getTailValues();
+		byte[] headValues = conf.getHeadValues(layer);
+		byte[] tailValues = conf.getTailValues(layer);
 		int i = 0;
 		for( ; i < conf.getHeadlength(); ++i) {
 			dna[i] = headValues[_rand.nextInt(headValues.length)];
 		}
 		for( ; i < conf.getNodelength(); ++i) {
-			dna[i] = tailValues[_rand.nextInt(headValues.length)];
+			dna[i] = tailValues[_rand.nextInt(tailValues.length)];
 		}
 		double[] rnc = new double[conf.getNumRNC()];
 		for( i = 0; i < conf.getNumRNC(); ++i){

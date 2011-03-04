@@ -6,6 +6,7 @@ public class Unit implements Comparable<Unit>{
 	Phenome phenome;
 	Config config;
 	int fitnessScore = 0;
+	boolean initialized = false;
 	
 	public Unit(Config conf, Genome genome) {
 		config = conf; this.genome = genome;
@@ -19,10 +20,12 @@ public class Unit implements Comparable<Unit>{
 	
 	public void Initialize(){
 		phenome = new Phenome(genome, config);
+		phenome.Initialize();
+		initialized = true;
 	}
 	
 	public int Classify(Instance instance){// For a given instance from a dataset, return classification #
-		phenome.Initialize();
+		if( !initialized ) Initialize();
 		double[] inputs = instance.getValue();
 		return phenome.Classify(inputs);
 	}
@@ -51,6 +54,10 @@ public class Unit implements Comparable<Unit>{
 		if( o.fitnessScore < this.fitnessScore )
 			return -1;
 		else return 1;
+	}
+
+	public void incrementFitness(int i) {
+		fitnessScore += i;
 	}
 
 }

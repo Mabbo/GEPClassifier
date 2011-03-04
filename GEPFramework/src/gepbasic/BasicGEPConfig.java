@@ -369,16 +369,15 @@ public class BasicGEPConfig implements framework.GEPConfig {
 		ms.AddCrossover(m, weight);
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static Object createObjectOfType(String typename) {
-		Class c = null;
+		Class<?> c = null;
 		try {
 			c = Class.forName(typename);
 		} catch (ClassNotFoundException e) {
 			System.err.println("Invalid class name: '" + typename + "'.");
 			return null;
 		}
-		Constructor ct = c.getConstructors()[0];
+		Constructor<?> ct = c.getConstructors()[0];
 		Object obj = null;
 		try {
 			obj = ct.newInstance(new Object[]{});

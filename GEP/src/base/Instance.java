@@ -16,4 +16,7 @@ public class Instance {
 	public double getValue(int index){
 		return _values[index];
 	}
+	public int getClassValue() {
+		return _classValue;
+	}
 }

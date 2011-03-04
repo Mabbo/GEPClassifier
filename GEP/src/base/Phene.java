@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 import framework.*;
 
-@SuppressWarnings("unused")
 public class Phene {
 
 	Gene gene;
@@ -20,6 +19,7 @@ public class Phene {
 	}
 	
 	public double getOutput(double[] inputs){
+		if( root == null ) BuildTree();
 		for( TerminalNode tn : terminalNodes ){
 			int index = conf.getIndexForTerminal(tn.getTerminal());
 			tn.setValue(inputs[index]);

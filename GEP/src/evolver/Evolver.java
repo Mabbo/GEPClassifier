@@ -67,13 +67,13 @@ public class Evolver {
 						Crossover cross = conf.getModifiers().getCrossover();
 						Unit A = population.get(_rand.nextInt(popSize));
 						Unit B = population.get(_rand.nextInt(popSize));
-						Unit newUnit = cross.Cross(A, B);
+						Unit newUnit = cross.Cross(A, B, conf);
 						population.add(newUnit);
 					}
 
 					for( int m = 0; m < conf.getMutationrate() * population.size(); ++m) {
 						Mutator mut = conf.getModifiers().getMutator();
-						mut.Mutate(population.get(_rand.nextInt(population.size())));
+						mut.Mutate(population.get(_rand.nextInt(population.size())), conf);
 					}
 
 					//For each Generational EvolverStateProcess e

@@ -8,6 +8,7 @@ public class Genome {
 	public Genome(Config conf) {
 		_conf = conf;	
 	}
+	
 	public Genome(Genome genome) {
 		_conf = genome._conf;
 		_genes = new Gene[_conf.getNumNodeLayers()][];
@@ -29,7 +30,7 @@ public class Genome {
 		//For each node in the layer
 			_genes[layer] = new Gene[_conf.getNodesInLayer(layer)];
 			for( int node = 0; node < _conf.getNodesInLayer(layer); ++node) {
-				_genes[layer][node] = Gene.makeRandomGene(_conf);
+				_genes[layer][node] = Gene.makeRandomGene(_conf, layer);
 			}
 		}
 	}

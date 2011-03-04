@@ -24,6 +24,9 @@ public class DivideFunction implements Function {
 
 	public byte getSymbol() {
 		return symbol;
+	}
+	public String getFunctionName() {
+		return "Divide";
 	}	
 	
 }

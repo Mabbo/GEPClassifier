@@ -6,7 +6,8 @@ import framework.Function;
 public class FunctionSet {
 
 	private HashMap<Byte, Function> functions;
-	
+	private int maxArgs = 0;
+	private int size = 0;
 	public FunctionSet(){
 		functions = new HashMap<Byte, Function>();
 	}
@@ -17,6 +18,10 @@ public class FunctionSet {
 			return false;
 		} else {
 			functions.put(f.getSymbol(), f);
+			if( f.getNumArgs() > maxArgs){
+				maxArgs = f.getNumArgs();
+			}
+			size++;
 			return true;
 		}
 	}
@@ -28,6 +33,14 @@ public class FunctionSet {
 			System.err.println("FunctionSet: Attempted to load function '" + s + "', but no such function exists.");
 			return null;
 		}
+	}
+	
+	public int getMaxArgs(){
+		return maxArgs;
+	}
+
+	public int size() {
+		return size;
 	}
 	
 }

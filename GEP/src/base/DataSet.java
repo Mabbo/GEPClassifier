@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class DataSet {
@@ -51,6 +52,10 @@ public class DataSet {
 			destination.addInstance(instances.get(pick));
 			instances.remove(pick);
 		}
+	}
+
+	public List<Instance> getInstances() {
+		return instances;
 	}
 	
 	
