@@ -10,7 +10,17 @@ import framework.Crossover;
 public class OnePointPerLayer implements Crossover {
 
 	private Random _rand = new Random();
-	public Unit Cross(Unit parentA, Unit parentB, Config conf) {
+	public Unit Cross(Unit pA, Unit pB, Config conf) {
+		
+		Unit parentA;
+		Unit parentB;
+		if( _rand.nextBoolean() ){
+			parentA = pA;
+			parentB = pB;
+		} else{
+			parentB = pA;
+			parentA = pB;
+		}
 		
 		Genome child = new Genome(parentA.getGenome());
 		//For each layer
@@ -22,6 +32,11 @@ public class OnePointPerLayer implements Crossover {
 			}
 			for( int i = pivot; i < conf.getNodesInLayer(layer); ++i) {
 				child.setGene(layer, i, parentB.getGenome().getGene(layer, i));
+			}
+			if( _rand.nextBoolean()) {
+				Unit temp = parentA;
+				parentA = parentB;
+				parentB = temp;
 			}
 		}
 		Unit childUnit = new Unit(conf, child);

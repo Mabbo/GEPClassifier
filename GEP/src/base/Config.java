@@ -68,6 +68,9 @@ private boolean configured = false;
 		= new ArrayList<EvolverStateProcess>(); 
 	private ArrayList<EvolverStateProcess> endProcesses
 	 	= new ArrayList<EvolverStateProcess>();
+	private ArrayList<EvolverStateProcess> beforeRunProcesses
+		= new ArrayList<EvolverStateProcess>();
+	
 	
 	private EvolverStateProcess fitnessTest;
 	
@@ -77,10 +80,15 @@ private boolean configured = false;
 	public ArrayList<EvolverStateProcess> getRunProcesses() {
 		return runProcesses;
 	}
+	public void setMutationrate(double mutationrate) {
+		this.mutationrate = mutationrate;
+	}
 	public ArrayList<EvolverStateProcess> getEndProcesses() {
 		return endProcesses;
 	}
-	
+	public ArrayList<EvolverStateProcess> getBeforeRunProcesses() {
+		return beforeRunProcesses;
+	}	
 	public boolean isConfigured() {
 		return configured;
 	}
@@ -496,9 +504,53 @@ private boolean configured = false;
 			//Add to the modification set
 			generationProcesses.add(genProc);
 		}
-		
-		
-		
+
+		NodeList runProcNodes = getNodes("//RunProcesses/RunProcess");
+		for( int i = 0; i < runProcNodes.getLength(); ++i){
+			//For each crossover node
+			Node runProcNode = runProcNodes.item(i);
+			//Read it's name, and location
+			String runProcClassName = runProcNode.getAttributes()
+				.getNamedItem("classfile").getNodeValue();
+			
+			Node runProcLocationNode = runProcNode.getAttributes()
+				.getNamedItem("location");
+			String runProcClassDir = "bin/";
+			if( runProcLocationNode != null ) {
+				runProcClassDir = runProcLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> runProcClass = getClassFromFile(runProcClassDir, runProcClassName);
+			//Instantiate the function
+			EvolverStateProcess runProc = (EvolverStateProcess) createObjectOfClass(runProcClass);	
+			
+			//Add to the modification set
+			runProcesses.add(runProc);
+		}
+
+		NodeList brProcNodes = getNodes("//BeforeRunProcesses/BeforeRunProcess");
+		for( int i = 0; i < brProcNodes.getLength(); ++i){
+			//For each crossover node
+			Node brProcNode = brProcNodes.item(i);
+			//Read it's name, and location
+			String brProcClassName = brProcNode.getAttributes()
+				.getNamedItem("classfile").getNodeValue();
+			
+			Node brProcLocationNode = brProcNode.getAttributes()
+				.getNamedItem("location");
+			String brProcClassDir = "bin/";
+			if( brProcLocationNode != null ) {
+				brProcClassDir = brProcLocationNode.getNodeValue();
+			}
+			//Get the class from the file
+			Class<?> brProcClass = getClassFromFile(brProcClassDir, brProcClassName);
+			//Instantiate the function
+			EvolverStateProcess brProc = (EvolverStateProcess) createObjectOfClass(brProcClass);	
+			
+			//Add to the modification set
+			beforeRunProcesses.add(brProc);
+		}
+
 	}
 	
 	private void InitXPath(String filename) throws ParserConfigurationException, SAXException, IOException {

@@ -27,7 +27,7 @@ public class Phene {
 		return root.getValue();
 	}
 	
-	private void BuildTree(){
+	public void BuildTree(){
 		
 		LinkedList<FunctionNode> worklist = new LinkedList<FunctionNode>();
 		terminalNodes = new ArrayList<TerminalNode>();
@@ -93,6 +93,15 @@ public class Phene {
 			}
 			return function.ApplyFunction(inputs);
 		}
+		
+		public String toString(){
+			String ret = function.getFunctionName() + "( ";
+			for( int i = 0; i < children.size(); ++i){
+				ret += (i==0? "" : ", " ) + children.get(i).toString() ;
+			}
+			ret += " )";
+			return ret;
+		}
 	}
 	
 	private class TerminalNode extends aNode{
@@ -106,6 +115,9 @@ public class Phene {
 		private double _value = NO_VALUE;
 		public void setValue(double value) { _value = value; }
 		public double getValue() { return _value;}
+		public String toString() {
+			return "{" + _terminal + "}";
+		}
 	}
 	
 	private class RNCNode extends aNode{
@@ -114,7 +126,15 @@ public class Phene {
 			_value = value;
 		}		  
 		public double getValue() { return _value;}
+		public String toString() {
+			return "" + _value;
+		}
 	}	
+	
+	public String toString() {
+		return root.toString();
+	}
+	
 	
 	
 }

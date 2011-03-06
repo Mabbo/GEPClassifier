@@ -26,6 +26,15 @@ public class ModificationSet {
 		crossover_weights.add(weight);
 		totalCrossoverWeight += weight;
 	}
+	
+	public int getMutatorCount(){
+		return mutators.size();
+	}
+	
+	public int getCrossoverCount() {
+		return crossovers.size();
+	}
+	
 	public Mutator getMutator(int index){
 		return mutators.get(index);
 	}

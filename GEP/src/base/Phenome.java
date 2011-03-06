@@ -55,6 +55,8 @@ public class Phenome {
 		return maxClass;
 	}
 
-	
+	public Phene getPhene(int layer, int index){
+		return phenes[layer][index];
+	}
 	
 }

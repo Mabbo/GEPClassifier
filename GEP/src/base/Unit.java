@@ -38,6 +38,10 @@ public class Unit implements Comparable<Unit>{
 		this.genome = genome;
 	}
 
+	public Phenome getPhenome() {
+		return phenome;
+	}
+	
 	public int getFitnessScore() {
 		return fitnessScore;
 	}

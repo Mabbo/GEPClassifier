@@ -1,10 +1,13 @@
 package base;
 
 import java.util.HashMap;
+import java.util.Random;
+
 import framework.Function;
 
 public class FunctionSet {
 
+	private Random _rand = new Random();
 	private HashMap<Byte, Function> functions;
 	private int maxArgs = 0;
 	private int size = 0;
@@ -42,5 +45,11 @@ public class FunctionSet {
 	public int size() {
 		return size;
 	}
+	
+	public Function getRandomFunction() {
+		Byte key = (Byte) functions.keySet().toArray()[_rand.nextInt(functions.size())];
+		return functions.get(key);
+	}
+	
 	
 }

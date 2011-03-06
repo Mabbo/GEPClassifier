@@ -43,9 +43,13 @@ public class Evolver {
 
 			//Create EvolverState object 
 			EvolverState es = new EvolverState(population, trainSet, testSet, conf);
-
+			
 			//For each run
 			for( int r = 0; r < conf.getNumruns(); ++r){
+				
+				for( EvolverStateProcess e : conf.getBeforeRunProcesses()){
+					e.Process(es);
+				}				
 				//For each generation
 				for( int g = 0; g < conf.getNumgenerations(); ++g ) {
 					//Fitness test for each population member
@@ -69,7 +73,9 @@ public class Evolver {
 
 					for( int m = 0; m < conf.getMutationrate() * population.size(); ++m) {
 						Mutator mut = conf.getModifiers().getMutator();
-						mut.Mutate(population.get(_rand.nextInt(population.size())), conf);
+						Unit u = population.get(_rand.nextInt(population.size()-1)+1);
+						mut.Mutate(u, conf);
+						u.Initialize();						
 					}
 
 					//For each Generational EvolverStateProcess e
