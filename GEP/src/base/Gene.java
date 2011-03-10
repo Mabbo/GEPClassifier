@@ -47,18 +47,18 @@ public class Gene {
 	
 	private static Random _rand = new Random(); 
 	public static Gene makeRandomGene(Config conf, int layer){
-		byte[] dna = new byte[conf.getNodelength()];
+		byte[] dna = new byte[conf.getNodeLength()];
 		byte[] headValues = conf.getHeadValues(layer);
 		byte[] tailValues = conf.getTailValues(layer);
 		int i = 0;
-		for( ; i < conf.getHeadlength(); ++i) {
+		for( ; i < conf.getNodeHeadSize(); ++i) {
 			dna[i] = headValues[_rand.nextInt(headValues.length)];
 		}
-		for( ; i < conf.getNodelength(); ++i) {
+		for( ; i < conf.getNodeLength(); ++i) {
 			dna[i] = tailValues[_rand.nextInt(tailValues.length)];
 		}
-		double[] rnc = new double[conf.getNumRNC()];
-		for( i = 0; i < conf.getNumRNC(); ++i){
+		double[] rnc = new double[conf.getNumberRNC()];
+		for( i = 0; i < conf.getNumberRNC(); ++i){
 			rnc[i] = _rand.nextDouble() * 10.0;
 		}
 		Gene ret = new Gene(dna, rnc);

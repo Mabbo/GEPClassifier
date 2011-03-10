@@ -24,7 +24,7 @@ public class OnePointPerLayer implements Crossover {
 		
 		Genome child = new Genome(parentA.getGenome());
 		//For each layer
-		for( int layer = 0; layer < conf.getNumNodeLayers(); ++layer){
+		for( int layer = 0; layer < conf.getNumberLayers(); ++layer){
 			//pick pivot 
 			int pivot = _rand.nextInt(conf.getNodesInLayer(layer));
 			for( int i = 0; i < pivot; ++i) {

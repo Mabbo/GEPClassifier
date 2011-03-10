@@ -11,4 +11,10 @@ public class OutputBestScore implements EvolverStateProcess {
 				+ " / " + es.getTrainingSet().size() );
 	}
 
+	@Override
+	public void Initialize(String parameters) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

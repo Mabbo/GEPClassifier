@@ -40,7 +40,7 @@ public class Phene {
 			
 			Config.LetterType type = conf.getTypeFor(nextValue);
 			if( type == Config.LetterType.FUNCTION ){
-				Function f = conf.getNodefunctionset().getFunction(nextValue);
+				Function f = conf.getNodeFunctionSet().getFunction(nextValue);
 				FunctionNode fn = new FunctionNode(f);
 				node = fn;
 				worklist.add(fn);

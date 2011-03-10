@@ -9,11 +9,18 @@ import framework.DataSetLoader;
 
 public class NumericalDataSetLoader implements DataSetLoader {
 
+	
+	public int[] ignoredColumns = null;
+	public int classIndex = 0;
+	
 	public void Load(String filename, DataSet trainingSet, Config conf) {
 
-		int numInputs = conf.getNuminputs();
-		int[] ignoredColumns = conf.getIgnoreColumns();
-		int classIndex = conf.getClassIndex();
+		
+		//NEED TO LOOK AT PARAMETERS GIVEN DURING INITIALIZATION
+		
+		
+		int numInputs = conf.getNumberOfInputs();
+		int[] ignoredColumns = this.ignoredColumns ;
 
 		try {
 			FileReader fr = new FileReader(filename);
@@ -47,6 +54,18 @@ public class NumericalDataSetLoader implements DataSetLoader {
 			if( array[i] == number) return true;
 		}
 		return false;
+	}
+	
+	
+	public void Initialize(String params) {
+		
+		classIndex = 0;
+		ignoredColumns = new int[0];
+		//put ignored columns and class index into correct place
+		
+		
+		
+		
 	}
 
 }

@@ -16,8 +16,8 @@ public class Phenome {
 		
 		//Need to create Phenes for each Gene, arrange them correctly
 		//Create phene layers
-		phenes = new Phene[conf.getNumNodeLayers()][];
-		for( int layer = 0; layer < conf.getNumNodeLayers(); ++layer) {
+		phenes = new Phene[conf.getNumberLayers()][];
+		for( int layer = 0; layer < conf.getNumberLayers(); ++layer) {
 			phenes[layer] = new Phene[conf.getNodesInLayer(layer)];
 			for( int index = 0; index < conf.getNodesInLayer(layer); ++index) {
 				phenes[layer][index] = new Phene(genome.getGene(layer, index), conf);
@@ -33,7 +33,7 @@ public class Phenome {
 		double[] inputs = inputVec;
 		double[] outputs = null;
 		//for each layer
-		for( int i = 0; i < conf.getNumNodeLayers(); ++i) {
+		for( int i = 0; i < conf.getNumberLayers(); ++i) {
 			//for each phene
 			outputs = new double[conf.getNodesInLayer(i)];
 			for( int p = 0; p < conf.getNodesInLayer(i); ++p){
@@ -47,7 +47,7 @@ public class Phenome {
 		//find which class has highest value, return that class
 		int maxClass = -1;
 		double maxScore = -999999999.9;
-		for( int i = 0; i < conf.getNumclasses(); ++i){
+		for( int i = 0; i < conf.getNumberOfClasses(); ++i){
 			if( outputs[i] > maxScore ) {
 				maxClass = i; maxScore = outputs[i];
 			}

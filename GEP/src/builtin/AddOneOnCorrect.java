@@ -25,4 +25,10 @@ public class AddOneOnCorrect implements EvolverStateProcess {
 		}
 	}
 
+	@Override
+	public void Initialize(String parameters) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

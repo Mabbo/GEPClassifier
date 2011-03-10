@@ -30,11 +30,11 @@ public class TestMain {
 			//Get the DataSet
 			DataSet trainSet = new DataSet();
 			DataSet testSet = new DataSet();
-			String datafile = config.getDatafilelocation() + "/" + config.getDatafilename();
+			String datafile = config.getDataSetLocation() + "/" + config.getDataSetFilename();
 			dsl.Load(datafile, trainSet, config);
 
 			//split into training set and testing set
-			trainSet.SplitDataSet(testSet, 1.0-config.getTrainpercentage());
+			trainSet.SplitDataSet(testSet, 1.0-config.getTrainingPercentage());
 
 			Instance instance = trainSet.getInstance(0);
 			int classification = u.Classify(instance);

@@ -25,8 +25,14 @@ public class ModulatingMutation implements EvolverStateProcess {
 		if( mutRate > maxMutation){
 			timeSinceLastIncrease = 0;
 		}
-		es.getConfig().setMutationrate(mutRate);
+		es.getConfig().setMutationRate(mutRate);
 		System.out.println("Mutation Rate: " + mutRate);
+		
+	}
+
+	@Override
+	public void Initialize(String parameters) {
+		// TODO Auto-generated method stub
 		
 	}
 

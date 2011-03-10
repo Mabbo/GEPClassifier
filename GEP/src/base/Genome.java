@@ -11,9 +11,9 @@ public class Genome {
 	
 	public Genome(Genome genome) {
 		_conf = genome._conf;
-		_genes = new Gene[_conf.getNumNodeLayers()][];
+		_genes = new Gene[_conf.getNumberLayers()][];
 		//For each layer
-		for( int layer = 0; layer < _conf.getNumNodeLayers(); ++layer) {
+		for( int layer = 0; layer < _conf.getNumberLayers(); ++layer) {
 		//For each node in the layer
 			_genes[layer] = new Gene[_conf.getNodesInLayer(layer)];
 			for( int node = 0; node < _conf.getNodesInLayer(layer); ++node) {
@@ -24,9 +24,9 @@ public class Genome {
 	
 	public void InitializeRandom(){
 		//create a full random dna string to initialize with
-		_genes = new Gene[_conf.getNumNodeLayers()][];
+		_genes = new Gene[_conf.getNumberLayers()][];
 		//For each layer
-		for( int layer = 0; layer < _conf.getNumNodeLayers(); ++layer) {
+		for( int layer = 0; layer < _conf.getNumberLayers(); ++layer) {
 		//For each node in the layer
 			_genes[layer] = new Gene[_conf.getNodesInLayer(layer)];
 			for( int node = 0; node < _conf.getNodesInLayer(layer); ++node) {
