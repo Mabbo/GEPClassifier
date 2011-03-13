@@ -55,9 +55,13 @@ public class Config {
 	//---------------------------------------------------//
 	
 	private EvolverStateProcess FitnessProcess = null;
+	private String FitnessProcessLocation;
 	private double KeepPercentage = 0.75;
 	private SelectionMethod SelectionMethod = null;
+	private String SelectionMethodLocation = "";
 	private ModificationSet ModificationSet = null;
+	private ArrayList<String> mutatorLocations;
+	private ArrayList<String> crossoverLocations;
 	private double MutationRate = 0.1;
 
 	//---------------------------------------------------//
@@ -90,8 +94,47 @@ public class Config {
 		
 		NodeFunctionSet = new FunctionSet();
 		NodeFunctionsLocations = new ArrayList<String>();
+	
+		this.DataSetLoader = null;
+		DataSetLoaderParameterString = "";
+		NumberOfInputs = 1;
+		NumberOfClasses = 1;
+		TrainingPercentage = 1.0;
+		NumberOfRuns = 1;
+		NumberOfGenerations = 1;
+		PopulationSize = 10;
 		
+		NodeHeadSize = 2;
+		NodeTailSize = 0;
+		NodeFunctionsLocations = new ArrayList<String>();
+		NodeFunctionSet = new FunctionSet();
+		NumberRNC = 5;
+		NumberLayers = 0;
+		NodesInLayer = new int[NumberLayers];
+
+		EvolverStateProcess FitnessProcess = null;
+		FitnessProcessLocation = "";
+		KeepPercentage = 0.75;
+		this.SelectionMethod = null;
+		SelectionMethodLocation = "";
+		ModificationSet = new ModificationSet();
+		mutatorLocations = new ArrayList<String>();
+		crossoverLocations = new ArrayList<String>();
+		MutationRate = 0.1;
+
 		
+		StartProcess = new ArrayList<EvolverStateProcess>();
+		StartProcessParameter = new ArrayList<String>();
+		BeforeRunProcess = new ArrayList<EvolverStateProcess>();
+		BeforeRunProcessParameter = new ArrayList<String>();
+		BeforeGenerationProcess = new ArrayList<EvolverStateProcess>();
+		BeforeGenerationProcessParameter = new ArrayList<String>();
+		EndOfGenerationProcess = new ArrayList<EvolverStateProcess>();
+		EndOfGenerationProcessParameter = new ArrayList<String>();
+		EndOfRunProcess = new ArrayList<EvolverStateProcess>();
+		EndOfRunProcessParameter = new ArrayList<String>();
+		EndProcess = new ArrayList<EvolverStateProcess>();
+		EndProcessParameter = new ArrayList<String>();
 		
 	}
 	
@@ -316,12 +359,59 @@ public class Config {
 	public void setEndProcessParameter(ArrayList<String> endProcessParameter) {
 		EndProcessParameter = endProcessParameter;
 	}
-	
+
+	public ArrayList<String> getNodeFunctionsLocations() {
+		return NodeFunctionsLocations;
+	}
+
+	public void setNodeFunctionsLocations(ArrayList<String> nodeFunctionsLocations) {
+		NodeFunctionsLocations = nodeFunctionsLocations;
+	}
+
+	public String getFitnessProcessLocation() {
+		return FitnessProcessLocation;
+	}
+
+	public void setFitnessProcessLocation(String fitnessProcessLocation) {
+		FitnessProcessLocation = fitnessProcessLocation;
+	}
+
+	public String getSelectionMethodLocation() {
+		return SelectionMethodLocation;
+	}
+
+	public void setSelectionMethodLocation(String selectionMethodLocation) {
+		SelectionMethodLocation = selectionMethodLocation;
+	}
+
+	public ArrayList<String> getCrossoverLocations() {
+		return crossoverLocations;
+	}
+
+	public void setCrossoverLocations(ArrayList<String> crossoverLocations) {
+		this.crossoverLocations = crossoverLocations;
+	}
+
 	//---------------------------------------------------//
 
 	byte functionIndexEnd = 0;
 	byte terminalIndexEnd = 0;
 	byte rncIndexEnd = 0;
+	
+	//---------------------------------------------------//
+	
+	public void AddFunction(String funcClassDir, String funcClassName, byte b ){
+		
+		Class<?> funcClass = getClassFromFile(funcClassDir, funcClassName);
+		String funcLocation = funcClassDir + "/" + funcClassName;
+		//Instantiate the function
+		Function function = (Function)createInstanceOf(funcClass);
+		function.setSymbol((byte) b);
+		//Add to the functionset
+		NodeFunctionSet.addFunction(function);
+		NodeFunctionsLocations.add(funcLocation);	
+		
+	}
 	
 	//---------------------------------------------------//
 	
@@ -532,22 +622,13 @@ public class Config {
 			Node funcLocationNode = funcNode.getAttributes()
 				.getNamedItem("location");
 			String funcClassDir = "bin/";
-			String funcLocation = "";
 			if( funcLocationNode != null ) {
 				funcClassDir = funcLocationNode.getNodeValue();
-				funcLocation += funcClassDir + "/";
 			}
-			 
-			//Get the class from the file
 			
-			Class<?> funcClass = getClassFromFile(funcClassDir, funcClassName);
-			funcLocation += funcClassName;
-			//Instantiate the function
-			Function function = (Function)createInstanceOf(funcClass);
-			function.setSymbol((byte) i);
-			//Add to the functionset
-			NodeFunctionSet.addFunction(function);
-			NodeFunctionsLocations.add(funcLocation);
+			//Get the class from the file
+			AddFunction(funcClassDir, funcClassName, (byte)i);
+	
 		}
 		
 		setNodeTailSize();
