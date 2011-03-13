@@ -30,7 +30,7 @@ public class TestMain {
 			//Get the DataSet
 			DataSet trainSet = new DataSet();
 			DataSet testSet = new DataSet();
-			String datafile = config.getDataSetLocation() + "/" + config.getDataSetFilename();
+			String datafile = config.getDataSetFile();
 			dsl.Load(datafile, trainSet, config);
 
 			//split into training set and testing set

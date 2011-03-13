@@ -29,23 +29,22 @@ public class Config {
 
 	//---------------------------------------------------//
 
-	private String Title = null;
-	private String DataSetLocation = null;
-	private String DataSetFilename = null;
+	private String Title = "";
+	private String DataSetFile = null;
 	private String DataSetLoaderLocation = null;
 	private String DataSetLoaderFilename = null;
 	private DataSetLoader DataSetLoader = null;
 	private String DataSetLoaderParameterString = null;
-	private int NumberOfInputs = 0;
-	private int NumberOfClasses = 0;
-	private double TrainingPercentage = 0.0;
-	private int NumberOfRuns = 0;
-	private int NumberOfGenerations = 0;
-	private int PopulationSize = 0;
+	private int NumberOfInputs = 1;
+	private int NumberOfClasses = 1;
+	private double TrainingPercentage = 1.0;
+	private int NumberOfRuns = 1;
+	private int NumberOfGenerations = 1;
+	private int PopulationSize = 10;
 	
 	//---------------------------------------------------//
 	
-	private int NodeHeadSize = 0;
+	private int NodeHeadSize = 2;
 	private int NodeTailSize = 0;
 	private FunctionSet NodeFunctionSet = null;
 	private int NumberRNC = 0;
@@ -55,10 +54,10 @@ public class Config {
 	//---------------------------------------------------//
 	
 	private EvolverStateProcess FitnessProcess = null;
-	private double KeepPercentage = 0.0;
+	private double KeepPercentage = 0.75;
 	private SelectionMethod SelectionMethod = null;
 	private ModificationSet ModificationSet = null;
-	private double MutationRate = 0.0;
+	private double MutationRate = 0.1;
 
 	//---------------------------------------------------//
 	
@@ -80,6 +79,21 @@ public class Config {
 		UNKNOWN;
 	};
 	
+	
+	public Config() {
+		Title = "";
+		DataSetFile = "";
+		DataSetLoaderLocation = "";
+		DataSetLoaderFilename = "";
+		DataSetLoaderParameterString = "";	
+		
+		NodeFunctionSet = new FunctionSet();
+		
+		
+		
+		
+	}
+	
 	//---------------Getters and Setters-----------------//
 	
 	public String getTitle(){
@@ -88,17 +102,11 @@ public class Config {
 	public void setTitle(String value) {
 		Title = value;
 	}
-	public String getDataSetLocation() {
-		return DataSetLocation;
+	public String getDataSetFile() {
+		return DataSetFile;
 	}
-	public void setDataSetLocation(String dataSetLocation) {
-		DataSetLocation = dataSetLocation;
-	}
-	public String getDataSetFilename() {
-		return DataSetFilename;
-	}
-	public void setDataSetFilename(String dataSetFilename) {
-		DataSetFilename = dataSetFilename;
+	public void setDataSetFile(String dataSetLocation) {
+		DataSetFile = dataSetLocation;
 	}
 	public String getDataSetLoaderLocation() {
 		return DataSetLoaderLocation;
@@ -390,8 +398,7 @@ public class Config {
 	
 	private void LoadDataSetInformation() throws XPathExpressionException{
 		Title = getStringValue("//Title");
-		DataSetLocation = getStringValue("//DataSet/FileLocation");
-		DataSetFilename = getStringValue("//DataSet/FileName");
+		DataSetFile = getStringValue("//DataSet/File");
 		TrainingPercentage = getDoubleValue("//DataSet/TrainPercentage");
 				
 		Node dslnode = getNode("//DataSet/DataSetLoader");

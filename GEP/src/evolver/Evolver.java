@@ -26,7 +26,7 @@ public class Evolver {
 		//Get the DataSet
 		DataSet trainSet = new DataSet();
 		DataSet testSet = new DataSet();
-		String datafile = conf.getDataSetLocation() + "/" + conf.getDataSetFilename();
+		String datafile = conf.getDataSetFile();
 		dsl.Load(datafile, trainSet, conf);
 
 		//split into training set and testing set
