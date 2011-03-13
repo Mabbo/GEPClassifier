@@ -1,18 +1,30 @@
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
 public class ESPLoaderPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<String> classes = null;
+	private ArrayList<String> parameters = null;
 	GridBagLayout layout;
 	GridBagConstraints cons;
+
+	private final double TITLE_WEIGHT = 0.0;
+	private final double TEXT_WEIGHT = 0.80;
+	private final double DELETE_WEIGHT = 0.1;
+	
 	
 	public ESPLoaderPanel(){ 
 		layout = new GridBagLayout();
@@ -23,10 +35,12 @@ public class ESPLoaderPanel extends JPanel {
 		cons.gridwidth = 1;
 		cons.gridheight = 1;
 		cons.weighty = 100;
-		cons.anchor = GridBagConstraints.WEST;
+		cons.anchor = GridBagConstraints.NORTHWEST;
+		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.insets = new Insets(1, 1, 1, 1);
 		
 		classes = new ArrayList<String>();
+		parameters = new ArrayList<String>();
 		Redraw();
 	}
 	
@@ -35,39 +49,74 @@ public class ESPLoaderPanel extends JPanel {
 		this.removeAll();
 		int ItemGridY = 0;	
 		//For each item in the arraylist,
-		for( String s : classes ) {
-			//make a new textfield, and removable button
+		for( int i = 0; i < classes.size(); ++i ) {
+			
 			cons.gridy = ItemGridY;
 			cons.gridx = 0;
-			cons.weightx = 100;
+			cons.weightx = TITLE_WEIGHT;
+			cons.fill = GridBagConstraints.NONE;
+			JLabel lblProc = new JLabel("Process");
+			layout.setConstraints(lblProc, cons);
+			add(lblProc);
+			
+			cons.gridx = 1;
+			cons.fill = GridBagConstraints.HORIZONTAL;
+			cons.weightx = TEXT_WEIGHT;
 			JTextField text = new JTextField();
-			text.setText(s);
+			text.setText( classes.get(i) );
 			text.setEditable(false);
 			layout.setConstraints(text, cons);
 			add(text);
-			JButton button = new JButton("Remove");
-			cons.gridx = 1;
-			cons.weightx = 20;
+			
+			JButton button = new JButton("X");
+			cons.gridx = 2;
+			cons.weightx = DELETE_WEIGHT;
+			cons.gridheight = 2;
+			cons.fill = GridBagConstraints.BOTH;
 			layout.setConstraints(button, cons);
 			add(button);
+			cons.gridheight = 1;
+			cons.fill = GridBagConstraints.HORIZONTAL;	
+			
 			ItemGridY++;
+
+			cons.gridy = ItemGridY;
+			cons.gridx = 0;
+			cons.weightx = TITLE_WEIGHT;
+			cons.fill = GridBagConstraints.NONE;
+			JLabel lblparam = new JLabel("Parameters");
+			layout.setConstraints(lblparam, cons);
+			add(lblparam);
+			
+			cons.gridx = 1;
+			cons.weightx = TEXT_WEIGHT;
+			cons.fill = GridBagConstraints.HORIZONTAL;
+			JTextField paramsField = new JTextField();
+			paramsField.setText(parameters.get(i));
+			layout.setConstraints(paramsField,cons);
+			add(paramsField);
+			ItemGridY++;	
 		}
 		
 		cons.gridy = ItemGridY;
 		cons.gridx = 0;
-		cons.weightx = 100;
+		cons.weightx = 0;
 		
 		JButton addButton = new JButton("Add Process");
 		layout.setConstraints(addButton, cons);
 		add(addButton);
 	}
 	
-	public void AddClass(String location){
+	public void AddProcess(String location, String parameter){
 		classes.add(location);
+		parameters.add(parameter);
 	}
 
-	public ArrayList<String> getClassNames(){
+	public ArrayList<String> getESPs(){
 		return classes;
+	}
+	public ArrayList<String> getParameters(){
+		return parameters;
 	}
 	
 	

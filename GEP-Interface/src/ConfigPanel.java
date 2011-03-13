@@ -2,6 +2,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -86,8 +87,23 @@ public class ConfigPanel extends JPanel {
 
 	//--------------------------------------//
 
+	private JLabel lblStartProcess;
+	private ESPLoaderPanel esplpStartProcess;
 	
+	private JLabel lblEndProcess;
+	private ESPLoaderPanel esplpEndProcess;
 	
+	private JLabel lblBeforeRunProcess;
+	private ESPLoaderPanel esplpBeforeRunProcess;
+	
+	private JLabel lblEndOfRunProcess;
+	private ESPLoaderPanel esplpEndOfRunProcess;
+	
+	private JLabel lblBeforeGenerationProcess;
+	private ESPLoaderPanel esplpBeforeGenerationProcess;
+	
+	private JLabel lblEndOfGenerationProcess;
+	private ESPLoaderPanel esplpEndOfGenerationProcess;
 	
 	//--------------------------------------//
 	
@@ -101,8 +117,8 @@ public class ConfigPanel extends JPanel {
 		UpdateView();
 	}
 	
-	private final int LeftWeight = 100;
-	private final int RightWeight = 80;
+	private final double LeftWeight = 0.2;
+	private final double RightWeight = 0.80;
 	private final int WeightY = 1;
 	private final int TextFieldWidth = 15;
 	private int currentY = 0;
@@ -110,16 +126,22 @@ public class ConfigPanel extends JPanel {
 	GridBagLayout layout = null;
 	GridBagConstraints cons = null;
 	
+	public void setConfig(Config conf){
+		config = conf;
+		UpdateView();
+	}
+	
 	public void LoadVisualItems(){
 	
 		layout = new GridBagLayout();
 		cons = new GridBagConstraints();
 		setLayout(layout);
 		
+		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.gridwidth = 1;
 		cons.gridheight = 1;
 		cons.weighty = WeightY;
-		cons.anchor = GridBagConstraints.WEST;
+		cons.anchor = GridBagConstraints.NORTHWEST;
 		cons.insets = new Insets(10, 5, 10, 5);
 		
 		//-------
@@ -167,8 +189,6 @@ public class ConfigPanel extends JPanel {
 		
 		lblFunctionSet = new JLabel("Functions");
 		fslblFunctionSet = new ClassSetPanel<framework.Function>("Function");
-		fslblFunctionSet.AddClass("TestFunction/Location.class");
-		fslblFunctionSet.AddClass("TestFunction/Test2.class");
 		fslblFunctionSet.Redraw();
 		AddItem(lblFunctionSet, fslblFunctionSet);
 
@@ -187,12 +207,10 @@ public class ConfigPanel extends JPanel {
 		
 		lblNumLayers = new JLabel("Number of Layers");
 		txtNumLayers = new JTextField(TextFieldWidth);
-		txtNumLayers.setText("2");
 		AddItem(lblNumLayers, txtNumLayers);
 		
 		lblLayers = new JLabel("Layers");
 		lcpanel = new LayerControlPanel();
-		lcpanel.SetNumberOfLayers(2);
 		AddItem(lblLayers, lcpanel);
 		
 		lblFitnessProcess = new JLabel("Fitness Process");
@@ -220,6 +238,30 @@ public class ConfigPanel extends JPanel {
 		lblCrossovers = new JLabel("Crossovers");
 		cspCrossovers = new ClassSetPanel<Crossover>("Crossover");
 		AddItem(lblCrossovers, cspCrossovers);
+	
+		lblStartProcess = new JLabel("Start Processes");
+		esplpStartProcess = new ESPLoaderPanel();
+		AddItem(lblStartProcess, esplpStartProcess);
+	
+		lblEndProcess = new JLabel("End Processes");
+		esplpEndProcess = new ESPLoaderPanel();
+		AddItem(lblEndProcess, esplpEndProcess);
+		
+		lblBeforeRunProcess = new JLabel("Start of Run Processes");
+		esplpBeforeRunProcess = new ESPLoaderPanel();
+		AddItem(lblBeforeRunProcess, esplpBeforeRunProcess);
+		
+		lblEndOfRunProcess = new JLabel("End of Run Processes");
+		esplpEndOfRunProcess = new ESPLoaderPanel();
+		AddItem(lblEndOfRunProcess, esplpEndOfRunProcess);
+		
+		lblBeforeGenerationProcess = new JLabel("Start of Generation Processes");
+		esplpBeforeGenerationProcess = new ESPLoaderPanel();
+		AddItem(lblBeforeGenerationProcess, esplpBeforeGenerationProcess);
+		
+		lblEndOfGenerationProcess = new JLabel("End of Generation Processes");
+		esplpEndOfGenerationProcess = new ESPLoaderPanel();
+		AddItem(lblEndOfGenerationProcess, esplpEndOfGenerationProcess);
 		
 	}
 	
@@ -285,8 +327,42 @@ public class ConfigPanel extends JPanel {
 	}
 	
 	public void UpdateView(){
-	
+		txtTitle.setText(config.getTitle());
+		txtDataSet.setText(config.getDataSetFile());
+		txtDataSetLoader.setText(config.getDataSetLoaderLocation() + config.getDataSetLoaderFilename());
+		txtDataSetLoaderParameters.setText(config.getDataSetLoaderParameterString());
+		
+		txtNumInputs.setText(config.getNumberOfInputs()+"");
+		txtNumClasses.setText(config.getNumberOfClasses() + "");
+		txtTrainPercentage.setText(config.getTrainingPercentage()+"");
+		txtNumberOfRuns.setText(config.getNumberOfRuns()+"");
+		txtNumberOfGenerations.setText(config.getNumberOfGenerations()+"");
+		txtPopulationSize.setText(config.getPopulationSize()+"");
+		
+		txtNodeHeadSize.setText(config.getNodeHeadSize()+"");
+		txtNodeTailSize.setText(config.getNodeTailSize()+"");
+		fslblFunctionSet.Clear();
+		ArrayList<String> functionLocs = config.getNodeFunctionLocations();
+		for(int i = 0; i < config.getNodeFunctionSet().size();++i){
+			fslblFunctionSet.AddClass(functionLocs.get(i));			
+		}
+		fslblFunctionSet.Redraw();
+		
+		txtNumberRNC.setText(""+ config.getNumberOfRuns());
+		txtNumLayers.setText(""+ config.getNumberLayers());
+		lcpanel.SetNumberOfLayers(0);
+		ArrayList<Integer> alist = new ArrayList<Integer>();
+		for(int i = 0; i < config.getNumberLayers();++i){
+			alist.add( config.getNodesInLayer(i) );
+		}
+		lcpanel.SetLayers(alist);
+		
+		
+		
+		
+		
+		
+		
+		this.revalidate();
 	}
-	
-	
 }

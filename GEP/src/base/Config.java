@@ -46,6 +46,7 @@ public class Config {
 	
 	private int NodeHeadSize = 2;
 	private int NodeTailSize = 0;
+	private ArrayList<String> NodeFunctionsLocations = null;
 	private FunctionSet NodeFunctionSet = null;
 	private int NumberRNC = 0;
 	private int NumberLayers = 0;
@@ -88,7 +89,7 @@ public class Config {
 		DataSetLoaderParameterString = "";	
 		
 		NodeFunctionSet = new FunctionSet();
-		
+		NodeFunctionsLocations = new ArrayList<String>();
 		
 		
 		
@@ -182,6 +183,12 @@ public class Config {
 	}
 	public void setNodeFunctionSet(FunctionSet nodeFunctionSet) {
 		NodeFunctionSet = nodeFunctionSet;
+	}
+	public ArrayList<String> getNodeFunctionLocations(){
+		return NodeFunctionsLocations;
+	}
+	public void setNodeFunctionLocations(ArrayList<String> ar){
+		NodeFunctionsLocations = ar;
 	}
 	public int getNumberRNC() {
 		return NumberRNC;
@@ -525,16 +532,22 @@ public class Config {
 			Node funcLocationNode = funcNode.getAttributes()
 				.getNamedItem("location");
 			String funcClassDir = "bin/";
+			String funcLocation = "";
 			if( funcLocationNode != null ) {
 				funcClassDir = funcLocationNode.getNodeValue();
+				funcLocation += funcClassDir + "/";
 			}
+			 
 			//Get the class from the file
+			
 			Class<?> funcClass = getClassFromFile(funcClassDir, funcClassName);
+			funcLocation += funcClassName;
 			//Instantiate the function
 			Function function = (Function)createInstanceOf(funcClass);
 			function.setSymbol((byte) i);
 			//Add to the functionset
-			NodeFunctionSet.addFunction(function);		
+			NodeFunctionSet.addFunction(function);
+			NodeFunctionsLocations.add(funcLocation);
 		}
 		
 		setNodeTailSize();

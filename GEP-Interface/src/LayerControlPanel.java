@@ -33,6 +33,7 @@ public class LayerControlPanel extends JPanel {
 		layers = new ArrayList<Integer>();
 		layout = new GridBagLayout();
 		cons = new GridBagConstraints();
+		
 		cons.gridwidth = 1;
 		cons.gridheight = 1;
 		cons.weighty = 100;

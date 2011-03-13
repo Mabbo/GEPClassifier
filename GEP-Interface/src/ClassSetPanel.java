@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,10 +23,9 @@ public class ClassSetPanel<T> extends JPanel {
 		cons = new GridBagConstraints();
 		
 		this.setLayout(layout);
-		
+		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.gridwidth = 1;
 		cons.gridheight = 1;
-		cons.weighty = 100;
 		cons.anchor = GridBagConstraints.WEST;
 		cons.insets = new Insets(1, 1, 1, 1);
 		
@@ -42,15 +42,15 @@ public class ClassSetPanel<T> extends JPanel {
 			//make a new textfield, and removable button
 			cons.gridy = ItemGridY;
 			cons.gridx = 0;
-			cons.weightx = 100;
 			JTextField text = new JTextField();
+			text.setColumns(25);
 			text.setText(s);
 			text.setEditable(false);
 			layout.setConstraints(text, cons);
 			add(text);
-			JButton button = new JButton("Remove");
+			
+			JButton button = new JButton("X");
 			cons.gridx = 1;
-			cons.weightx = 20;
 			layout.setConstraints(button, cons);
 			add(button);
 			ItemGridY++;
@@ -58,8 +58,6 @@ public class ClassSetPanel<T> extends JPanel {
 		
 		cons.gridy = ItemGridY;
 		cons.gridx = 0;
-		cons.weightx = 100;
-		
 		JButton addButton = new JButton("Add " + className);
 		layout.setConstraints(addButton, cons);
 		add(addButton);
@@ -71,6 +69,11 @@ public class ClassSetPanel<T> extends JPanel {
 
 	public ArrayList<String> getClassNames(){
 		return classes;
+	}
+	
+	public void Clear(){
+		classes = new ArrayList<String>();
+		Redraw();
 	}
 	
 }
