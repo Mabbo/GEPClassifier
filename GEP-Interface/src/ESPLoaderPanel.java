@@ -7,16 +7,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class FunctionSetLabel extends JPanel {
 
-	private static final long serialVersionUID = -6140559806394687680L;
+public class ESPLoaderPanel extends JPanel {
 
-	private ArrayList<String> functionClasses = null;
-	
+	private ArrayList<String> classes = null;
 	GridBagLayout layout;
 	GridBagConstraints cons;
 	
-	public FunctionSetLabel(){
+	public ESPLoaderPanel(){ 
 		layout = new GridBagLayout();
 		cons = new GridBagConstraints();
 		
@@ -28,15 +26,16 @@ public class FunctionSetLabel extends JPanel {
 		cons.anchor = GridBagConstraints.WEST;
 		cons.insets = new Insets(1, 1, 1, 1);
 		
-		functionClasses = new ArrayList<String>();
+		classes = new ArrayList<String>();
+		Redraw();
 	}
 	
-	public void UpdateFunctions() {
+	public void Redraw() {
 		//clear the panel.
 		this.removeAll();
 		int ItemGridY = 0;	
 		//For each item in the arraylist,
-		for( String s : functionClasses ) {
+		for( String s : classes ) {
 			//make a new textfield, and removable button
 			cons.gridy = ItemGridY;
 			cons.gridx = 0;
@@ -57,17 +56,19 @@ public class FunctionSetLabel extends JPanel {
 		cons.gridy = ItemGridY;
 		cons.gridx = 0;
 		cons.weightx = 100;
-		JButton addButton = new JButton("Add Function");
+		
+		JButton addButton = new JButton("Add Process");
 		layout.setConstraints(addButton, cons);
 		add(addButton);
 	}
 	
-	public void AddFunction(String location){
-		functionClasses.add(location);
+	public void AddClass(String location){
+		classes.add(location);
 	}
 
-	public ArrayList<String> getFunctionClasses(){
-		return functionClasses;
+	public ArrayList<String> getClassNames(){
+		return classes;
 	}
+	
 	
 }

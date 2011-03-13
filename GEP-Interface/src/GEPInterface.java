@@ -35,7 +35,7 @@ public class GEPInterface extends JFrame {
 		super("GEP Interface");
 		config = new Config();
 		InitializeMainPanel();
-		
+		this.setLocation(200, 100);
 	}
 	
 	//---------visual stuff-----------------//

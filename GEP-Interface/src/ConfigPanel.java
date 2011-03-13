@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import base.Config;
 
+import framework.*;
 
 public class ConfigPanel extends JPanel {
 	private JLabel lblTitle;
@@ -50,8 +51,41 @@ public class ConfigPanel extends JPanel {
 	private JTextField txtNodeTailSize;
 	
 	private JLabel lblFunctionSet;
-	private FunctionSetLabel fslblFunctionSet;
+	private ClassSetPanel<Function> fslblFunctionSet;
 	
+	private JLabel lblNumberRNC;
+	private JTextField txtNumberRNC;	
+	
+	private JLabel lblNumLayers;
+	private JTextField txtNumLayers;
+	
+	private JLabel lblLayers;
+	private LayerControlPanel lcpanel;
+	
+	//--------------------------------------//
+	
+	private JLabel lblFitnessProcess;
+	private JTextField txtFitnessProcess;
+	private JButton butFitnessProcess;
+	
+	private JLabel lblKeepPercentage;
+	private JTextField txtKeepPercentage;
+	
+	private JLabel lblSelectionMethod;
+	private JTextField txtSelectionProcess;
+	private JButton butSelectionProcess;
+	
+	private JLabel lblMutators;
+	private ClassSetPanel<Mutator> cspMutators;
+	
+	private JLabel lblCrossovers;
+	private ClassSetPanel<Crossover> cspCrossovers;
+	
+	private JLabel lblMutationRate;
+	private JTextField txtMutationRate;
+
+	//--------------------------------------//
+
 	
 	
 	
@@ -132,15 +166,60 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblPopulationSize, txtPopulationSize);
 		
 		lblFunctionSet = new JLabel("Functions");
-		fslblFunctionSet = new FunctionSetLabel();
-		fslblFunctionSet.AddFunction("TestFunction/Location.class");
-		fslblFunctionSet.AddFunction("TestFunction/Test2.class");
-		fslblFunctionSet.UpdateFunctions();
+		fslblFunctionSet = new ClassSetPanel<framework.Function>("Function");
+		fslblFunctionSet.AddClass("TestFunction/Location.class");
+		fslblFunctionSet.AddClass("TestFunction/Test2.class");
+		fslblFunctionSet.Redraw();
 		AddItem(lblFunctionSet, fslblFunctionSet);
+
+		lblNodeHeadSize = new JLabel("Head Size");
+		txtNodeHeadSize = new JTextField(TextFieldWidth);
+		AddItem(lblNodeHeadSize, txtNodeHeadSize);
 		
+		lblNodeTailSize = new JLabel("Tail Size");
+		txtNodeTailSize = new JTextField(TextFieldWidth);
+		txtNodeTailSize.setEditable(false);
+		AddItem(lblNodeTailSize, txtNodeTailSize);
 		
+		lblNumberRNC = new JLabel("Number of RNCs");
+		txtNumberRNC = new JTextField(TextFieldWidth);
+		AddItem(lblNumberRNC, txtNumberRNC);
 		
-		//-------
+		lblNumLayers = new JLabel("Number of Layers");
+		txtNumLayers = new JTextField(TextFieldWidth);
+		txtNumLayers.setText("2");
+		AddItem(lblNumLayers, txtNumLayers);
+		
+		lblLayers = new JLabel("Layers");
+		lcpanel = new LayerControlPanel();
+		lcpanel.SetNumberOfLayers(2);
+		AddItem(lblLayers, lcpanel);
+		
+		lblFitnessProcess = new JLabel("Fitness Process");
+		txtFitnessProcess = new JTextField(TextFieldWidth);
+		butFitnessProcess = new JButton("Load Fitness Process");
+		AddItem(lblFitnessProcess, txtFitnessProcess, butFitnessProcess);
+		
+		lblKeepPercentage = new JLabel("Keep Percentage");
+		txtKeepPercentage = new JTextField(TextFieldWidth);
+		AddItem(lblKeepPercentage, txtKeepPercentage);
+		
+		lblSelectionMethod = new JLabel("Selection Process");
+		txtSelectionProcess = new JTextField(TextFieldWidth);
+		butSelectionProcess = new JButton("Load Selection Process");
+		AddItem(lblSelectionMethod, txtSelectionProcess, butSelectionProcess);
+	
+		lblMutators = new JLabel("Mutators");
+		cspMutators = new ClassSetPanel<Mutator>("Mutator");
+		AddItem(lblMutators, cspMutators);
+		
+		lblMutationRate = new JLabel("Mutation Rate");
+		txtMutationRate = new JTextField(TextFieldWidth);
+		AddItem(lblMutationRate, txtMutationRate);
+		
+		lblCrossovers = new JLabel("Crossovers");
+		cspCrossovers = new ClassSetPanel<Crossover>("Crossover");
+		AddItem(lblCrossovers, cspCrossovers);
 		
 	}
 	
