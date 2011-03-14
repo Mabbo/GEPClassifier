@@ -13,7 +13,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-import base.Config;
 
 /***
  * 
@@ -34,7 +33,7 @@ import base.Config;
 public class GEPInterface extends JFrame {
 	private static final long serialVersionUID = 3544476936851462325L;
 	
-	Config config = null;
+	ConfigModel config = null;
 	ConfigPanel configPanel;
 	
 	private final int Width = 600;
@@ -42,7 +41,7 @@ public class GEPInterface extends JFrame {
 	
 	public GEPInterface(){
 		super("GEP Interface");
-		config = new Config();
+		config = new ConfigModel();
 		InitializeMenu();
 		InitializeMainPanel();
 		this.setLocation(200, 100);
@@ -110,8 +109,7 @@ public class GEPInterface extends JFrame {
 		if( retval == JFileChooser.APPROVE_OPTION ){
 			try{
 				String filename = chooser.getSelectedFile().getAbsolutePath();
-				config = new Config();
-				config.LoadConfigurationFile(filename);
+				config = ConfigModel.OpenConfig(filename);
 				configPanel.setConfig(config);
 				this.repaint();
 			}catch(Exception ex){

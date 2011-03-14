@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import base.Config;
-
 import framework.*;
 
 public class ConfigPanel extends JPanel {
@@ -47,9 +45,6 @@ public class ConfigPanel extends JPanel {
 	
 	private JLabel lblNodeHeadSize;
 	private JTextField txtNodeHeadSize;
-	
-	private JLabel lblNodeTailSize;
-	private JTextField txtNodeTailSize;
 	
 	private JLabel lblFunctionSet;
 	private ClassSetPanel<Function> fslblFunctionSet;
@@ -108,9 +103,9 @@ public class ConfigPanel extends JPanel {
 	//--------------------------------------//
 	
 	
-	private Config config = null;
+	private ConfigModel config = null;
 	
-	public ConfigPanel(Config config){
+	public ConfigPanel(ConfigModel config){
 		super();
 		this.config = config;
 		LoadVisualItems();
@@ -126,7 +121,7 @@ public class ConfigPanel extends JPanel {
 	GridBagLayout layout = null;
 	GridBagConstraints cons = null;
 	
-	public void setConfig(Config conf){
+	public void setConfig(ConfigModel conf){
 		config = conf;
 		UpdateView();
 	}
@@ -195,11 +190,6 @@ public class ConfigPanel extends JPanel {
 		lblNodeHeadSize = new JLabel("Head Size");
 		txtNodeHeadSize = new JTextField(TextFieldWidth);
 		AddItem(lblNodeHeadSize, txtNodeHeadSize);
-		
-		lblNodeTailSize = new JLabel("Tail Size");
-		txtNodeTailSize = new JTextField(TextFieldWidth);
-		txtNodeTailSize.setEditable(false);
-		AddItem(lblNodeTailSize, txtNodeTailSize);
 		
 		lblNumberRNC = new JLabel("Number of RNCs");
 		txtNumberRNC = new JTextField(TextFieldWidth);
@@ -340,11 +330,9 @@ public class ConfigPanel extends JPanel {
 		txtPopulationSize.setText(config.getPopulationSize()+"");
 		
 		txtNodeHeadSize.setText(config.getNodeHeadSize()+"");
-		txtNodeTailSize.setText(config.getNodeTailSize()+"");
 		fslblFunctionSet.Clear();
-		ArrayList<String> functionLocs = config.getNodeFunctionLocations();
-		for(int i = 0; i < config.getNodeFunctionSet().size();++i){
-			fslblFunctionSet.AddClass(functionLocs.get(i));			
+		for(int i = 0; i < config.getFunctionLocations().size();++i){
+			fslblFunctionSet.AddClass(config.getFunctionLocations().get(i) + "/" + config.getFunctionFiles());			
 		}
 		fslblFunctionSet.Redraw();
 		
@@ -353,7 +341,7 @@ public class ConfigPanel extends JPanel {
 		lcpanel.SetNumberOfLayers(0);
 		ArrayList<Integer> alist = new ArrayList<Integer>();
 		for(int i = 0; i < config.getNumberLayers();++i){
-			alist.add( config.getNodesInLayer(i) );
+			alist.add( config.getNodesInLayer()[i] );
 		}
 		lcpanel.SetLayers(alist);
 		
