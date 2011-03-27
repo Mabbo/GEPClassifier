@@ -1,7 +1,6 @@
 package evolver;
 
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -126,12 +125,13 @@ public class Evolver {
 				//Fitness test for each population member
 				conf.getFitnessProcess().Process(es);
 				if(isKilled()) return;
+				
 				//Sort by fitness
 				Collections.sort(population);
+				
 				//Select using selection method
 				SelectionMethod sel = conf.getSelectionMethod();
-				double keepFraction = conf.getKeepPercentage();
-				sel.RemovePopulation(keepFraction, es);
+				sel.RemovePopulation(es);
 				if(isKilled()) return;
 				//Breed and Mutate
 				int popSize = population.size();

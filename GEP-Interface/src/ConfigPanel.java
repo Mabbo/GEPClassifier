@@ -2,7 +2,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -49,7 +48,7 @@ public class ConfigPanel extends JPanel {
 	private JTextField txtNodeHeadSize;
 	
 	private JLabel lblFunctionSet;
-	private ClassSetPanel<Function> fslblFunctionSet;
+	private ClassSetPanel fslblFunctionSet;
 	
 	private JLabel lblNumberRNC;
 	private JTextField txtNumberRNC;	
@@ -74,10 +73,10 @@ public class ConfigPanel extends JPanel {
 	private JButton butSelectionProcess;
 	
 	private JLabel lblMutators;
-	private ClassSetPanel<Mutator> cspMutators;
+	private ModifierSetPanel cspMutators;
 	
 	private JLabel lblCrossovers;
-	private ClassSetPanel<Crossover> cspCrossovers;
+	private ModifierSetPanel cspCrossovers;
 	
 	private JLabel lblMutationRate;
 	private JTextField txtMutationRate;
@@ -187,7 +186,7 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblPopulationSize, txtPopulationSize);
 		
 		lblFunctionSet = new JLabel("Functions");
-		fslblFunctionSet = new ClassSetPanel<framework.Function>("Function");
+		fslblFunctionSet = new ClassSetPanel("Function");
 		fslblFunctionSet.Redraw();
 		AddItem(lblFunctionSet, fslblFunctionSet);
 
@@ -222,7 +221,7 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblSelectionMethod, txtSelectionProcess, butSelectionProcess);
 	
 		lblMutators = new JLabel("Mutators");
-		cspMutators = new ClassSetPanel<Mutator>("Mutator");
+		cspMutators = new ModifierSetPanel("Mutator");
 		AddItem(lblMutators, cspMutators);
 		
 		lblMutationRate = new JLabel("Mutation Rate");
@@ -230,7 +229,7 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblMutationRate, txtMutationRate);
 		
 		lblCrossovers = new JLabel("Crossovers");
-		cspCrossovers = new ClassSetPanel<Crossover>("Crossover");
+		cspCrossovers = new ModifierSetPanel("Crossover");
 		AddItem(lblCrossovers, cspCrossovers);
 	
 		lblStartProcess = new JLabel("Start Processes");
@@ -323,8 +322,8 @@ public class ConfigPanel extends JPanel {
 	public void UpdateView(){
 		txtTitle.setText(config.getTitle());
 		txtDataSet.setText(config.getDataSetFile());
-		txtDataSetLoader.setText(config.getDataSetLoaderLocation() + config.getDataSetLoaderFilename());
-		txtDataSetLoaderParameters.setText(config.getDataSetLoaderParameterString());
+		txtDataSetLoader.setText(config.getDataSetLoader().dir + config.getDataSetLoader().file);
+		txtDataSetLoaderParameters.setText(config.getDataSetLoader().param);
 		
 		txtNumInputs.setText(config.getNumberOfInputs()+"");
 		txtNumClasses.setText(config.getNumberOfClasses() + "");
@@ -335,8 +334,8 @@ public class ConfigPanel extends JPanel {
 		
 		txtNodeHeadSize.setText(config.getNodeHeadSize()+"");
 		fslblFunctionSet.Clear();
-		for(int i = 0; i < config.getFunctionLocations().size();++i){
-			fslblFunctionSet.AddClass(config.getFunctionLocations().get(i) + config.getFunctionFiles().get(i));			
+		for(int i = 0; i < config.getFunctions().size();++i){
+			fslblFunctionSet.AddClass(config.getFunctions().get(i).file);			
 		}
 		fslblFunctionSet.Redraw();
 		
@@ -349,58 +348,68 @@ public class ConfigPanel extends JPanel {
 		}
 		lcpanel.SetLayers(alist);
 		
-		txtFitnessProcess.setText(config.getFitnessProcessFile());
+		txtFitnessProcess.setText(config.getFitnessProcess().file);
 		
 		txtKeepPercentage.setText("" + config.getKeepPercentage() );
 		
-		txtSelectionProcess.setText(config.getSelectionMethodFile());
+		txtSelectionProcess.setText(config.getSelectionMethod().file);
 		
-		//load the mutators
+		//load the mutators and crossovers
 		
-		for(int i = 0; i < config.getMutatorFiles().size();++i){
-			cspMutators.AddClass(config.getMutatorFiles().get(i));			
+		for( int i = 0; i < config.getCrossovers().size(); ++i){
+			cspCrossovers.AddClass(config.getCrossovers().get(i).file, 
+								   config.getCrossovers().get(i).weight);
+		}
+		cspCrossovers.Redraw();
+		
+		for(int i = 0; i < config.getMutators().size();++i){
+			cspMutators.AddClass(config.getMutators().get(i).file,
+						 	 	 config.getMutators().get(i).weight);			
 		}
 		cspMutators.Redraw();
 		
 		txtMutationRate.setText("" + config.getMutationRate());
 		
-		for( int i = 0; i < config.getStartProcessFiles().size(); ++i){
-			esplpStartProcess.AddProcess(config.getStartProcessFiles().get(i),
-										 config.getStartProcessParameter().get(i));
+		for( int i = 0; i < config.getStartProcesses().size(); ++i){
+			esplpStartProcess.AddProcess(config.getStartProcesses().get(i).file,
+										 config.getStartProcesses().get(i).param);
 		}
 		esplpStartProcess.Redraw();
 		
-		for( int i = 0; i < config.getEndProcessFiles().size(); ++i){
-			esplpEndProcess.AddProcess(config.getEndProcessFiles().get(i),
-										 config.getEndProcessParameter().get(i));
+		for( int i = 0; i < config.getEndProcesses().size(); ++i){
+			esplpEndProcess.AddProcess(config.getEndProcesses().get(i).file,
+										 config.getEndProcesses().get(i).param);
 		}
 		esplpEndProcess.Redraw();
 		
-		for( int i = 0; i < config.getBeforeRunProcessFiles().size(); ++i){
-			esplpBeforeRunProcess.AddProcess(config.getBeforeRunProcessFiles().get(i),
-										 config.getBeforeRunProcessParameter().get(i));
+		for( int i = 0; i < config.getBeforeRunProcesses().size(); ++i){
+			esplpBeforeRunProcess.AddProcess(config.getBeforeRunProcesses().get(i).file,
+										 config.getBeforeRunProcesses().get(i).param);
 		}
 		esplpBeforeRunProcess.Redraw();
 		
-		for( int i = 0; i < config.getBeforeGenerationProcessFiles().size(); ++i){
-			esplpBeforeGenerationProcess.AddProcess(config.getBeforeGenerationProcessFiles().get(i),
-										 config.getBeforeGenerationProcessParameter().get(i));
+		for( int i = 0; i < config.getBeforeGenerationProcesses().size(); ++i){
+			esplpBeforeGenerationProcess.AddProcess(config.getBeforeGenerationProcesses().get(i).file,
+										 config.getBeforeGenerationProcesses().get(i).param);
 		}
 		esplpBeforeGenerationProcess.Redraw();
 		
-		for( int i = 0; i < config.getEndOfGenerationProcessFiles().size(); ++i){
-			esplpEndOfGenerationProcess.AddProcess(config.getEndOfGenerationProcessFiles().get(i),
-										 config.getEndOfGenerationProcessParameter().get(i));
+		for( int i = 0; i < config.getEndOfGenerationProcesses().size(); ++i){
+			esplpEndOfGenerationProcess.AddProcess(config.getEndOfGenerationProcesses().get(i).file,
+										 config.getEndOfGenerationProcesses().get(i).param);
 		}
 		esplpEndOfGenerationProcess.Redraw();
 		
-		for( int i = 0; i < config.getEndOfRunProcessFiles().size(); ++i){
-			esplpEndOfRunProcess.AddProcess(config.getEndOfRunProcessFiles().get(i),
-										 config.getEndOfRunProcessParameter().get(i));
+		for( int i = 0; i < config.getEndOfRunProcesses().size(); ++i){
+			esplpEndOfRunProcess.AddProcess(config.getEndOfRunProcesses().get(i).file,
+										 config.getEndOfRunProcesses().get(i).param);
 		}
 		esplpEndOfRunProcess.Redraw();
 		
 		this.revalidate();
+		
 	}
+	
+	
 	
 }

@@ -14,8 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
 
-import base.Config;
-
 import evolver.Evolver;
 
 
@@ -44,8 +42,6 @@ public class GEPInterface extends JFrame {
 	private LaunchPanel launchPanel;
 	private GridBagLayout layout = null;
 	private GridBagConstraints cons = null;
-	
-	private boolean EvolverIsRunning = false;
 	
 	private final int Width = 1000;
 	private final int Height = 660;
@@ -97,11 +93,6 @@ public class GEPInterface extends JFrame {
 		cons.weighty = 0.9;
 		cons.fill = GridBagConstraints.BOTH;
 		configPanel = new ConfigPanel(config);
-		//configPanel.setLaunchAction(new ActionListener(){
-		//	public void actionPerformed(ActionEvent arg0) {
-		//		Launch();
-		//	}
-		//});
 		scrollPane = new JScrollPane(configPanel,
 	            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -213,14 +204,13 @@ public class GEPInterface extends JFrame {
 	public void Quit(){
 		System.exit(0);
 	}
-		
 	
 	private EvolverThread et = null; 
 	
 	public void Launch() {
-		EvolverIsRunning = true;
 		SaveConfigFile();
 
+		launchPanel.setLaunched();
 		et = new EvolverThread(config.getConfigFileName(), outputPanel.getWriter());
 		Thread thread = new Thread(et);
 		thread.start();
@@ -230,6 +220,7 @@ public class GEPInterface extends JFrame {
 	public void Stop() {
 		if(et!=null)
 			et.Kill();
+		launchPanel.setStopped();
 	}
 	
 	public class EvolverThread implements Runnable{

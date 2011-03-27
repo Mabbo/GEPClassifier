@@ -4,5 +4,6 @@ import base.EvolverState;
 
 
 public interface SelectionMethod {
-	void RemovePopulation(double keepFraction, EvolverState es);
+	void Initialize(String[] args);
+	void RemovePopulation(EvolverState es);
 }

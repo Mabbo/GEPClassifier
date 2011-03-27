@@ -422,24 +422,6 @@ public class Config {
 			//For each crossover node
 			Node ProcNode = ProcNodes.item(i);
 			//Read it's name, and location
-			/*
-			NamedNodeMap attrib = ProcNode.getAttributes();
-			boolean isBuiltin = (attrib.getNamedItem("builtin")==null);
-			String ProcClassName = "";
-			String ProcClassDir = "";
-			if( !isBuiltin ) {
-				ProcClassName = attrib.getNamedItem("classfile").getNodeValue();
-			
-				ProcClassDir = (attrib.getNamedItem("location") == null? "bin/" :
-									attrib.getNamedItem("location").getNodeValue());
-			} else {
-				ProcClassName = attrib.getNamedItem("builtin").getNodeValue();
-				ProcClassDir = "bin/";
-			}
-			String params = (attrib.getNamedItem("parameters") == null? "" :
-								attrib.getNamedItem("parameters").getNodeValue());
-			//Get the class from the file
-			 */
 	
 			ClassInformation cinfo = getClassInformation(ProcNode);
 			String ProcClassDir = cinfo.dir;
@@ -464,11 +446,11 @@ public class Config {
 	private ClassInformation getClassInformation(Node node) throws XPathExpressionException{
 		NamedNodeMap attrib = node.getAttributes();
 		ClassInformation cinfo = new ClassInformation();
-		boolean isBuiltIn = (attrib.getNamedItem("builtin") != null);
+		cinfo.isBuiltIn = (attrib.getNamedItem("builtin") != null);
 		String sfilename = "";
 		String slocation = "";
 		String sparams = "";
-		if( !isBuiltIn ) {
+		if( !cinfo.isBuiltIn ) {
 			sfilename = attrib.getNamedItem("classfile").getNodeValue();
 			slocation = 
 				(attrib.getNamedItem("location") == null? "bin/" : 
@@ -493,8 +475,10 @@ public class Config {
 		public String file;
 		public String dir;
 		public String param;
+		public boolean isBuiltIn;
 		public ClassInformation(){
 			file = dir = param = "";
+			isBuiltIn = false;
 		}
 	}
 	
@@ -508,21 +492,6 @@ public class Config {
 		DataSetLoaderFilename = cinfo.file;
 		DataSetLoaderLocation = cinfo.dir;
 		DataSetLoaderParameterString = cinfo.param;
-		/*NamedNodeMap attrib = dslnode.getAttributes();
-		boolean isBuiltInDSL = (attrib.getNamedItem("builtin") == null);
-		if( !isBuiltInDSL ) {
-			DataSetLoaderFilename = attrib.getNamedItem("classfile").getNodeValue();
-			DataSetLoaderLocation = 
-				(attrib.getNamedItem("location") == null? "bin/" : 
-			     attrib.getNamedItem("location").getNodeValue());
-		} else {
-			DataSetLoaderFilename = attrib.getNamedItem("builtin").getNodeValue();
-			DataSetLoaderLocation = "bin/";
-		}
-		DataSetLoaderParameterString = 
-			(attrib.getNamedItem("parameters") == null? "" : 
-			     attrib.getNamedItem("parameters").getNodeValue());
-		*/
 		Class<?> dslClass = getClassFromFile(
 				DataSetLoaderLocation, DataSetLoaderFilename);
 		
@@ -536,70 +505,32 @@ public class Config {
 	private void LoadAlgorithmInformation() throws XPathExpressionException{
 		NumberOfRuns = getIntValue("//Runs");
 		NumberOfGenerations = getIntValue("//Generations");
-		PopulationSize = getIntValue("//PopulationSize");
-			
-		/*Node fitnessNode = getNode("//Fitness");
-		String fitnessClassName = fitnessNode.getAttributes()
-			.getNamedItem("classfile").getNodeValue();
-		Node fitnessLocationNode = fitnessNode.getAttributes()
-			.getNamedItem("location");
-		String fitnessClassDir = "bin/";
-		if( fitnessLocationNode != null ) {
-			fitnessClassDir = fitnessLocationNode.getNodeValue();
-		}
-		*/		
+		PopulationSize = getIntValue("//PopulationSize");		
 		ClassInformation cinfo = getClassInformation("//Fitness");
 		String fitnessClassName = cinfo.file;
 		String fitnessClassDir = cinfo.dir;
-		String fitnessClassParams = cinfo.param;
 		Class<?> fitnessClass = getClassFromFile(fitnessClassDir, fitnessClassName);
 		this.FitnessProcess = (EvolverStateProcess) createInstanceOf(fitnessClass);
-
-		/*
-		Node selectionNode = getNode("//Selection");
-		String selectionClassName = selectionNode.getAttributes()
-			.getNamedItem("classfile").getNodeValue();
-		Node selectionLocationNode = selectionNode.getAttributes()
-			.getNamedItem("location");
-		String selectionClassDir = "bin/";
-		if( selectionLocationNode != null ) {
-			selectionClassDir = selectionLocationNode.getNodeValue();
-		}*/
+		
 		cinfo = getClassInformation("//Selection");
 		String selectionClassName = cinfo.file;
 		String selectionClassDir = cinfo.dir;
-		String selectionClassParams = cinfo.param;
+		String selectionParameters = cinfo.param;
 	
 		Class<?> selectionClass = getClassFromFile(selectionClassDir, selectionClassName); 
 		this.SelectionMethod = (SelectionMethod) createInstanceOf(selectionClass);
-		
-		Node selectionNode = getNode("//Selection");
-		KeepPercentage = Double.parseDouble(selectionNode.getAttributes().getNamedItem("keep").getNodeValue());
-	
+		this.SelectionMethod.Initialize(selectionParameters.split(" "));
+
 		this.ModificationSet = new ModificationSet();
 		
 		NodeList crossoversNodes = getNodes("//Crossovers/Crossover");
 		for( int i = 0; i < crossoversNodes.getLength(); ++i){
 			//For each crossover node
 			Node crossNode = crossoversNodes.item(i);
-			//Read it's name, and location
-			/*
-			String crossClassName = crossNode.getAttributes()
-				.getNamedItem("classfile").getNodeValue();
-			
-			Node crossLocationNode = crossNode.getAttributes()
-				.getNamedItem("location");
-			String crossClassDir = "bin/";
-			if( crossLocationNode != null ) {
-				crossClassDir = crossLocationNode.getNodeValue();
-			}
-			//Get the class from the file
-			 */
 	
 			cinfo = getClassInformation(crossNode);
 			String crossName = cinfo.file;
 			String crossLocation = cinfo.dir;
-			String crossParams = cinfo.param;
 			
 			Class<?> crossClass = getClassFromFile(crossLocation, crossName);
 			//Instantiate the function
@@ -631,7 +562,6 @@ public class Config {
 			cinfo = getClassInformation(mutatorNode);
 			String mutatorClassDir = cinfo.dir;
 			String mutatorClassName = cinfo.file;
-			String mutatorClassParams = cinfo.param;
 			
 			Class<?> mutatorClass = getClassFromFile(mutatorClassDir, mutatorClassName);
 			//Instantiate the function
@@ -653,17 +583,6 @@ public class Config {
 		//For each function node
 			Node funcNode = functionNodes.item(i);
 			//Read it's name, and location
-			/*
-			String funcClassName = funcNode.getAttributes()
-			.getNamedItem("classfile").getNodeValue();
-			
-			Node funcLocationNode = funcNode.getAttributes()
-				.getNamedItem("location");
-			String funcClassDir = "bin/";
-			if( funcLocationNode != null ) {
-				funcClassDir = funcLocationNode.getNodeValue();
-			}
-			*/
 			ClassInformation cinfo = getClassInformation(funcNode);
 			String funcClassDir = cinfo.dir;
 			String funcClassName = cinfo.file;

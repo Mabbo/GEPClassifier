@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 
 public class LaunchPanel extends JPanel {
 
+	private static final long serialVersionUID = 4404832900532796844L;
 	private JButton butLaunch = null;
 	private JButton butStop = null;
 	GridBagLayout layout = null;
@@ -42,6 +43,7 @@ public class LaunchPanel extends JPanel {
 		layout.setConstraints(butStop, cons);
 		add(butStop);
 		
+		setStopped();
 		
 	}
 	

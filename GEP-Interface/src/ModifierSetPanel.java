@@ -7,16 +7,17 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ClassSetPanel extends JPanel {
+public class ModifierSetPanel extends JPanel {
 
 	private static final long serialVersionUID = -6140559806394687680L;
 
 	private ArrayList<String> classes = null;
+	private ArrayList<Integer> weights = null;
 	private String className = "";
 	private GridBagLayout layout;
 	private GridBagConstraints cons;
 	
-	public ClassSetPanel(String classname){
+	public ModifierSetPanel(String classname){
 		init(classname);
 	}
 
@@ -33,6 +34,7 @@ public class ClassSetPanel extends JPanel {
 		cons.insets = new Insets(1, 1, 1, 1);
 		
 		classes = new ArrayList<String>();
+		weights = new ArrayList<Integer>();
 		Redraw();		
 	}
 	
@@ -41,19 +43,29 @@ public class ClassSetPanel extends JPanel {
 		this.removeAll();
 		int ItemGridY = 0;	
 		//For each item in the arraylist,
-		for( String s : classes ) {
+		for( int i = 0; i < classes.size(); ++i ) {
 			//make a new textfield, and removable button
+			String s = classes.get(i);
+			int w = weights.get(i);
 			cons.gridy = ItemGridY;
 			cons.gridx = 0;
 			JTextField text = new JTextField();
-			text.setColumns(20);
+			text.setColumns(15);
 			text.setText(s);
 			text.setEditable(false);
 			layout.setConstraints(text, cons);
 			add(text);
+
+			JTextField weight = new JTextField();
+			weight.setColumns(3);
+			weight.setText("" + w);
+			weight.setEditable(true);
+			cons.gridx = 1;
+			layout.setConstraints(weight, cons);
+			add(weight);
 			
 			JButton button = new JButton("X");
-			cons.gridx = 1;
+			cons.gridx = 2;
 			layout.setConstraints(button, cons);
 			add(button);
 			ItemGridY++;
@@ -66,17 +78,15 @@ public class ClassSetPanel extends JPanel {
 		add(addButton);
 	}
 	
-	public void AddClass(String location){
+	public void AddClass(String location, int weight){
 		classes.add(location);
+		weights.add(weight);
 	}
 
-	public ArrayList<String> getClassNames(){
-		return classes;
-	}
-	
 	public void Clear(){
 		classes = new ArrayList<String>();
 		Redraw();
 	}
 	
 }
+
