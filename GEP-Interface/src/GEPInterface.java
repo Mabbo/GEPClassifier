@@ -2,6 +2,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -12,6 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+
+import base.Config;
 
 import evolver.Evolver;
 
@@ -38,12 +41,13 @@ public class GEPInterface extends JFrame {
 	private ConfigModel config = null;
 	private ConfigPanel configPanel;
 	private OutputPanel outputPanel;
+	private LaunchPanel launchPanel;
 	private GridBagLayout layout = null;
 	private GridBagConstraints cons = null;
 	
 	private boolean EvolverIsRunning = false;
 	
-	private final int Width = 900;
+	private final int Width = 1000;
 	private final int Height = 660;
 	
 	public GEPInterface(){
@@ -72,6 +76,7 @@ public class GEPInterface extends JFrame {
 		InitializeMenu();
 		InitializeMainPanel();
 		InitializeOutputPanel();
+		InitializeLaunchPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
@@ -88,15 +93,15 @@ public class GEPInterface extends JFrame {
 		cons.gridy = 0;
 		cons.gridheight = 1;
 		cons.gridwidth = 1;
-		cons.weightx = 0.4;
-		cons.weighty = 1;
+		cons.weightx = 0.6;
+		cons.weighty = 0.9;
 		cons.fill = GridBagConstraints.BOTH;
 		configPanel = new ConfigPanel(config);
-		configPanel.setLaunchAction(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0) {
-				Launch();
-			}
-		});
+		//configPanel.setLaunchAction(new ActionListener(){
+		//	public void actionPerformed(ActionEvent arg0) {
+		//		Launch();
+		//	}
+		//});
 		scrollPane = new JScrollPane(configPanel,
 	            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -111,11 +116,38 @@ public class GEPInterface extends JFrame {
 		cons.gridheight = 1;
 		cons.gridwidth = 1;
 		cons.weightx = 0.4;
-		cons.weighty = 1;
+		cons.weighty = 0.9;
 		cons.fill = GridBagConstraints.BOTH;
 		outputPanel = new OutputPanel();
 		layout.setConstraints(outputPanel, cons);
 		add(outputPanel);	
+	}
+	
+	private void InitializeLaunchPanel() {
+		cons.gridheight = 1;
+		cons.weightx = 1;
+		cons.weighty = 0.1;
+		cons.gridx = 0;
+		cons.gridy = 1;
+		cons.gridwidth = 2;
+		cons.fill = GridBagConstraints.BOTH;
+		launchPanel = new LaunchPanel();
+		layout.setConstraints(launchPanel, cons);
+		add(launchPanel);
+		
+		launchPanel.addLaunchActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Launch();
+			}
+		});
+		
+		launchPanel.addStopActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Stop(); //Hammer time
+			}
+		});
+		
+		
 	}
 	
 	public void InitializeMenu(){
@@ -181,14 +213,61 @@ public class GEPInterface extends JFrame {
 	public void Quit(){
 		System.exit(0);
 	}
+		
+	
+	private EvolverThread et = null; 
 	
 	public void Launch() {
 		EvolverIsRunning = true;
-		configPanel.setLaunchButtonEnabled(false);
 		SaveConfigFile();
-		Evolver evolver = new Evolver();
-		evolver.EvolveClassifier(config.getConfigFileName());
+
+		et = new EvolverThread(config.getConfigFileName(), outputPanel.getWriter());
+		Thread thread = new Thread(et);
+		thread.start();
+		
 	}
+	
+	public void Stop() {
+		if(et!=null)
+			et.Kill();
+	}
+	
+	public class EvolverThread implements Runnable{
+		
+		Evolver ev = null;
+		String conf = null;
+		PrintWriter out = null;
+		
+		public EvolverThread(String confloc, PrintWriter out){
+			ev = new Evolver();
+			this.conf = confloc;
+			this.out = out;
+		}
+		
+		public EvolverThread(String conf){
+			ev = new Evolver();
+			this.conf = conf;
+		}
+		
+		public void run() {
+			if( out != null ){
+				ev.Evolve(conf, out);
+			} else {
+				ev.Evolve(conf);
+			}
+		}
+		
+		public void Kill(){
+			ev.Kill();
+			if( out!=null){
+				out.println("Ended Evolver");
+			}
+		}
+		
+		
+	}
+	
+	
 	
 }
 

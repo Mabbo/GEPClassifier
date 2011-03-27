@@ -1,5 +1,6 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -23,8 +24,42 @@ public class LaunchPanel extends JPanel {
 	GridBagLayout layout = null;
 	GridBagConstraints cons = null;
 	
+	public LaunchPanel(){
+		layout = new GridBagLayout();
+		cons = new GridBagConstraints();
+		
+		butLaunch = new JButton("Launch");
+		butStop = new JButton("Stop");
+		cons.gridwidth = 1;
+		cons.gridheight = 1;
+		cons.weightx = 0.5;
+		cons.weighty = 1;
+		cons.gridx = 0;
+		cons.gridy = 0;
+		layout.setConstraints(butLaunch, cons);
+		add(butLaunch);
+		cons.gridx = 1;
+		layout.setConstraints(butStop, cons);
+		add(butStop);
+		
+		
+	}
 	
+	public void setStopped(){
+		butStop.setEnabled(false);
+		butLaunch.setEnabled(true);
+	}
+	public void setLaunched(){
+		butStop.setEnabled(true);
+		butLaunch.setEnabled(false);
+	}
 	
+	public void addLaunchActionListener(ActionListener al){
+		butLaunch.addActionListener(al);
+	}
+	public void addStopActionListener(ActionListener al){
+		butStop.addActionListener(al);
+	}
 	
 	
 }

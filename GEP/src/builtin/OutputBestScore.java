@@ -1,6 +1,6 @@
 package builtin;
 
-import java.io.IOException;
+import java.io.PrintWriter;
 
 import base.EvolverState;
 import framework.EvolverStateProcess;
@@ -8,7 +8,8 @@ import framework.EvolverStateProcess;
 public class OutputBestScore implements EvolverStateProcess {
 
 	public void Process(EvolverState es) {
-			System.out.println("" + es.getGenerationNumber()
+		PrintWriter out = es.getConfig().out();
+		out.println("" + es.getGenerationNumber()
 					+ ": " + es.getPopulation().get(0).getFitnessScore()
 					+ " / " + es.getTrainingSet().size() );
 	}

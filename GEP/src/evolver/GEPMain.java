@@ -9,10 +9,7 @@ public class GEPMain {
 	
 		Evolver evolver = new Evolver();
 		
-		evolver.EvolveClassifier(args[0]);
-		
-		
-		
+		evolver.Evolve(args[0]);
 
 	}
 

@@ -103,8 +103,6 @@ public class ConfigPanel extends JPanel {
 	private ESPLoaderPanel esplpEndOfGenerationProcess;
 	
 	//--------------------------------------//
-		
-	private JButton butLaunch;
 	
 	//--------------------------------------//
 	
@@ -118,8 +116,8 @@ public class ConfigPanel extends JPanel {
 		UpdateView();
 	}
 	
-	private final double LeftWeight = 0.2;
-	private final double RightWeight = 0.80;
+	private final double LeftWeight = 0.4;
+	private final double RightWeight = 0.6;
 	private final int WeightY = 1;
 	private final int TextFieldWidth = 15;
 	private int currentY = 0;
@@ -160,7 +158,7 @@ public class ConfigPanel extends JPanel {
 		butLoadDataSetLoader = new JButton("Load DataSetLoader");
 		AddItem(lblDataSetLoader, txtDataSetLoader, butLoadDataSetLoader);
 	
-		lblDataSetLoaderParameters = new JLabel("DataSet Loader Parameters");
+		lblDataSetLoaderParameters = new JLabel("Parameters");
 		txtDataSetLoaderParameters = new JTextField(TextFieldWidth);
 		AddItem(lblDataSetLoaderParameters, txtDataSetLoaderParameters);
 		
@@ -257,18 +255,7 @@ public class ConfigPanel extends JPanel {
 		
 		lblEndOfGenerationProcess = new JLabel("End of Generation Processes");
 		esplpEndOfGenerationProcess = new ESPLoaderPanel();
-		AddItem(lblEndOfGenerationProcess, esplpEndOfGenerationProcess);
-		
-		//Add Save and Launch buttons
-		butLaunch = new JButton("Launch");
-		cons.gridwidth = 2;
-		cons.gridx = 0;
-		cons.gridy = currentY;
-		cons.weightx = LeftWeight + RightWeight;
-		layout.setConstraints(butLaunch, cons);
-		add(butLaunch);
-		currentY++;
-		
+		AddItem(lblEndOfGenerationProcess, esplpEndOfGenerationProcess);		
 	}
 	
 	public void AddItem(JLabel label, JTextField textField){
@@ -415,19 +402,5 @@ public class ConfigPanel extends JPanel {
 		
 		this.revalidate();
 	}
-	
-	private ActionListener _launchAL = null;
-	public void setLaunchAction(ActionListener al){
-		if( _launchAL != null ) {
-			butLaunch.removeActionListener(_launchAL);
-		}
-		_launchAL = al;
-		butLaunch.addActionListener(_launchAL);
-	}
-	
-	public void setLaunchButtonEnabled(boolean isEnabled){
-		butLaunch.setEnabled(isEnabled);
-	}
-	
 	
 }

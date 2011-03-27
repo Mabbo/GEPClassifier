@@ -1,5 +1,7 @@
 package builtin;
 
+import java.io.PrintWriter;
+
 import base.EvolverState;
 import base.FunctionSet;
 import base.ModificationSet;
@@ -9,21 +11,22 @@ public class OutputConfig implements EvolverStateProcess {
 
 	public void Process(EvolverState es) {
 
+		PrintWriter out = es.getConfig().out();
 		//What functiosn exist?	
 		FunctionSet fs = es.getConfig().getNodeFunctionSet();
 		byte[] funcBytes = es.getConfig().getFunctionValues();
 		for( int i = 0; i < fs.size(); ++i){
-			System.out.println("Function " 
+			out.println("Function " 
 					+ i + ": " + fs.getFunction(funcBytes[i]).getFunctionName());
 		}
 		
 		ModificationSet ms = es.getConfig().getModificationSet();
 		for( int i = 0; i < ms.getCrossoverCount(); ++i){
-			System.out.println("Crossover "
+			out.println("Crossover "
 					+ i + ": " + ms.getCrossover(i).getClass().getSimpleName() );
 		}
 		for( int i = 0; i < ms.getMutatorCount(); ++i){
-			System.out.println("Mutator "
+			out.println("Mutator "
 					+ i + ": " + ms.getMutator(i).getClass().getSimpleName() );
 		}
 	}

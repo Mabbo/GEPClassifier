@@ -2,6 +2,7 @@ package base;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
@@ -882,5 +883,20 @@ public class Config {
 		return rnc - terminalIndexEnd;
 	}	
 	
+	//--------------------------------------------------------//
+	
+	private PrintWriter out = new PrintWriter(new SysOutPrintWriter()); 
+	public PrintWriter out() { return out; }
+	public void setOut(PrintWriter pw) {out = pw;}
+	private class SysOutPrintWriter extends Writer{
+		public void close() throws IOException {}
+		public void flush() throws IOException {}
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			System.out.println(new String(cbuf,off, len));
+		}
+	}
+	
+	//--------------------------------------------------------//	
+
 	
 }

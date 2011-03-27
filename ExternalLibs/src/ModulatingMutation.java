@@ -1,3 +1,5 @@
+import java.io.PrintWriter;
+
 import base.EvolverState;
 import framework.EvolverStateProcess;
 
@@ -12,6 +14,8 @@ public class ModulatingMutation implements EvolverStateProcess {
 	int maxTime = 50;
 	
 	public void Process(EvolverState es) {
+		PrintWriter out = es.getConfig().out();
+		
 		int best = es.getPopulation().get(0).getFitnessScore();
 		if( best > bestScore ){
 			bestScore = best;
@@ -26,7 +30,7 @@ public class ModulatingMutation implements EvolverStateProcess {
 			timeSinceLastIncrease = 0;
 		}
 		es.getConfig().setMutationRate(mutRate);
-		System.out.println("Mutation Rate: " + mutRate);
+		out.println("Mutation Rate: " + mutRate);
 		
 	}
 
