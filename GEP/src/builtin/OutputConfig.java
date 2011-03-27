@@ -26,7 +26,6 @@ public class OutputConfig implements EvolverStateProcess {
 			System.out.println("Mutator "
 					+ i + ": " + ms.getMutator(i).getClass().getSimpleName() );
 		}
-		
 	}
 
 	@Override

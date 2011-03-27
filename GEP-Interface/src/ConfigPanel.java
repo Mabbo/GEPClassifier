@@ -2,6 +2,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -9,6 +10,7 @@ import javax.swing.*;
 import framework.*;
 
 public class ConfigPanel extends JPanel {
+	private static final long serialVersionUID = -8900449870756436728L;
 	private JLabel lblTitle;
 	private JTextField txtTitle;
 	
@@ -99,6 +101,10 @@ public class ConfigPanel extends JPanel {
 	
 	private JLabel lblEndOfGenerationProcess;
 	private ESPLoaderPanel esplpEndOfGenerationProcess;
+	
+	//--------------------------------------//
+		
+	private JButton butLaunch;
 	
 	//--------------------------------------//
 	
@@ -253,6 +259,16 @@ public class ConfigPanel extends JPanel {
 		esplpEndOfGenerationProcess = new ESPLoaderPanel();
 		AddItem(lblEndOfGenerationProcess, esplpEndOfGenerationProcess);
 		
+		//Add Save and Launch buttons
+		butLaunch = new JButton("Launch");
+		cons.gridwidth = 2;
+		cons.gridx = 0;
+		cons.gridy = currentY;
+		cons.weightx = LeftWeight + RightWeight;
+		layout.setConstraints(butLaunch, cons);
+		add(butLaunch);
+		currentY++;
+		
 	}
 	
 	public void AddItem(JLabel label, JTextField textField){
@@ -293,6 +309,7 @@ public class ConfigPanel extends JPanel {
 		
 		cons.gridx = 1;
 		textField.setColumns(TextFieldWidth);
+		textField.setEditable(false);
 		cons.weightx = RightWeight;
 		cons.insets = new Insets(10, 5, 1, 5);
 		layout.setConstraints(textField, cons);
@@ -332,7 +349,7 @@ public class ConfigPanel extends JPanel {
 		txtNodeHeadSize.setText(config.getNodeHeadSize()+"");
 		fslblFunctionSet.Clear();
 		for(int i = 0; i < config.getFunctionLocations().size();++i){
-			fslblFunctionSet.AddClass(config.getFunctionLocations().get(i) + "/" + config.getFunctionFiles());			
+			fslblFunctionSet.AddClass(config.getFunctionLocations().get(i) + config.getFunctionFiles().get(i));			
 		}
 		fslblFunctionSet.Redraw();
 		
@@ -345,12 +362,72 @@ public class ConfigPanel extends JPanel {
 		}
 		lcpanel.SetLayers(alist);
 		
+		txtFitnessProcess.setText(config.getFitnessProcessFile());
 		
+		txtKeepPercentage.setText("" + config.getKeepPercentage() );
 		
+		txtSelectionProcess.setText(config.getSelectionMethodFile());
 		
+		//load the mutators
 		
+		for(int i = 0; i < config.getMutatorFiles().size();++i){
+			cspMutators.AddClass(config.getMutatorFiles().get(i));			
+		}
+		cspMutators.Redraw();
 		
+		txtMutationRate.setText("" + config.getMutationRate());
+		
+		for( int i = 0; i < config.getStartProcessFiles().size(); ++i){
+			esplpStartProcess.AddProcess(config.getStartProcessFiles().get(i),
+										 config.getStartProcessParameter().get(i));
+		}
+		esplpStartProcess.Redraw();
+		
+		for( int i = 0; i < config.getEndProcessFiles().size(); ++i){
+			esplpEndProcess.AddProcess(config.getEndProcessFiles().get(i),
+										 config.getEndProcessParameter().get(i));
+		}
+		esplpEndProcess.Redraw();
+		
+		for( int i = 0; i < config.getBeforeRunProcessFiles().size(); ++i){
+			esplpBeforeRunProcess.AddProcess(config.getBeforeRunProcessFiles().get(i),
+										 config.getBeforeRunProcessParameter().get(i));
+		}
+		esplpBeforeRunProcess.Redraw();
+		
+		for( int i = 0; i < config.getBeforeGenerationProcessFiles().size(); ++i){
+			esplpBeforeGenerationProcess.AddProcess(config.getBeforeGenerationProcessFiles().get(i),
+										 config.getBeforeGenerationProcessParameter().get(i));
+		}
+		esplpBeforeGenerationProcess.Redraw();
+		
+		for( int i = 0; i < config.getEndOfGenerationProcessFiles().size(); ++i){
+			esplpEndOfGenerationProcess.AddProcess(config.getEndOfGenerationProcessFiles().get(i),
+										 config.getEndOfGenerationProcessParameter().get(i));
+		}
+		esplpEndOfGenerationProcess.Redraw();
+		
+		for( int i = 0; i < config.getEndOfRunProcessFiles().size(); ++i){
+			esplpEndOfRunProcess.AddProcess(config.getEndOfRunProcessFiles().get(i),
+										 config.getEndOfRunProcessParameter().get(i));
+		}
+		esplpEndOfRunProcess.Redraw();
 		
 		this.revalidate();
 	}
+	
+	private ActionListener _launchAL = null;
+	public void setLaunchAction(ActionListener al){
+		if( _launchAL != null ) {
+			butLaunch.removeActionListener(_launchAL);
+		}
+		_launchAL = al;
+		butLaunch.addActionListener(_launchAL);
+	}
+	
+	public void setLaunchButtonEnabled(boolean isEnabled){
+		butLaunch.setEnabled(isEnabled);
+	}
+	
+	
 }

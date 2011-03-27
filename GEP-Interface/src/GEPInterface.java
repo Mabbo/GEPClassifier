@@ -1,17 +1,19 @@
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import evolver.Evolver;
 
 
 /***
@@ -33,18 +35,44 @@ import javax.swing.ScrollPaneConstants;
 public class GEPInterface extends JFrame {
 	private static final long serialVersionUID = 3544476936851462325L;
 	
-	ConfigModel config = null;
-	ConfigPanel configPanel;
+	private ConfigModel config = null;
+	private ConfigPanel configPanel;
+	private OutputPanel outputPanel;
+	private GridBagLayout layout = null;
+	private GridBagConstraints cons = null;
 	
-	private final int Width = 600;
+	private boolean EvolverIsRunning = false;
+	
+	private final int Width = 900;
 	private final int Height = 660;
 	
 	public GEPInterface(){
 		super("GEP Interface");
-		config = new ConfigModel();
+		layout = new GridBagLayout();
+		cons = new GridBagConstraints();
+		setLayout(layout);
 		InitializeMenu();
 		InitializeMainPanel();
+		InitializeOutputPanel();
 		this.setLocation(200, 100);
+		setSize(Width,Height);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public GEPInterface(String file){
+		super("GEP Interface");
+		layout = new GridBagLayout();
+		cons = new GridBagConstraints();
+		setLayout(layout);
+		
+		LoadFile(file);
+		
+		this.setLocation(200, 100);
+		setSize(Width,Height);
+		InitializeMenu();
+		InitializeMainPanel();
+		InitializeOutputPanel();
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	//---------visual stuff-----------------//
@@ -56,15 +84,38 @@ public class GEPInterface extends JFrame {
 	private JMenuItem save;
 	
 	public void InitializeMainPanel(){
-		
+		cons.gridx = 0;
+		cons.gridy = 0;
+		cons.gridheight = 1;
+		cons.gridwidth = 1;
+		cons.weightx = 0.4;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
 		configPanel = new ConfigPanel(config);
+		configPanel.setLaunchAction(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0) {
+				Launch();
+			}
+		});
 		scrollPane = new JScrollPane(configPanel,
 	            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		layout.setConstraints(scrollPane, cons);
 		add(scrollPane);
 		
-		setSize(Width,Height);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	public void InitializeOutputPanel(){
+		cons.gridx = 1;
+		cons.gridy = 0;
+		cons.gridheight = 1;
+		cons.gridwidth = 1;
+		cons.weightx = 0.4;
+		cons.weighty = 1;
+		cons.fill = GridBagConstraints.BOTH;
+		outputPanel = new OutputPanel();
+		layout.setConstraints(outputPanel, cons);
+		add(outputPanel);	
 	}
 	
 	public void InitializeMenu(){
@@ -107,14 +158,19 @@ public class GEPInterface extends JFrame {
 		
 		//Load the config file
 		if( retval == JFileChooser.APPROVE_OPTION ){
-			try{
-				String filename = chooser.getSelectedFile().getAbsolutePath();
-				config = ConfigModel.OpenConfig(filename);
+			LoadFile(chooser.getSelectedFile().getAbsolutePath());
+		}
+	}
+	
+	private void LoadFile(String filename){
+		try{
+			config = ConfigModel.OpenConfig(filename);
+			if( configPanel != null) {
 				configPanel.setConfig(config);
 				this.repaint();
-			}catch(Exception ex){
-				JOptionPane.showMessageDialog(this, "Error loading file: " + ex.toString());
 			}
+		}catch(Exception ex){
+			JOptionPane.showMessageDialog(this, "Error loading file: " + ex.toString());
 		}
 	}
 	
@@ -126,6 +182,13 @@ public class GEPInterface extends JFrame {
 		System.exit(0);
 	}
 	
+	public void Launch() {
+		EvolverIsRunning = true;
+		configPanel.setLaunchButtonEnabled(false);
+		SaveConfigFile();
+		Evolver evolver = new Evolver();
+		evolver.EvolveClassifier(config.getConfigFileName());
+	}
 	
 }
 

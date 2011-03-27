@@ -1,5 +1,6 @@
 package evolver;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -8,7 +9,8 @@ import framework.*;
 
 public class Evolver {
 
-	Random _rand = new Random();	
+	Random _rand = new Random();
+	
 	public void EvolveClassifier(String configFile) {
 
 		Config conf = new Config();
@@ -19,7 +21,11 @@ public class Evolver {
 			ex.printStackTrace();
 			return;
 		}
-
+		Evolve(conf);
+	}
+	
+	private void Evolve(Config conf){	
+		
 		//Load the DataSetLoader
 		DataSetLoader dsl = conf.getDataSetLoader();
 

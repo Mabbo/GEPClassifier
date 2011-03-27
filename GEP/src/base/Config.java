@@ -2,6 +2,7 @@ package base;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -105,7 +106,7 @@ public class Config {
 		NumberLayers = 0;
 		NodesInLayer = new int[NumberLayers];
 
-		EvolverStateProcess FitnessProcess = null;
+		//EvolverStateProcess FitnessProcess = null;
 		KeepPercentage = 0.75;
 		this.SelectionMethod = null;
 		ModificationSet = new ModificationSet();
@@ -342,7 +343,7 @@ public class Config {
 	public void setEndProcessParameter(ArrayList<String> endProcessParameter) {
 		EndProcessParameter = endProcessParameter;
 	}
-
+	
 	//---------------------------------------------------//
 
 	byte functionIndexEnd = 0;
@@ -639,8 +640,7 @@ public class Config {
 			
 			//Add to the modification set
 			this.ModificationSet.addMutator(mutator, mutatorWeight);		
-		}		
-		
+		}
 	}
 	
 	public void LoadNodeInformation() throws XPathExpressionException {
@@ -880,10 +880,7 @@ public class Config {
 	}
 	public int getIndexForRNC(byte rnc){
 		return rnc - terminalIndexEnd;
-	}
-	
-	
-	
+	}	
 	
 	
 }

@@ -16,11 +16,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xpath.internal.NodeSet;
-import com.sun.xml.internal.bind.v2.model.core.ClassInfo;
-
 public class ConfigModel {
 
+	private String ConfigFileName = "";
+	
 	private String Title = "";
 	private String DataSetFile = null;
 	private String DataSetLoaderLocation = null;
@@ -76,11 +75,21 @@ public class ConfigModel {
 	private ArrayList<String> EndProcessFiles = null;
 	private ArrayList<String> EndProcessParameter = null;
 	
+	public ConfigModel(String filename){
+		init();
+		ConfigFileName = filename;
+	}
 	
 	public ConfigModel(){
+		init();
+	}
 
+	private void init(){	
+		
+		ConfigFileName = "";
 		Title = "";
 		DataSetFile = "";
+		DataSetLoaderLocation = "";
 		DataSetLoaderFilename = "";
 		DataSetLoaderParameterString = "";
 		NumberOfInputs = 1;
@@ -132,6 +141,14 @@ public class ConfigModel {
 		EndProcessLocations = new ArrayList<String>();
 		EndProcessFiles = new ArrayList<String>();
 		EndProcessParameter = new ArrayList<String>();
+	}
+	
+	public void setConfigFileName(String configFileName) {
+		ConfigFileName = configFileName;
+	}
+
+	public String getConfigFileName() {
+		return ConfigFileName;
 	}
 	
 	public String getFitnessProcessFile() {
@@ -423,12 +440,9 @@ public class ConfigModel {
 		EndProcessParameter = endProcessParameter;
 	}
 	
-	
-	
-	
 	//Reads a config model from an xml file
 	public static ConfigModel OpenConfig(String filename) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
-		ConfigModel conf = new ConfigModel();
+		ConfigModel conf = new ConfigModel(filename);
 		DocumentBuilderFactory domFactory;
 		DocumentBuilder builder;
 		Document doc;
@@ -448,7 +462,7 @@ public class ConfigModel {
 	    conf.setTitle( getStringValue("//Title", path, doc) );
 		conf.setDataSetFile(getStringValue("//DataSet/File", path, doc));
 		
-		ClassInformation cinfo = getClassInformation("//Data/DataSetLoader", path, doc);
+		ClassInformation cinfo = getClassInformation("//DataSet/DataSetLoader", path, doc);
 		
 		conf.setDataSetLoaderFilename(cinfo.file);
 		conf.setDataSetLoaderLocation(cinfo.dir);
@@ -469,7 +483,7 @@ public class ConfigModel {
 		conf.setNumberLayers(layers);
 		int[] NodesInLayer = new int[layers];
 		conf.setNodesInLayer(NodesInLayer);
-		
+		LoadLayers("//NodeLayers/Layer/Nodes/text()", conf.getNodesInLayer(), path, doc);
 		//---------------------------------------------------//
 		
 		cinfo = getClassInformation("//Fitness", path, doc);
@@ -528,8 +542,8 @@ public class ConfigModel {
 		Node dslnode = getNode(expression, path, doc);	
 		NamedNodeMap attrib = dslnode.getAttributes();
 		String val = 
-			(attrib.getNamedItem("classfile") == null? "" :
-	         attrib.getNamedItem("classfile").getNodeValue());
+			(attrib.getNamedItem(attribute) == null? "" :
+	         attrib.getNamedItem(attribute).getNodeValue());
 		
 		return val;
 	}
@@ -559,6 +573,14 @@ public class ConfigModel {
 			if( paraList != null) {
 				paraList.add(cinfo.param);
 			}
+		}
+	}
+	private static void LoadLayers(String expression, int[] layers, XPath path, Document doc) throws XPathExpressionException{
+		NodeList layernodes = getNodes(expression, path, doc);
+		for( int i = 0; i < layernodes.getLength(); ++i){
+			Node node = layernodes.item(i);
+			int x = Integer.parseInt(node.getNodeValue());
+			layers[i] = x;
 		}
 	}
 	
@@ -634,8 +656,7 @@ public class ConfigModel {
 	}
 	
 	//---------------------------------------------------//
-	
-	
+
 	private static class ClassInformation{
 		public String file;
 		public String dir;
