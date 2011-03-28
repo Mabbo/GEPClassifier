@@ -15,6 +15,8 @@ import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
 
 import evolver.Evolver;
+import framework.Function;
+import framework.Mutator;
 
 
 /***
@@ -56,7 +58,7 @@ public class GEPInterface extends JFrame {
 		InitializeOutputPanel();
 		this.setLocation(200, 100);
 		setSize(Width,Height);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);		
 	}
 	
 	public GEPInterface(String file){
@@ -74,6 +76,7 @@ public class GEPInterface extends JFrame {
 		InitializeOutputPanel();
 		InitializeLaunchPanel();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 	}
 	
 	//---------visual stuff-----------------//
@@ -92,7 +95,7 @@ public class GEPInterface extends JFrame {
 		cons.weightx = 0.6;
 		cons.weighty = 0.9;
 		cons.fill = GridBagConstraints.BOTH;
-		configPanel = new ConfigPanel(config);
+		configPanel = new ConfigPanel(this, config);
 		scrollPane = new JScrollPane(configPanel,
 	            ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -198,9 +201,7 @@ public class GEPInterface extends JFrame {
 	}
 	
 	public void SaveConfigFile() {
-		
 		config.SaveConfig();
-		
 	}
 	
 	public void Quit(){
@@ -210,6 +211,11 @@ public class GEPInterface extends JFrame {
 	private EvolverThread et = null; 
 	
 	public void Launch() {
+		if( configPanel.getErrorsExist() ){
+			JOptionPane.showMessageDialog(this, "Errors exist in the configuration.");
+			return;
+		}
+		
 		SaveConfigFile();
 
 		launchPanel.setLaunched();

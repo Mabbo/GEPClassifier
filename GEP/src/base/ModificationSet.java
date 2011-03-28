@@ -21,6 +21,7 @@ public class ModificationSet {
 		mutator_weights.add(weight);
 		totalMutatorWeight += weight;
 	}
+	
 	public void addCrossover(Crossover cross, int weight){
 		crossovers.add(cross);
 		crossover_weights.add(weight);
@@ -52,7 +53,7 @@ public class ModificationSet {
 		return null;
 	}
 	public Crossover getCrossover(){
-		int choice = _rand.nextInt(totalMutatorWeight);
+		int choice = _rand.nextInt(totalCrossoverWeight);
 		for( int i = 0; i < crossovers.size(); ++i){
 			choice -= crossover_weights.get(i);
 			if( choice < 0 ) {

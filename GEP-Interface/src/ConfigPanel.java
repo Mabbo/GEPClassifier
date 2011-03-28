@@ -1,10 +1,19 @@
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
-
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import framework.DataSetLoader;
+import framework.EvolverStateProcess;
 
 public class ConfigPanel extends JPanel {
 	private static final long serialVersionUID = -8900449870756436728L;
@@ -82,34 +91,56 @@ public class ConfigPanel extends JPanel {
 	//--------------------------------------//
 
 	private JLabel lblStartProcess;
-	private ESPLoaderPanel esplpStartProcess;
+	private ClassSetPanel esplpStartProcess;
 	
 	private JLabel lblEndProcess;
-	private ESPLoaderPanel esplpEndProcess;
+	private ClassSetPanel esplpEndProcess;
 	
 	private JLabel lblBeforeRunProcess;
-	private ESPLoaderPanel esplpBeforeRunProcess;
+	private ClassSetPanel esplpBeforeRunProcess;
 	
 	private JLabel lblEndOfRunProcess;
-	private ESPLoaderPanel esplpEndOfRunProcess;
+	private ClassSetPanel esplpEndOfRunProcess;
 	
 	private JLabel lblBeforeGenerationProcess;
-	private ESPLoaderPanel esplpBeforeGenerationProcess;
+	private ClassSetPanel esplpBeforeGenerationProcess;
 	
 	private JLabel lblEndOfGenerationProcess;
-	private ESPLoaderPanel esplpEndOfGenerationProcess;
+	private ClassSetPanel esplpEndOfGenerationProcess;
 	
 	//--------------------------------------//
+	
+	private ArrayList<Component> erredList = new ArrayList<Component>();
+	private void setIsErred(Component comp, boolean erred){
+		if( erred ) {
+			if( !erredList.contains(comp)) {
+				erredList.add(comp);
+				comp.setBackground(Color.RED);
+			}
+		} else {
+			if( erredList.contains(comp)){
+				erredList.remove(comp);
+				comp.setBackground(Color.WHITE);
+			}
+		}
+	}
+	
+	public boolean getErrorsExist(){
+		return (erredList.size() > 0);
+	}
 	
 	//--------------------------------------//
 	
 	
 	private ConfigModel config = null;
+	private Frame owner = null;
 	
-	public ConfigPanel(ConfigModel config){
+	public ConfigPanel(Frame owner, ConfigModel config){
 		super();
 		this.config = config;
+		this.owner = owner;
 		LoadVisualItems();
+		SetupEventHandlers();
 		UpdateView();
 	}
 	
@@ -184,8 +215,8 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblPopulationSize, txtPopulationSize);
 		
 		lblFunctionSet = new JLabel("Functions");
-		fslblFunctionSet = new ClassSetPanel("Function");
-		fslblFunctionSet.Redraw();
+		fslblFunctionSet = new ClassSetPanel(owner, "Function", framework.Function.class);
+		fslblFunctionSet.Initialize(config.getFunctions());
 		AddItem(lblFunctionSet, fslblFunctionSet);
 
 		lblNodeHeadSize = new JLabel("Head Size");
@@ -201,7 +232,7 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblNumLayers, txtNumLayers);
 		
 		lblLayers = new JLabel("Layers");
-		lcpanel = new LayerControlPanel();
+		lcpanel = new LayerControlPanel(config, erredList);
 		AddItem(lblLayers, lcpanel);
 		
 		lblFitnessProcess = new JLabel("Fitness Process");
@@ -217,7 +248,8 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblSelectionMethod, txtSelectionProcess, txtSelectionProcessParamters, butSelectionProcess);
 	
 		lblMutators = new JLabel("Mutators");
-		cspMutators = new ModifierSetPanel("Mutator");
+		cspMutators = new ModifierSetPanel(owner, "Mutator", framework.Mutator.class);
+		cspMutators.Initialize(config.getMutators());
 		AddItem(lblMutators, cspMutators);
 		
 		lblMutationRate = new JLabel("Mutation Rate");
@@ -225,31 +257,38 @@ public class ConfigPanel extends JPanel {
 		AddItem(lblMutationRate, txtMutationRate);
 		
 		lblCrossovers = new JLabel("Crossovers");
-		cspCrossovers = new ModifierSetPanel("Crossover");
+		cspCrossovers = new ModifierSetPanel(owner, "Crossover", framework.Crossover.class);
+		cspCrossovers.Initialize(config.getCrossovers());
 		AddItem(lblCrossovers, cspCrossovers);
 	
 		lblStartProcess = new JLabel("Start Processes");
-		esplpStartProcess = new ESPLoaderPanel();
+		esplpStartProcess = new ClassSetPanel(owner, "Start Process", EvolverStateProcess.class);
+		esplpStartProcess.Initialize(config.getStartProcesses());
 		AddItem(lblStartProcess, esplpStartProcess);
 	
 		lblEndProcess = new JLabel("End Processes");
-		esplpEndProcess = new ESPLoaderPanel();
+		esplpEndProcess = new ClassSetPanel(owner, "End Process", EvolverStateProcess.class);
+		esplpEndProcess.Initialize(config.getEndProcesses());
 		AddItem(lblEndProcess, esplpEndProcess);
 		
 		lblBeforeRunProcess = new JLabel("Start of Run Processes");
-		esplpBeforeRunProcess = new ESPLoaderPanel();
+		esplpBeforeRunProcess = new ClassSetPanel(owner, "Before Run Process", EvolverStateProcess.class);
+		esplpBeforeRunProcess.Initialize(config.getBeforeRunProcesses());
 		AddItem(lblBeforeRunProcess, esplpBeforeRunProcess);
 		
 		lblEndOfRunProcess = new JLabel("End of Run Processes");
-		esplpEndOfRunProcess = new ESPLoaderPanel();
+		esplpEndOfRunProcess = new ClassSetPanel(owner, "End of Run Process", EvolverStateProcess.class);
+		esplpEndOfRunProcess.Initialize(config.getEndOfRunProcesses());
 		AddItem(lblEndOfRunProcess, esplpEndOfRunProcess);
 		
-		lblBeforeGenerationProcess = new JLabel("Start of Generation Processes");
-		esplpBeforeGenerationProcess = new ESPLoaderPanel();
+		lblBeforeGenerationProcess = new JLabel("Before Generation Processes");
+		esplpBeforeGenerationProcess = new ClassSetPanel(owner, "Before Generation Process", EvolverStateProcess.class);
+		esplpBeforeGenerationProcess.Initialize(config.getBeforeGenerationProcesses());
 		AddItem(lblBeforeGenerationProcess, esplpBeforeGenerationProcess);
 		
 		lblEndOfGenerationProcess = new JLabel("End of Generation Processes");
-		esplpEndOfGenerationProcess = new ESPLoaderPanel();
+		esplpEndOfGenerationProcess = new ClassSetPanel(owner, "End of Generation Process", EvolverStateProcess.class);
+		esplpEndOfGenerationProcess.Initialize(config.getEndOfGenerationProcesses());
 		AddItem(lblEndOfGenerationProcess, esplpEndOfGenerationProcess);		
 	}
 	
@@ -309,6 +348,9 @@ public class ConfigPanel extends JPanel {
 	}
 	
 	public void AddItem(JLabel label, JTextField textField, JTextField paramField, JButton button){
+		if( label == null || textField == null || paramField == null || cons == null || layout == null){
+			System.err.println("An Error has occurred");
+		}
 		cons.gridx = 0;
 		cons.gridy = currentY;
 		cons.weightx = LeftWeight;
@@ -344,15 +386,252 @@ public class ConfigPanel extends JPanel {
 		currentY++;		
 	}
 	
+	private void AddChangeListener(JTextField text, ChangeMethod cm){
+		text.getDocument().addDocumentListener(makeChangeListener(cm));
+	}
 	
-	public void UpdateModel(){
-			
+	private DocumentListener makeChangeListener(final ChangeMethod cm){
+		return new DocumentListener() {
+			public void removeUpdate(DocumentEvent arg0) {Change();}
+			public void insertUpdate(DocumentEvent arg0) {Change();}
+			public void changedUpdate(DocumentEvent arg0) {Change();}
+			private void Change(){
+				cm.Change();
+			}
+		};
+	}
+	
+	private void SetupEventHandlers(){
+		AddChangeListener(txtTitle, new ChangeMethod() {
+			public void Change() {
+				config.setTitle(txtTitle.getText());
+			}
+		});
+		
+		butLoadDataSet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				LoadDataSet();
+			}
+		});
+		
+		butLoadDataSetLoader.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				LoadDataSetLoader();
+			}
+		});
+		
+		
+		AddChangeListener(txtDataSetLoaderParameters, new ChangeMethod() {
+			public void Change() {
+				config.setDataSetLoaderParameters(txtDataSetLoaderParameters.getText());		
+			}
+		});
+		
+		AddChangeListener(txtNumInputs, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtNumInputs.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumInputs, value < 1);
+				if( value > 0) {
+					config.setNumberOfInputs(value);
+				}
+			}
+		});
+
+		AddChangeListener(txtNumClasses, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtNumClasses.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumClasses, value < 1);
+				if( value > 0) {
+					config.setNumberOfClasses(value);
+				}
+			}
+		});	
+
+		AddChangeListener(txtTrainPercentage, new ChangeMethod() {
+			public void Change() {
+				double value = 0;
+				try{
+					value = Double.parseDouble( txtTrainPercentage.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtTrainPercentage, value <= 0);
+				if( value > 0) {
+					config.setTrainingPercentage(value);
+				}
+			}
+		});
+		AddChangeListener(txtNumberOfRuns, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtNumberOfRuns.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumberOfRuns, value < 1);
+				if( value > 0) {
+					config.setNumberOfRuns(value);
+				}
+			}
+		});
+		AddChangeListener(txtNumberOfGenerations, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtNumberOfGenerations.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumberOfGenerations, value < 1);
+				if( value > 0) {
+					config.setNumberOfGenerations(value);
+				}
+			}
+		});
+		AddChangeListener(txtPopulationSize, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtPopulationSize.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtPopulationSize, value < 1);
+				if( value > 0) {
+					config.setPopulationSize(value);
+				}
+			}
+		});
+		AddChangeListener(txtNodeHeadSize, new ChangeMethod() {
+			public void Change() {
+				int value = 0;
+				try{
+					value = Integer.parseInt( txtNodeHeadSize.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNodeHeadSize, value < 1);
+				if( value > 0) {
+					config.setNodeHeadSize(value);
+				}
+			}
+		});
+		
+		AddChangeListener(txtNumberRNC, new ChangeMethod(){
+			public void Change() {
+				int value = -1;
+				try{
+					value = Integer.parseInt( txtNumberRNC.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumberRNC, value < 0);
+				if( value >= 0) {
+					config.setNumberRNC(value);
+				}
+			}
+		});
+		
+		AddChangeListener(txtNumLayers, new ChangeMethod() {
+			public void Change() {
+				int value = -1;
+				try{
+					value = Integer.parseInt( txtNumLayers.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtNumLayers, value < 0);
+				if( value >= 0) {
+					config.setNumberLayers(value);
+					lcpanel.SetNumberOfLayers(value);
+				}
+			}
+		}); 
+
+		AddChangeListener(txtFitnessProcessParameters, new ChangeMethod(){
+			public void Change() {
+				config.setFitnessProcessParameters(txtFitnessProcessParameters.getText());
+			}
+		});
+		
+		butFitnessProcess.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadFitnessProcess();
+			}
+		});
+		
+		
+		AddChangeListener( txtSelectionProcessParamters, new ChangeMethod(){
+			public void Change() {
+				config.setSelectionMethodParameters(txtSelectionProcessParamters.getText());
+			}
+		});
+		
+		butSelectionProcess.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoadSelectionProcess();
+			}
+		});
+				
+		AddChangeListener(txtMutationRate, new ChangeMethod() {
+			public void Change() {
+				double value = -1;
+				try{
+					value = Double.parseDouble( txtMutationRate.getText() );
+				} catch(Exception ex){}
+				setIsErred(txtMutationRate, value < 0);
+				if( value >= 0) {
+					config.setMutationRate(value);
+				}
+			}
+		});
+
+		//esplpStartProcess;
+		
+		//esplpEndProcess;
+		
+		//esplpBeforeRunProcess;
+		
+		//esplpEndOfRunProcess;
+		
+		//esplpBeforeGenerationProcess;
+		
+		//esplpEndOfGenerationProcess;
+		
+	}
+	
+	private void LoadDataSetLoader(){
+		ClassInformation ci = new ClassInformation();
+		ClassSelector.getClassOfType(null, DataSetLoader.class, ci);
+		if( ci.file.equals("")) return;
+		config.setDataSetLoader(ci);
+		UpdateView();
+	}
+	
+	private void LoadDataSet(){
+		JFileChooser chooser = new JFileChooser();
+		chooser.showOpenDialog(this);
+		
+		if( chooser.getSelectedFile() != null){
+			File f = chooser.getSelectedFile();
+			config.setDataSetFile(f.getPath());
+			UpdateView();
+		}
+	}
+	
+	private void LoadFitnessProcess() {
+		ClassInformation ci = new ClassInformation();
+		ClassSelector.getClassOfType(null, framework.FitnessProcess.class, ci);
+		if( ci.file.equals("")) return;
+		config.setFitnessProcess(ci);
+		UpdateView();
+	}
+
+	private void LoadSelectionProcess() {
+		ClassInformation ci = new ClassInformation();
+		ClassSelector.getClassOfType(null, framework.SelectionMethod.class, ci);
+		if( ci.file.equals("")) return;
+		config.setSelectionMethod(ci);
+		UpdateView();
 	}
 	
 	public void UpdateView(){
 		txtTitle.setText(config.getTitle());
 		txtDataSet.setText(config.getDataSetFile());
-		txtDataSetLoader.setText(config.getDataSetLoader().dir + config.getDataSetLoader().file);
+		txtDataSetLoader.setText(config.getDataSetLoader().file);
 		txtDataSetLoaderParameters.setText(config.getDataSetLoader().param);
 		
 		txtNumInputs.setText(config.getNumberOfInputs()+"");
@@ -363,14 +642,12 @@ public class ConfigPanel extends JPanel {
 		txtPopulationSize.setText(config.getPopulationSize()+"");
 		
 		txtNodeHeadSize.setText(config.getNodeHeadSize()+"");
-		fslblFunctionSet.Clear();
-		for(int i = 0; i < config.getFunctions().size();++i){
-			fslblFunctionSet.AddClass(config.getFunctions().get(i).file);			
-		}
+		
 		fslblFunctionSet.Redraw();
 		
 		txtNumberRNC.setText(""+ config.getNumberOfRuns());
 		txtNumLayers.setText(""+ config.getNumberLayers());
+		lcpanel.setConfig(config);
 		lcpanel.SetNumberOfLayers(0);
 		ArrayList<Integer> alist = new ArrayList<Integer>();
 		for(int i = 0; i < config.getNumberLayers();++i){
@@ -383,56 +660,10 @@ public class ConfigPanel extends JPanel {
 		txtSelectionProcess.setText(config.getSelectionMethod().file);
 		
 		//load the mutators and crossovers
-		
-		for( int i = 0; i < config.getCrossovers().size(); ++i){
-			cspCrossovers.AddClass(config.getCrossovers().get(i).file, 
-								   config.getCrossovers().get(i).weight);
-		}
 		cspCrossovers.Redraw();
-		
-		for(int i = 0; i < config.getMutators().size();++i){
-			cspMutators.AddClass(config.getMutators().get(i).file,
-						 	 	 config.getMutators().get(i).weight);			
-		}
 		cspMutators.Redraw();
 		
 		txtMutationRate.setText("" + config.getMutationRate());
-		
-		for( int i = 0; i < config.getStartProcesses().size(); ++i){
-			esplpStartProcess.AddProcess(config.getStartProcesses().get(i).file,
-										 config.getStartProcesses().get(i).param);
-		}
-		esplpStartProcess.Redraw();
-		
-		for( int i = 0; i < config.getEndProcesses().size(); ++i){
-			esplpEndProcess.AddProcess(config.getEndProcesses().get(i).file,
-										 config.getEndProcesses().get(i).param);
-		}
-		esplpEndProcess.Redraw();
-		
-		for( int i = 0; i < config.getBeforeRunProcesses().size(); ++i){
-			esplpBeforeRunProcess.AddProcess(config.getBeforeRunProcesses().get(i).file,
-										 config.getBeforeRunProcesses().get(i).param);
-		}
-		esplpBeforeRunProcess.Redraw();
-		
-		for( int i = 0; i < config.getBeforeGenerationProcesses().size(); ++i){
-			esplpBeforeGenerationProcess.AddProcess(config.getBeforeGenerationProcesses().get(i).file,
-										 config.getBeforeGenerationProcesses().get(i).param);
-		}
-		esplpBeforeGenerationProcess.Redraw();
-		
-		for( int i = 0; i < config.getEndOfGenerationProcesses().size(); ++i){
-			esplpEndOfGenerationProcess.AddProcess(config.getEndOfGenerationProcesses().get(i).file,
-										 config.getEndOfGenerationProcesses().get(i).param);
-		}
-		esplpEndOfGenerationProcess.Redraw();
-		
-		for( int i = 0; i < config.getEndOfRunProcesses().size(); ++i){
-			esplpEndOfRunProcess.AddProcess(config.getEndOfRunProcesses().get(i).file,
-										 config.getEndOfRunProcesses().get(i).param);
-		}
-		esplpEndOfRunProcess.Redraw();
 		
 		this.revalidate();
 		

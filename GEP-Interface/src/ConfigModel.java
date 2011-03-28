@@ -141,6 +141,9 @@ public class ConfigModel {
 	public void setDataSetLoader(ClassInformation ci){
 		DataSetLoader = ci;
 	}
+	public void setDataSetLoaderParameters(String text) {
+		DataSetLoader.param = text;
+	}
 	public int getNumberOfInputs() {
 		return NumberOfInputs;
 	}
@@ -241,8 +244,14 @@ public class ConfigModel {
 	public void setFitnessProcess(ClassInformation fitnessProcess) {
 		FitnessProcess = fitnessProcess;
 	}
+	public void setFitnessProcessParameters(String text) {
+		FitnessProcess.param = text;
+	}
 	public void setSelectionMethod(ClassInformation selectionMethod) {
 		SelectionMethod = selectionMethod;
+	}
+	public void setSelectionMethodParameters(String text) {
+		SelectionMethod.param = text;
 	}
 	public ArrayList<ModifierClassInformation> getMutators() {
 		return Mutators;
@@ -409,7 +418,7 @@ public class ConfigModel {
 				(attrib.getNamedItem("location") == null? "bin/" : 
 					attrib.getNamedItem("location").getNodeValue());
 		} else {
-			sfilename = "builtin." + attrib.getNamedItem("builtin").getNodeValue();
+			sfilename = attrib.getNamedItem("builtin").getNodeValue();
 			slocation = "bin/";
 		}
 		sparams = 
@@ -430,36 +439,7 @@ public class ConfigModel {
 		return mci;
 	}
 	
-	//---------------------------------------------------//
-
-	public static class ClassInformation{
-		public String file;
-		public String dir;
-		public String param;
-		public boolean isBuiltIn;
-		public ClassInformation(){
-			file = dir = param = "";
-			isBuiltIn = false;
-		}
-		public String getFileName(){
-			if( !isBuiltIn ) return file;
-			return file.replace("builtin.", "");
-		}
-	}
-	public static class ModifierClassInformation extends ClassInformation {
-		public int weight;
-		public ModifierClassInformation(){
-			super();
-			weight = 1;
-		}
-		public ModifierClassInformation(ClassInformation ci){
-			this.file = ci.file;
-			this.dir = ci.dir;
-			this.param = ci.param;
-			this.isBuiltIn = ci.isBuiltIn;
-			weight = 1;
-		}
-	}
+	//---------------------------------------------------//	
 
 	public void SaveConfig(String saveTo){
 		ConfigFileName = saveTo;
@@ -721,12 +701,6 @@ public class ConfigModel {
 		}
 		node.appendChild(esp);
 	}
-
-
-
-
-
-
 
 
 

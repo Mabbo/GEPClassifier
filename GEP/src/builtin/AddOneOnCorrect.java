@@ -4,8 +4,9 @@ import base.EvolverState;
 import base.Instance;
 import base.Unit;
 import framework.EvolverStateProcess;
+import framework.FitnessProcess;
 
-public class AddOneOnCorrect implements EvolverStateProcess {
+public class AddOneOnCorrect implements FitnessProcess {
 	//Used for fitness tests
 	
 	
@@ -24,11 +25,12 @@ public class AddOneOnCorrect implements EvolverStateProcess {
 			}
 		}
 	}
-
-	@Override
 	public void Initialize(String parameters) {
 		// TODO Auto-generated method stub
 		
+	}
+	public boolean isFitnessProcess() {
+		return true;
 	}
 
 }

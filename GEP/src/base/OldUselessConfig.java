@@ -448,6 +448,9 @@ private boolean configured = false;
 			Crossover cross = (Crossover) createObjectOfClass(crossClass);
 			
 			int crossWeight = Integer.parseInt(crossNode.getAttributes().getNamedItem("weight").getNodeValue());
+		
+			System.out.println("THIS SHOULD NEVER HAPPEN");
+			
 			
 			//Add to the modification set
 			modifiers.addCrossover(cross, crossWeight);		

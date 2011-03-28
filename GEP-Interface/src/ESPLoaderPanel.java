@@ -1,9 +1,7 @@
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,8 +14,7 @@ public class ESPLoaderPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<String> classes = null;
-	private ArrayList<String> parameters = null;
+	private ArrayList<ClassInformation> classes = null;
 	GridBagLayout layout;
 	GridBagConstraints cons;
 
@@ -39,8 +36,7 @@ public class ESPLoaderPanel extends JPanel {
 		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.insets = new Insets(1, 1, 1, 1);
 		
-		classes = new ArrayList<String>();
-		parameters = new ArrayList<String>();
+		classes = new ArrayList<ClassInformation>();
 		Redraw();
 	}
 	
@@ -63,7 +59,7 @@ public class ESPLoaderPanel extends JPanel {
 			cons.fill = GridBagConstraints.HORIZONTAL;
 			cons.weightx = TEXT_WEIGHT;
 			JTextField text = new JTextField();
-			text.setText( classes.get(i) );
+			text.setText( classes.get(i).file );
 			text.setEditable(false);
 			layout.setConstraints(text, cons);
 			add(text);
@@ -92,7 +88,7 @@ public class ESPLoaderPanel extends JPanel {
 			cons.weightx = TEXT_WEIGHT;
 			cons.fill = GridBagConstraints.HORIZONTAL;
 			JTextField paramsField = new JTextField();
-			paramsField.setText(parameters.get(i));
+			paramsField.setText(classes.get(i).param);
 			layout.setConstraints(paramsField,cons);
 			add(paramsField);
 			ItemGridY++;	
@@ -107,17 +103,12 @@ public class ESPLoaderPanel extends JPanel {
 		add(addButton);
 	}
 	
-	public void AddProcess(String location, String parameter){
-		classes.add(location);
-		parameters.add(parameter);
+	public void AddProcess(ClassInformation ci){
+		classes.add(ci);
 	}
 
-	public ArrayList<String> getESPs(){
+	public ArrayList<ClassInformation> getESPs(){
 		return classes;
 	}
-	public ArrayList<String> getParameters(){
-		return parameters;
-	}
-	
 	
 }
