@@ -51,7 +51,6 @@ public class ConfigModel {
 	//---------------------------------------------------//
 
 	private ClassInformation FitnessProcess;
-	private double KeepPercentage = 0.75;
 	private ClassInformation SelectionMethod;
 	private ArrayList<ModifierClassInformation> Mutators;
 	private ArrayList<ModifierClassInformation> Crossovers;
@@ -99,7 +98,6 @@ public class ConfigModel {
 		//---------------------------------------------------//
 
 		FitnessProcess = new ClassInformation();
-		KeepPercentage = 0.75;
 		SelectionMethod = new ClassInformation();
 		Mutators = new ArrayList<ModifierClassInformation>();
 		Crossovers = new ArrayList<ModifierClassInformation>();
@@ -228,12 +226,6 @@ public class ConfigModel {
 	public void setNodesInLayer(int[] nodesInLayer) {
 		NodesInLayer = nodesInLayer;
 	}
-	public double getKeepPercentage() {
-		return KeepPercentage;
-	}
-	public void setKeepPercentage(double keepPercentage) {
-		KeepPercentage = keepPercentage;
-	}
 	public double getMutationRate() {
 		return MutationRate;
 	}
@@ -306,7 +298,6 @@ public class ConfigModel {
 		cinfo = getClassInformation("//Fitness", path, doc);
 
 		conf.setFitnessProcess(cinfo);
-		conf.setKeepPercentage(Double.parseDouble(getAttribute("//Selection", "keep", path, doc)));
 
 		cinfo = getClassInformation("//Selection",path,doc);
 		conf.setSelectionMethod(cinfo);
@@ -349,15 +340,6 @@ public class ConfigModel {
 			return nodes.item(i).getNodeValue(); 
 		}	
 		return "";
-	}
-	private static String getAttribute(String expression, String attribute, XPath path, Document doc) throws XPathExpressionException{
-		Node dslnode = getNode(expression, path, doc);	
-		NamedNodeMap attrib = dslnode.getAttributes();
-		String val = 
-			(attrib.getNamedItem(attribute) == null? "" :
-				attrib.getNamedItem(attribute).getNodeValue());
-
-		return val;
 	}
 	private static double getDoubleValue(String expression, XPath path, Document doc) throws XPathExpressionException {
 		NodeList nodes = getNodes(expression + "/text()", path, doc);
@@ -459,6 +441,10 @@ public class ConfigModel {
 			file = dir = param = "";
 			isBuiltIn = false;
 		}
+		public String getFileName(){
+			if( !isBuiltIn ) return file;
+			return file.replace("builtin.", "");
+		}
 	}
 	public static class ModifierClassInformation extends ClassInformation {
 		public int weight;
@@ -499,12 +485,15 @@ public class ConfigModel {
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		DOMImplementation impl = docBuilder.getDOMImplementation();
 		Document doc = impl.createDocument(null, null, null);
-
-		AddBasicInfo(doc);
-		AddDataSetInfo(doc);	
-		AddNodeData(doc);
-		AddGeneticMethods(doc);
-		AddProcesses(doc);
+		
+		Element xmln = doc.createElement("xml");
+		doc.appendChild(xmln);
+		
+		AddBasicInfo(doc,xmln);
+		AddDataSetInfo(doc,xmln);	
+		AddNodeData(doc,xmln);
+		AddGeneticMethods(doc,xmln);
+		AddProcesses(doc,xmln);
 
 		//write to disc
 		DOMSource domSource = new DOMSource(doc);
@@ -520,6 +509,8 @@ public class ConfigModel {
 		String xml = sw.toString();
 
 		File file = new File(ConfigFileName);
+		if( file.exists() ) file.delete();
+		file.createNewFile();
 		FileWriter fw = new FileWriter(file);
 		fw.write(xml);
 		fw.close();
@@ -532,14 +523,14 @@ public class ConfigModel {
 		node.appendChild(elem);
 	}
 	
-	private void AddBasicInfo(Document doc){
-		AddToNode(doc, doc, "Title", this.getTitle());
-		AddToNode(doc, doc, "Runs", ""+this.getNumberOfRuns());
-		AddToNode(doc, doc, "Generations", "" + this.getNumberOfGenerations());
-		AddToNode(doc, doc, "PopulationSize", "" + this.getPopulationSize());		
+	private void AddBasicInfo(Document doc, Node node){
+		AddToNode(doc, node, "Title", this.getTitle());
+		AddToNode(doc, node, "Runs", ""+this.getNumberOfRuns());
+		AddToNode(doc, node, "Generations", "" + this.getNumberOfGenerations());
+		AddToNode(doc, node, "PopulationSize", "" + this.getPopulationSize());		
 	}
 
-	private void AddDataSetInfo(Document doc){
+	private void AddDataSetInfo(Document doc, Node node){
 		Element DataSet = doc.createElement("DataSet");
 	
 		AddToNode(doc, DataSet, "File", this.getDataSetFile());
@@ -550,7 +541,7 @@ public class ConfigModel {
 		
 		if( DataSetLoader.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(DataSetLoader.file);
+			builtin.setValue(DataSetLoader.getFileName());
 			dsl.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
@@ -569,10 +560,10 @@ public class ConfigModel {
 		AddToNode(doc, DataSet, "NumberOfInputs", "" + this.getNumberOfInputs());
 		AddToNode(doc, DataSet, "NumberOfClasses", "" + this.getNumberOfClasses());
 		
-		doc.appendChild(DataSet);
+		node.appendChild(DataSet);
 	}
 
-	private void AddNodeData(Document doc){
+	private void AddNodeData(Document doc, Node node){
 		Element desc = doc.createElement("NodeDescription");
 		AddToNode(doc, desc, "Head", "" + this.getNodeHeadSize());
 		
@@ -583,7 +574,7 @@ public class ConfigModel {
 		desc.appendChild(func);
 		AddToNode(doc, desc, "RNC", "" + this.getNumberRNC() );
 		
-		doc.appendChild(desc);
+		node.appendChild(desc);
 		
 		Element layers = doc.createElement("NodeLayers");
 		for( int i = 0; i < NumberLayers; ++i) {
@@ -593,7 +584,7 @@ public class ConfigModel {
 			layer.appendChild(nodes);
 			layers.appendChild(layer);
 		}
-		doc.appendChild(layers);
+		node.appendChild(layers);
 		
 	}
 
@@ -601,64 +592,66 @@ public class ConfigModel {
 		Element func = doc.createElement("Function");
 		if( cinfo.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(cinfo.file);
+			builtin.setValue(cinfo.getFileName());
 			func.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
 			location.setValue(cinfo.dir);
 			func.getAttributes().setNamedItem(location);
 			Attr classfile = doc.createAttribute("classfile");
-			classfile.setValue(cinfo.file);
+			classfile.setValue(cinfo.getFileName());
 			func.getAttributes().setNamedItem(classfile);
 		}
 		node.appendChild(func);
 	}
 	
-	private void AddGeneticMethods(Document doc){
+	private void AddGeneticMethods(Document doc, Node node){
 		
 		Element fitness = doc.createElement("Fitness");
 		ClassInformation finfo = getFitnessProcess();
 		if( finfo.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(finfo.file);
+			builtin.setValue(finfo.getFileName());
 			fitness.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
 			location.setValue(finfo.dir);
 			fitness.getAttributes().setNamedItem(location);
 			Attr classfile = doc.createAttribute("classfile");
-			classfile.setValue(finfo.file);
+			classfile.setValue(finfo.getFileName());
 			fitness.getAttributes().setNamedItem(classfile);
 		}
-		doc.appendChild(fitness);
+		node.appendChild(fitness);
 		
 		Element selection = doc.createElement("Selection");
-		ClassInformation sinfo = getFitnessProcess();
+		ClassInformation sinfo = getSelectionMethod();
 		if( sinfo.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(sinfo.file);
+			builtin.setValue(sinfo.getFileName());
 			selection.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
 			location.setValue(sinfo.dir);
 			selection.getAttributes().setNamedItem(location);
 			Attr classfile = doc.createAttribute("classfile");
-			classfile.setValue(sinfo.file);
+			classfile.setValue(sinfo.getFileName());
 			selection.getAttributes().setNamedItem(classfile);
 		}
-		doc.appendChild(selection);		
-	
+		node.appendChild(selection);		
+
+		AddToNode(doc, node, "MutationRate", ""+ getMutationRate());
+		
 		Element muts = doc.createElement("Mutators");
 		for( ModifierClassInformation mci : Mutators ) {
 			AddModifier(doc, muts, "Mutator", mci);
 		}
-		doc.appendChild(muts);
+		node.appendChild(muts);
 		
 		Element crosses = doc.createElement("Crossovers");
 		for( ModifierClassInformation mci : Crossovers ) {
 			AddModifier(doc, crosses, "Crossover", mci);
 		}
-		doc.appendChild(crosses);
+		node.appendChild(crosses);
 		
 	}
 	
@@ -666,14 +659,14 @@ public class ConfigModel {
 		Element mut = doc.createElement(name);
 		if( modifier.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(modifier.file);
+			builtin.setValue(modifier.getFileName());
 			mut.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
 			location.setValue(modifier.dir);
 			mut.getAttributes().setNamedItem(location);
 			Attr classfile = doc.createAttribute("classfile");
-			classfile.setValue(modifier.file);
+			classfile.setValue(modifier.getFileName());
 			mut.getAttributes().setNamedItem(classfile);
 		}
 		Attr weight = doc.createAttribute("weight");
@@ -684,7 +677,7 @@ public class ConfigModel {
 	
 	
 
-	private void AddProcesses(Document doc){
+	private void AddProcesses(Document doc, Node node){
 		Element procs = doc.createElement("Processes");
 	
 		AddESPs(doc, procs, "StartProcesses", StartProcesses);
@@ -694,7 +687,7 @@ public class ConfigModel {
 		AddESPs(doc, procs, "BeforeGenerationProcesses", BeforeGenerationProcesses);
 		AddESPs(doc, procs, "EndGenerationProcesses", EndOfGenerationProcesses);
 		
-		doc.appendChild(procs);
+		node.appendChild(procs);
 	}
 
 	private static void AddESPs(Document doc, Node node, String name, ArrayList<ClassInformation> cis){
@@ -711,14 +704,14 @@ public class ConfigModel {
 		Element esp = doc.createElement(name);
 		if( ci.isBuiltIn ) {
 			Attr builtin = doc.createAttribute("builtin");
-			builtin.setValue(ci.file);
+			builtin.setValue(ci.getFileName());
 			esp.getAttributes().setNamedItem(builtin);
 		} else {
 			Attr location = doc.createAttribute("location");
 			location.setValue(ci.dir);
 			esp.getAttributes().setNamedItem(location);
 			Attr classfile = doc.createAttribute("classfile");
-			classfile.setValue(ci.file);
+			classfile.setValue(ci.getFileName());
 			esp.getAttributes().setNamedItem(classfile);
 		}
 		if( !ci.param.isEmpty() ) {

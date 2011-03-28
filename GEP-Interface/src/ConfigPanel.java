@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import framework.*;
-
 public class ConfigPanel extends JPanel {
 	private static final long serialVersionUID = -8900449870756436728L;
 	private JLabel lblTitle;
@@ -63,13 +61,13 @@ public class ConfigPanel extends JPanel {
 	
 	private JLabel lblFitnessProcess;
 	private JTextField txtFitnessProcess;
+	private JTextField txtFitnessProcessParameters;
 	private JButton butFitnessProcess;
 	
-	private JLabel lblKeepPercentage;
-	private JTextField txtKeepPercentage;
 	
 	private JLabel lblSelectionMethod;
 	private JTextField txtSelectionProcess;
+	private JTextField txtSelectionProcessParamters;
 	private JButton butSelectionProcess;
 	
 	private JLabel lblMutators;
@@ -208,17 +206,15 @@ public class ConfigPanel extends JPanel {
 		
 		lblFitnessProcess = new JLabel("Fitness Process");
 		txtFitnessProcess = new JTextField(TextFieldWidth);
+		txtFitnessProcessParameters = new JTextField(TextFieldWidth);
 		butFitnessProcess = new JButton("Load Fitness Process");
-		AddItem(lblFitnessProcess, txtFitnessProcess, butFitnessProcess);
-		
-		lblKeepPercentage = new JLabel("Keep Percentage");
-		txtKeepPercentage = new JTextField(TextFieldWidth);
-		AddItem(lblKeepPercentage, txtKeepPercentage);
+		AddItem(lblFitnessProcess, txtFitnessProcess, txtFitnessProcessParameters, butFitnessProcess);
 		
 		lblSelectionMethod = new JLabel("Selection Process");
 		txtSelectionProcess = new JTextField(TextFieldWidth);
+		txtSelectionProcessParamters = new JTextField(TextFieldWidth);
 		butSelectionProcess = new JButton("Load Selection Process");
-		AddItem(lblSelectionMethod, txtSelectionProcess, butSelectionProcess);
+		AddItem(lblSelectionMethod, txtSelectionProcess, txtSelectionProcessParamters, butSelectionProcess);
 	
 		lblMutators = new JLabel("Mutators");
 		cspMutators = new ModifierSetPanel("Mutator");
@@ -309,10 +305,44 @@ public class ConfigPanel extends JPanel {
 		layout.setConstraints(button, cons);
 		add(button);
 		cons.insets = new Insets(10, 5, 10, 5);
-		currentY++;
-		
+		currentY++;		
 	}
 	
+	public void AddItem(JLabel label, JTextField textField, JTextField paramField, JButton button){
+		cons.gridx = 0;
+		cons.gridy = currentY;
+		cons.weightx = LeftWeight;
+		layout.setConstraints(label, cons);
+		add(label);
+		
+		cons.gridx = 1;
+		textField.setColumns(TextFieldWidth);
+		textField.setEditable(false);
+		cons.weightx = RightWeight;
+		cons.insets = new Insets(10, 5, 1, 5);
+		layout.setConstraints(textField, cons);
+		add(textField);
+		currentY++;
+		
+		cons.gridx = 1;
+		paramField.setColumns(TextFieldWidth);
+		paramField.setEditable(true);
+		cons.weightx = RightWeight;
+		cons.gridy = currentY;
+		cons.insets = new Insets(1, 5, 1, 5);
+		layout.setConstraints(paramField, cons);
+		add(paramField);
+		currentY++;
+		
+		cons.insets = new Insets(1, 5, 10, 5);
+		cons.gridx = 1;
+		cons.gridy = currentY;
+		cons.weightx = RightWeight;
+		layout.setConstraints(button, cons);
+		add(button);
+		cons.insets = new Insets(10, 5, 10, 5);
+		currentY++;		
+	}
 	
 	
 	public void UpdateModel(){
@@ -349,8 +379,6 @@ public class ConfigPanel extends JPanel {
 		lcpanel.SetLayers(alist);
 		
 		txtFitnessProcess.setText(config.getFitnessProcess().file);
-		
-		txtKeepPercentage.setText("" + config.getKeepPercentage() );
 		
 		txtSelectionProcess.setText(config.getSelectionMethod().file);
 		

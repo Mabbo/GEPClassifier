@@ -199,6 +199,8 @@ public class GEPInterface extends JFrame {
 	
 	public void SaveConfigFile() {
 		
+		config.SaveConfig();
+		
 	}
 	
 	public void Quit(){
